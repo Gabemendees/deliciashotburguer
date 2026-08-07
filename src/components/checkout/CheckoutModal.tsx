@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useCart } from "@/lib/store";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
+
 import { DELIVERY_AREAS, WHATSAPP_NUMBER } from "@/lib/data";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
