@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Category, Product } from "@/types/burger";
 import { PRODUCTS } from "@/lib/data";
 import { ProductCard } from "./ProductCard";
+import { ProductModal } from "./ProductModal";
 import { cn } from "@/lib/utils";
+
 
 const CATEGORIES: { id: Category; icon: string; label: string }[] = [
   { id: 'HOT DOGS', icon: '🌭', label: 'HOT DOGS' },
@@ -13,6 +15,7 @@ const CATEGORIES: { id: Category; icon: string; label: string }[] = [
 
 export function Menu() {
   const [activeCategory, setActiveCategory] = useState<Category>('HOT DOGS');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   return (
     <section id="menu" className="py-12 bg-[#fcfbf8]">
@@ -43,10 +46,21 @@ export function Menu() {
         {/* Products Grid */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {PRODUCTS.filter(p => p.category === activeCategory).map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              onClick={() => setSelectedProduct(product)}
+            />
           ))}
         </div>
+
+        <ProductModal 
+          product={selectedProduct}
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
       </div>
     </section>
   );
 }
+
