@@ -47,6 +47,7 @@ export const useCart = create<CartStore>((set, get) => ({
     return get().items.reduce((acc, item) => acc + item.totalPrice, 0);
   },
   get total() {
-    return get().subtotal; // Taxa de entrega será somada no checkout
+    return get().subtotal;
   },
 }));
+
