@@ -4,10 +4,17 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Trash2, Minus, Plus } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
+import { CheckoutModal } from "../checkout/CheckoutModal";
+import { useState } from "react";
+
+
 
 export function Cart() {
   const { items, removeItem, updateQuantity, subtotal } = useCart();
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+
 
   return (
     <Sheet>
@@ -134,15 +141,18 @@ export function Cart() {
             size="xl" 
             className="w-full h-16 shadow-lg shadow-yellow-200"
             disabled={items.length === 0}
-            onClick={() => {
-              // Navegar para checkout (vamos implementar o CheckoutModal em seguida)
-              toast.info("Abrindo finalização de pedido...");
-            }}
+            onClick={() => setIsCheckoutOpen(true)}
           >
             FINALIZAR PEDIDO
           </Button>
         </div>
+        
+        <CheckoutModal 
+          isOpen={isCheckoutOpen} 
+          onClose={() => setIsCheckoutOpen(false)} 
+        />
       </SheetContent>
+
     </Sheet>
   );
 }
