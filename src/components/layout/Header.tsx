@@ -3,6 +3,8 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Cart } from "@/components/cart/Cart";
+
 
 export function Header() {
   return (
@@ -16,9 +18,11 @@ export function Header() {
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 bg-yellow-100 px-3 py-1 rounded-full">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-xs font-bold text-yellow-800">ABERTO AGORA</span>
+            <span className="text-xs font-bold text-yellow-800 uppercase tracking-tighter">Aberto</span>
           </div>
+          <Cart />
         </div>
+
       </div>
     </header>
   );
