@@ -77,11 +77,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Delícia's Hot Burguer's - Seu lanche favorito está aqui" },
+      { name: "description", content: "Peça os melhores hot dogs e hambúrgueres da região. Entrega rápida e lanches irresistíveis." },
+      { name: "author", content: "Delícia's Hot Burguer's" },
+      { property: "og:title", content: "Delícia's Hot Burguer's - Pedidos Online" },
+      { property: "og:description", content: "Hot dogs, hambúrgueres e bebidas. Escolha seu lanche favorito e peça agora!" },
+
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -102,7 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>

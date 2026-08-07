@@ -5,10 +5,23 @@ import { Menu } from "@/components/menu/Menu";
 import { Toaster } from "sonner";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Cardápio Digital - Delícia's Hot Burguer's" },
+      { name: "description", content: "Explore nosso cardápio de hot dogs e hambúrgueres artesanais. Faça seu pedido pelo WhatsApp!" },
+      { property: "og:title", content: "Cardápio Digital - Delícia's Hot Burguer's" },
+      { property: "og:description", content: "Os melhores lanches estão aqui. Veja nosso cardápio e faça seu pedido agora." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1000&auto=format&fit=crop" },
+      { name: "twitter:image", content: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1000&auto=format&fit=crop" },
+    ],
+  }),
   component: Index,
 });
 
 function Index() {
+
   return (
     <div className="min-h-screen bg-[#fcfbf8] flex flex-col">
       <Header />
