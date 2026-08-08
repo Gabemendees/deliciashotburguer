@@ -301,11 +301,18 @@ function CheckoutPage() {
               <ScrollArea className="max-h-[30vh] mb-6 pr-4">
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={item.cartId} className="flex justify-between text-sm gap-4">
-                      <div className="font-bold text-[#4A2618]">
-                        {item.quantity}x {item.product.name}
+                    <div key={item.cartId} className="space-y-1">
+                      <div className="flex justify-between text-sm gap-4">
+                        <div className="font-bold text-[#4A2618]">
+                          {item.quantity}x {item.product.name}
+                        </div>
+                        <div className="font-black text-[#2B1710]">{formatCurrency(item.totalPrice)}</div>
                       </div>
-                      <div className="font-black text-[#2B1710]">{formatCurrency(item.totalPrice)}</div>
+                      {item.observation && (
+                        <p className="text-[10px] text-[#4A2618]/70 italic leading-tight">
+                          Obs: {item.observation}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
