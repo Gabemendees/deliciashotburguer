@@ -55,7 +55,7 @@ export function Menu() {
     // For drinks, we can still show the modal or add directly.
     const catName = product?.categories?.name;
     const desc = product?.description;
-    if (catName === 'BEBIDAS' && !(desc && desc.includes('personalização'))) {
+    if ((catName === 'BEBIDAS' || catName === 'SOBREMESAS') && !(desc && desc.includes('personalização'))) {
        // Direct add for simple items
        addItem({
          id: product.id,
