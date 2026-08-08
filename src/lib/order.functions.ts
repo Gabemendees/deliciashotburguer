@@ -109,8 +109,8 @@ export const getOrderById = createServerFn({ method: "GET" })
       .from('orders')
       .select('*, order_items(*, order_item_additions(*))')
       .eq('id', id)
-      .single();
-      
+      .maybeSingle();
+
     if (error) throw error;
-    return data;
+    return data ?? null;
   });
