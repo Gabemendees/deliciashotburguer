@@ -1,6 +1,6 @@
 import { Product, Addition, DeliveryArea } from '../types/burger';
 
-export const WHATSAPP_NUMBER = "99701-3096";
+export const WHATSAPP_NUMBER = "31997013096";
 export const STORE_ADDRESS = {
   street: "R. Santa Maria",
   number: "714",
