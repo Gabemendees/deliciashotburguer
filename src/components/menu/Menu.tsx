@@ -4,6 +4,9 @@ import { PRODUCTS } from "@/lib/data";
 import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/lib/store";
+import { useNavigate } from "@tanstack/react-router";
+
 
 
 const CATEGORIES: { id: Category; icon: string; label: string }[] = [
@@ -16,6 +19,18 @@ const CATEGORIES: { id: Category; icon: string; label: string }[] = [
 export function Menu() {
   const [activeCategory, setActiveCategory] = useState<Category>('HOT DOGS');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const addItem = useCart(state => state.addItem);
+  const navigate = useNavigate();
+
+  const handleProductClick = (product: Product) => {
+    if (product.category === 'HAMBÚRGUERES' || product.category === 'HOT DOGS') {
+      setSelectedProduct(product);
+    } else {
+      addItem(product, 1, []);
+      navigate({ to: '/carrinho' });
+    }
+  };
+
 
   return (
     <section id="menu" className="py-12 bg-[#fcfbf8]">
@@ -49,7 +64,7 @@ export function Menu() {
             <ProductCard 
               key={product.id} 
               product={product} 
-              onClick={() => setSelectedProduct(product)}
+              onClick={() => handleProductClick(product)}
             />
           ))}
         </div>
