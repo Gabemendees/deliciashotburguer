@@ -45,13 +45,13 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       if (!isMounted) return;
 
       if (!session) {
-        window.location.replace('/admin');
+        window.location.replace('/admin/login');
         return;
       }
 
       if (session.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
         await supabase.auth.signOut();
-        window.location.replace('/admin');
+        window.location.replace('/admin/login');
         return;
       }
 
@@ -64,10 +64,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       if (!isMounted) return;
       
       if (event === 'SIGNED_OUT') {
-        window.location.replace('/admin');
+        window.location.replace('/admin/login');
       } else if (session && session.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
         supabase.auth.signOut().then(() => {
-          window.location.replace('/admin');
+          window.location.replace('/admin/login');
         });
       } else if (session) {
         setUserEmail(session.user.email ?? null);
@@ -82,7 +82,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.replace('/admin');
+    window.location.replace('/admin/login');
   };
 
 
