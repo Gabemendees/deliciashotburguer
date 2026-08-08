@@ -32,7 +32,7 @@ function AdminLogin() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return;
       if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
-        if (window.location.pathname === '/admin') {
+        if (window.location.pathname === '/admin/login') {
           window.location.replace('/admin/dashboard');
         }
       }
