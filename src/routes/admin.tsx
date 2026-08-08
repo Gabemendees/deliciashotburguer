@@ -32,14 +32,13 @@ function AdminLogin() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("LOGIN BUTTON CLICKED");
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    console.log("LOGIN INITIATED", { email, passwordLength: password.length });
     
-    // Diagnostic alert for the user to confirm interaction
-    if (import.meta.env.DEV) {
-      alert("Botão de login clicado! Iniciando autenticação...");
-    }
+    // Diagnostic alert for visible confirmation in preview
+    alert("Iniciando Login...");
+
 
 
 
