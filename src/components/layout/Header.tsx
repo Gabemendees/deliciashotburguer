@@ -17,10 +17,10 @@ export function Header() {
         
         <nav className="hidden lg:flex items-center gap-6">
           <Link to="/" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Início</Link>
-          <a href="#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Cardápio</a>
-          <a href="#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hot Dogs</a>
-          <a href="#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hambúrgueres</a>
-          <a href="#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Bebidas</a>
+          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Cardápio</Link>
+          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hot Dogs</Link>
+          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hambúrgueres</Link>
+          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Bebidas</Link>
         </nav>
 
         <div className="flex items-center gap-4">
@@ -28,8 +28,10 @@ export function Header() {
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-xs font-bold text-yellow-800 uppercase tracking-tighter">Aberto</span>
           </div>
+
           
           <Link to="/carrinho" className="relative flex items-center gap-2 bg-white border-2 border-yellow-400 rounded-2xl h-11 px-4 hover:bg-yellow-50 transition-all">
+
 
             <ShoppingCart size={20} className="text-blue-900" />
             {itemCount > 0 && (
