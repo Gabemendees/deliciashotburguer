@@ -166,10 +166,19 @@ function CheckoutPage() {
   };
 
   if (!isHydrated) return null;
+
   if (items.length === 0) {
-    navigate({ to: '/carrinho' });
-    return null;
+    return (
+      <div className="min-h-screen bg-[#FFF4E6] flex flex-col items-center justify-center p-4">
+        <Header />
+        <div className="bg-white p-12 rounded-[40px] shadow-xl text-center">
+          <h2 className="text-2xl font-black text-[#2B1710] mb-4">Seu carrinho está vazio!</h2>
+          <Button onClick={() => navigate({ to: '/' })} variant="burger">Voltar ao Cardápio</Button>
+        </div>
+      </div>
+    );
   }
+
 
   return (
     <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
