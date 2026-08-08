@@ -92,7 +92,7 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    window.open('/admin/dashboard', '_blank');
+    navigate({ to: '/admin/dashboard' });
   };
 
   return (
