@@ -267,69 +267,78 @@ function CheckoutPage() {
             </div>
 
             {/* Endereço / Retirada */}
+            {/* Conteúdo dinâmico baseado na escolha */}
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
               {orderType === "pickup" ? (
                 <div className="space-y-6">
-                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-4">Retire seu pedido no local</h3>
+                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-4">
+                    2. Retirada no Local
+                  </h3>
                   
-                  <div className="flex items-start gap-4 p-6 bg-[#FFF4E6] rounded-3xl border border-[#E87524]/20">
-                    <MapPin className="w-6 h-6 text-[#E87524] mt-1 flex-shrink-0" />
+                  <div className="flex flex-col md:flex-row items-center gap-6 p-8 bg-[#FFF4E6] rounded-3xl border border-[#E87524]/20 text-center md:text-left">
+                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md">
+                      <MapPin className="w-8 h-8 text-[#E87524]" />
+                    </div>
                     <div>
-                      <p className="font-black text-[#2B1710] uppercase text-xs mb-1">Endereço</p>
-                      <p className="text-[#4A2618] font-bold leading-relaxed">
+                      <p className="font-black text-[#2B1710] uppercase text-xl mb-1 italic">Retire seu pedido aqui</p>
+                      <p className="text-[#4A2618] font-bold text-lg leading-snug">
                         {STORE_ADDRESS.street}, {STORE_ADDRESS.number}<br />
-                        {STORE_ADDRESS.neighborhood}, {STORE_ADDRESS.city} - {STORE_ADDRESS.state}<br />
-                        CEP: {STORE_ADDRESS.zip}
+                        {STORE_ADDRESS.neighborhood} — {STORE_ADDRESS.city}/{STORE_ADDRESS.state}
                       </p>
-                      
-                      <p className="font-black text-[#2B1710] uppercase text-xs mt-4 mb-1">Ponto de Referência</p>
-                      <p className="text-[#4A2618] font-medium italic">"{STORE_ADDRESS.reference}"</p>
+                      <p className="text-[#E87524] font-black uppercase text-sm mt-3 flex items-center gap-2 justify-center md:justify-start">
+                        <span className="w-2 h-2 bg-[#E87524] rounded-full animate-pulse"></span>
+                        {STORE_ADDRESS.reference}
+                      </p>
                     </div>
                   </div>
                   
                   <Button 
                     type="button"
                     variant="outline"
-                    className="w-full rounded-2xl h-14 border-2 border-[#E87524] text-[#E87524] font-black uppercase hover:bg-[#E87524] hover:text-white transition-all gap-2"
+                    className="w-full rounded-2xl h-16 border-2 border-[#E87524] text-[#E87524] font-black uppercase hover:bg-[#E87524] hover:text-white transition-all gap-3 text-lg"
                     onClick={() => window.open(STORE_ADDRESS.mapsLink, "_blank")}
                   >
-                    <Navigation className="w-5 h-5" />
-                    Ver no Mapa
+                    <Navigation className="w-6 h-6" />
+                    Como chegar agora
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-6">
-                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-4">Dados de Entrega</h3>
+                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-4">
+                    2. Dados de Entrega
+                  </h3>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-[#4A2618] font-bold">CEP</Label>
+                      <Label className="text-[#4A2618] font-bold">CEP (Busca Automática)</Label>
                       <Input 
                         placeholder="00000-000" 
                         required 
                         value={address.zip}
                         onChange={(e) => setAddress({...address, zip: e.target.value})}
-                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                        className="rounded-xl h-14 border-2 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710] font-bold text-lg"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[#4A2618] font-bold">Número</Label>
                       <Input 
-                        placeholder="Ex: 123" 
+                        placeholder="Ex: 714" 
                         required 
                         value={address.number}
                         onChange={(e) => setAddress({...address, number: e.target.value})}
-                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                        className="rounded-xl h-14 border-2 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710] font-bold text-lg"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[#4A2618] font-bold">Rua (Preenchido pelo CEP)</Label>
+                    <Label className="text-[#4A2618] font-bold">Rua</Label>
                     <Input 
-                      readOnly
+                      placeholder="Rua Santa Maria"
+                      required
                       value={address.street}
-                      className="rounded-xl h-12 bg-gray-50 border-[#F3E2CC] text-[#2B1710]"
+                      onChange={(e) => setAddress({...address, street: e.target.value})}
+                      className="rounded-xl h-12 border-[#F3E2CC] text-[#2B1710]"
                     />
                   </div>
 
@@ -337,14 +346,17 @@ function CheckoutPage() {
                     <div className="space-y-2">
                       <Label className="text-[#4A2618] font-bold">Bairro</Label>
                       <Input 
-                        readOnly
+                        placeholder="Pedra Azul"
+                        required
                         value={address.neighborhood}
-                        className="rounded-xl h-12 bg-gray-50 border-[#F3E2CC] text-[#2B1710]"
+                        onChange={(e) => setAddress({...address, neighborhood: e.target.value})}
+                        className="rounded-xl h-12 border-[#F3E2CC] text-[#2B1710]"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[#4A2618] font-bold">Complemento (opcional)</Label>
+                      <Label className="text-[#4A2618] font-bold">Complemento (Opcional)</Label>
                       <Input 
+                        placeholder="Bloco A, Apt 10"
                         value={address.complement}
                         onChange={(e) => setAddress({...address, complement: e.target.value})}
                         className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
@@ -355,6 +367,7 @@ function CheckoutPage() {
                   <div className="space-y-2">
                     <Label className="text-[#4A2618] font-bold">Ponto de Referência</Label>
                     <Input 
+                      placeholder="Ex: Próximo à padaria"
                       value={reference}
                       onChange={(e) => setReference(e.target.value)}
                       className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
@@ -363,33 +376,39 @@ function CheckoutPage() {
 
                   {distanceInfo && (
                     <div className={cn(
-                      "p-6 rounded-3xl border-2 animate-in fade-in slide-in-from-top-2",
+                      "p-8 rounded-[32px] border-2 animate-in fade-in slide-in-from-top-4 duration-500",
                       distanceInfo.valid ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
                     )}>
                       {distanceInfo.valid ? (
-                        <div className="flex items-center gap-4">
-                          <Truck className="w-8 h-8 text-green-600" />
+                        <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm">
+                            <Truck className="w-8 h-8 text-green-600" />
+                          </div>
                           <div>
-                            <p className="text-green-800 font-black uppercase text-xs">Entrega Disponível</p>
-                            <p className="text-green-700 font-bold">
-                              📍 Distância da loja: {distanceInfo.km.toFixed(1)} km<br />
-                              🛵 Taxa de entrega: {formatCurrency(distanceInfo.fee)}
+                            <p className="text-green-800 font-black uppercase text-sm mb-1 tracking-widest">Tudo Certo!</p>
+                            <h4 className="text-2xl font-black text-green-900 tracking-tighter italic">Entregamos aí!</h4>
+                            <p className="text-green-700 font-bold mt-1 text-lg">
+                              📍 Distância: <span className="text-green-900">{distanceInfo.km.toFixed(1)} km</span><br />
+                              🛵 Taxa de entrega: <span className="text-green-900">{formatCurrency(distanceInfo.fee)}</span>
                             </p>
                           </div>
                         </div>
                       ) : (
-                        <div>
-                          <p className="text-red-800 font-black uppercase text-sm mb-2">😕 Poxa! Ainda não realizamos entregas nessa região.</p>
-                          <p className="text-red-700 font-bold">
-                            Seu endereço está a {distanceInfo.km.toFixed(1)} km da nossa loja e nossa área de entrega é de até 6 km.
+                        <div className="text-center">
+                          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mx-auto mb-4">
+                            <MapPin className="w-10 h-10 text-red-600" />
+                          </div>
+                          <h4 className="text-2xl font-black text-red-900 tracking-tighter italic mb-2">😕 Poxa! Ainda não realizamos entregas nessa região.</h4>
+                          <p className="text-red-700 font-bold max-w-md mx-auto mb-6 text-lg">
+                            Seu endereço está a <span className="text-red-900">{distanceInfo.km.toFixed(1)} km</span> da nossa loja.
+                            Atualmente entregamos em um raio de até <span className="text-red-900">6 km</span>.
                           </p>
                           <Button 
                             type="button" 
-                            variant="link" 
-                            className="p-0 text-red-800 font-black underline mt-2"
+                            className="bg-red-600 hover:bg-red-700 text-white font-black uppercase rounded-2xl h-14 px-8 shadow-lg shadow-red-200"
                             onClick={() => setOrderType("pickup")}
                           >
-                            Deseja retirar no local?
+                            Retirar no Local (Taxa Grátis)
                           </Button>
                         </div>
                       )}
@@ -398,6 +417,7 @@ function CheckoutPage() {
                 </div>
               )}
             </div>
+
 
             {/* Pagamento */}
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
