@@ -172,11 +172,14 @@ function AdminLogin() {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
+              <button 
+                type="button" 
                 disabled={loading}
-                onClick={() => console.log("SUBMIT BUTTON ONCLICK")}
-                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl gap-3 text-lg group shadow-lg shadow-[#E87524]/20"
+                onClick={() => {
+                  console.log("NATIVE BUTTON CLICKED");
+                  handleLogin();
+                }}
+                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl flex items-center justify-center gap-3 text-lg group shadow-lg shadow-[#E87524]/20 disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -189,7 +192,8 @@ function AdminLogin() {
                     <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />
                   </>
                 )}
-              </Button>
+              </button>
+
 
               <div className="text-center pt-4">
                 <p className="text-[#4A2618]/30 font-bold text-[10px] uppercase tracking-widest">
