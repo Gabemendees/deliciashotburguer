@@ -2,13 +2,24 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit2, Trash2, GripVertical } from 'lucide-react';
+import { Plus, Edit2, Trash2, GripVertical, Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 export const Route = createFileRoute('/admin/categorias')({
   component: Categorias,
 });
 
 function Categorias() {
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ['admin-categories'],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from('categories').select('*, products(count)').order('order');
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <AdminLayout>
       <div className="space-y-8">
@@ -23,11 +34,26 @@ function Categorias() {
           </Button>
         </div>
 
-        <div className="max-w-3xl space-y-4">
-          <CategoryItem name="🍔 HAMBÚRGUERES" count={12} />
-          <CategoryItem name="🌭 HOT DOGS" count={12} />
-          <CategoryItem name="🥤 BEBIDAS" count={6} />
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <Loader2 className="animate-spin text-[#E87524]" size={32} />
+          </div>
+        ) : (
+          <div className="max-w-3xl space-y-4">
+            {categories.map((cat: any) => (
+              <CategoryItem 
+                key={cat.id} 
+                name={cat.name} 
+                count={cat.products?.[0]?.count || 0} 
+              />
+            ))}
+            {categories.length === 0 && (
+              <div className="text-center p-12 bg-white rounded-2xl border-2 border-dashed border-[#F3E2CC]">
+                <p className="text-[#4A2618]/60 font-bold">Nenhuma categoria encontrada.</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
@@ -55,3 +81,4 @@ function CategoryItem({ name, count }: any) {
     </Card>
   );
 }
+
