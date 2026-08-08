@@ -191,9 +191,9 @@ function CheckoutPage() {
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {/* 1. Escolha do Tipo */}
+            {/* Escolha do Tipo de Pedido */}
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">
+              <h3 className="text-xl font-black text-[#2B1710] uppercase tracking-tighter mb-6">
                 Como você quer receber seu pedido?
               </h3>
               
@@ -205,28 +205,39 @@ function CheckoutPage() {
                 <div 
                   onClick={() => setOrderType("pickup")}
                   className={cn(
-                    "flex flex-col items-center justify-center p-6 rounded-3xl border-2 transition-all cursor-pointer gap-3",
+                    "flex flex-col items-center justify-center p-8 rounded-3xl border-2 transition-all cursor-pointer gap-4 group",
                     orderType === "pickup" ? "bg-[#FFF4E6] border-[#E87524] shadow-lg shadow-[#E87524]/10" : "bg-white border-[#F3E2CC] hover:border-[#E87524]/50"
                   )}
                 >
-                  <Store className={cn("w-10 h-10", orderType === "pickup" ? "text-[#E87524]" : "text-[#4A2618]")} />
-                  <span className="font-black text-[#2B1710] uppercase tracking-tighter">Retirar no local</span>
+                  <div className={cn("w-16 h-16 rounded-full flex items-center justify-center transition-colors", orderType === "pickup" ? "bg-[#E87524] text-white" : "bg-[#FFF4E6] text-[#4A2618]")}>
+                    <Store className="w-8 h-8" />
+                  </div>
+                  <div className="text-center">
+                    <span className="block font-black text-xl text-[#2B1710] uppercase tracking-tighter">Retirar no local</span>
+                    <span className="text-sm text-[#4A2618]/70 font-bold uppercase tracking-widest mt-1 block">R$ 0,00 de taxa</span>
+                  </div>
                   <RadioGroupItem value="pickup" className="sr-only" />
                 </div>
                 
                 <div 
                   onClick={() => setOrderType("delivery")}
                   className={cn(
-                    "flex flex-col items-center justify-center p-6 rounded-3xl border-2 transition-all cursor-pointer gap-3",
+                    "flex flex-col items-center justify-center p-8 rounded-3xl border-2 transition-all cursor-pointer gap-4 group",
                     orderType === "delivery" ? "bg-[#FFF4E6] border-[#E87524] shadow-lg shadow-[#E87524]/10" : "bg-white border-[#F3E2CC] hover:border-[#E87524]/50"
                   )}
                 >
-                  <Truck className={cn("w-10 h-10", orderType === "delivery" ? "text-[#E87524]" : "text-[#4A2618]")} />
-                  <span className="font-black text-[#2B1710] uppercase tracking-tighter">Receber em casa</span>
+                  <div className={cn("w-16 h-16 rounded-full flex items-center justify-center transition-colors", orderType === "delivery" ? "bg-[#E87524] text-white" : "bg-[#FFF4E6] text-[#4A2618]")}>
+                    <Truck className="w-8 h-8" />
+                  </div>
+                  <div className="text-center">
+                    <span className="block font-black text-xl text-[#2B1710] uppercase tracking-tighter">Receber em casa</span>
+                    <span className="text-sm text-[#4A2618]/70 font-bold uppercase tracking-widest mt-1 block">Cálculo por distância</span>
+                  </div>
                   <RadioGroupItem value="delivery" className="sr-only" />
                 </div>
               </RadioGroup>
             </div>
+
 
             {/* Seus Dados */}
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
