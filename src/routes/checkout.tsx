@@ -16,7 +16,8 @@ import { Header } from "@/components/layout/Header";
 import { createFileRoute } from "@tanstack/react-router";
 import { MapPin, Truck, Store, ExternalLink, Navigation } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { calculateDeliveryDistance, getAddressFromZip } from "@/lib/checkout.functions";
+import { calculateDeliveryDistance, getAddressFromZip, getStoreConfig } from "@/lib/checkout.functions";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -30,6 +31,11 @@ function CheckoutPage() {
   
   const calcDistance = useServerFn(calculateDeliveryDistance);
   const getAddress = useServerFn(getAddressFromZip);
+
+  const { data: config } = useQuery({
+    queryKey: ['store-config'],
+    queryFn: () => getStoreConfig(),
+  });
 
   // Form states
   const [name, setName] = useState("");
