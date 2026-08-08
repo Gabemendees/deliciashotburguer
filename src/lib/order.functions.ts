@@ -49,15 +49,11 @@ export const createOrder = createServerFn({ method: "POST" })
         address_state: input.address_state || null,
         address_reference: input.address_reference || null,
         payment_method: input.payment_method,
-        // Since payment_change is missing in types but requested by user, 
-        // I will use 'observation' or check if it exists in the DB.
-        // If it's not in the DB, I'll put it in a metadata or observation field.
-        // For now, let's assume it might be a missing type or I'll omit it if it breaks build.
         subtotal: input.subtotal,
         delivery_fee: input.delivery_fee,
         total: input.total
       })
-      .select()
+      .select('*, order_number')
       .single();
 
     if (orderError) {
