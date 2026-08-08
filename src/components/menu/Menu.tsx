@@ -5,7 +5,9 @@ import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/store";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, getRouteApi } from "@tanstack/react-router";
+
+const routeApi = getRouteApi('/');
 
 
 
@@ -17,10 +19,19 @@ const CATEGORIES: { id: Category; icon: string; label: string }[] = [
 ];
 
 export function Menu() {
-  const [activeCategory, setActiveCategory] = useState<Category>('HOT DOGS');
+  const navigate = useNavigate();
+  const search = routeApi.useSearch();
+  const initialCategory = search.category as Category | undefined;
+  
+  const [activeCategory, setActiveCategory] = useState<Category>(initialCategory || 'HOT DOGS');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const addItem = useCart(state => state.addItem);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (initialCategory && initialCategory !== activeCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }, [initialCategory]);
 
   useEffect(() => {
     useCart.persist.rehydrate();
