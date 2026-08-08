@@ -39,13 +39,14 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     let isMounted = true;
 
     const checkAuth = async () => {
-      await new Promise(r => setTimeout(r, 200));
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!isMounted) return;
 
       if (!session) {
-        window.location.replace('/admin/login');
+        if (window.location.pathname !== '/admin/login') {
+          window.location.replace('/admin/login');
+        }
         return;
       }
 
