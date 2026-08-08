@@ -19,21 +19,30 @@ function AdminLogin() {
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!isMounted) return;
       if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
         window.location.replace('/admin/dashboard');
       }
       setSession(session);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!isMounted) return;
       if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
-        window.location.replace('/admin/dashboard');
+        if (window.location.pathname === '/admin') {
+          window.location.replace('/admin/dashboard');
+        }
       }
       setSession(session);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleLogin = async (e?: React.FormEvent) => {
@@ -42,37 +51,62 @@ function AdminLogin() {
       e.stopPropagation();
     }
     
-    if (!email || !password) {
-      toast.error('Preencha e-mail e senha.');
-      return;
-    }
-    
-    if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-      toast.error('Acesso negado.');
-      return;
-    }
-
-    setLoading(true);
-
     try {
+      console.log('Botão clicado, iniciando handleLogin...');
+      
+      if (!email || !password) {
+        toast.error('Preencha e-mail e senha.');
+        return;
+      }
+      
+      if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        toast.error('Acesso negado.');
+        return;
+      }
+
+      setLoading(true);
+      
+      console.log('Tentando login com Supabase:', email);
+      
+      // Limpar sessão antiga antes de tentar uma nova
+      await supabase.auth.signOut();
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro no signInWithPassword:', error);
+        throw error;
+      }
       
-      const { data: { session: newSession } } = await supabase.auth.getSession();
+      console.log('Login bem-sucedido, aguardando propagação da sessão...');
+      
+      // Pequena pausa para o localStorage propagar
+      await new Promise(r => setTimeout(r, 1000));
+      
+      const { data: { session: newSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Erro ao buscar sessão após login:', sessionError);
+        throw sessionError;
+      }
+
+      console.log('Sessão encontrada:', newSession?.user?.email);
       
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        console.warn('E-mail da sessão não autorizado:', newSession?.user?.email);
         await supabase.auth.signOut();
-        toast.error('Acesso negado.');
+        toast.error('E-mail não autorizado para acesso administrativo.');
         return;
       }
 
-      window.location.assign('/admin/dashboard');
+      console.log('Sessão válida. Redirecionando com hard reload...');
+      window.location.href = '/admin/dashboard';
       
     } catch (error: any) {
+      console.error('Catch error handleLogin:', error);
       toast.error('E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
@@ -129,8 +163,11 @@ function AdminLogin() {
               </div>
 
               <Button 
-                type="submit" 
-                form="admin-login-form"
+                type="button" 
+                onClick={(e) => {
+                  console.log('Botão clicado manualmente');
+                  handleLogin();
+                }}
                 disabled={loading}
                 className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-16 rounded-2xl gap-3 text-lg shadow-lg shadow-[#E87524]/30 active:scale-[0.98] transition-all"
               >
