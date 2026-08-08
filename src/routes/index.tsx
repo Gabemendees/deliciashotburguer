@@ -6,6 +6,8 @@ import { Cart } from "@/components/cart/Cart";
 import { z } from "zod";
 import { Toaster } from "sonner";
 import { useCart } from "@/lib/store";
+import { syncStoreStatus } from "@/lib/store-sync.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getStoreConfig } from "@/lib/database.functions";
 import { useQuery } from "@tanstack/react-query";
@@ -34,11 +36,15 @@ export const Route = createFileRoute("/")({
 function Index() {
   const isHydrated = useCart((state) => state.isHydrated);
 
+  const syncStatus = useServerFn(syncStoreStatus);
+
   useEffect(() => {
     if (!isHydrated) {
       useCart.persist.rehydrate();
     }
-  }, [isHydrated]);
+    // Sync store status based on current time
+    syncStatus();
+  }, [isHydrated, syncStatus]);
 
   const { data: config } = useQuery({
     queryKey: ['store-config'],
@@ -65,7 +71,7 @@ function Index() {
               </div>
               <div>
                 <h2 className="text-2xl font-black text-red-700 uppercase tracking-tighter italic">Estamos fechados no momento</h2>
-                <p className="text-red-600 font-bold">Nosso horário de funcionamento é das 19:00 às 00:00 (Segunda a Sábado).</p>
+                <p className="text-red-600 font-bold">Nosso horário de funcionamento é das 19:00 às 00:00 (Segunda a Sábado). Quando passar de 00:00 a loja fecha automaticamente e abre às 19:00.</p>
               </div>
               <div className="md:ml-auto flex items-center gap-2 px-6 py-3 bg-red-100 text-red-600 rounded-2xl font-black text-xs tracking-widest uppercase">
                 <Clock size={16} />
