@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -285,7 +285,7 @@ function Dashboard() {
                   />
                   <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                     {chartData.map((entry, index) => (
-                      <Cell key={index} fill={entry.date === today ? '#E87524' : '#2B1710'} />
+                      <Cell key={index} fill={entry.date === new Date().toISOString().split('T')[0] ? '#E87524' : '#2B1710'} />
                     ))}
                   </Bar>
                 </BarChart>
