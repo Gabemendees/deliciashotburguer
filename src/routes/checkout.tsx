@@ -92,7 +92,7 @@ function CheckoutPage() {
         let valid = true;
         const distMeters = res.distanceMeters;
         
-        const deliveryRules = config?.delivery_rules || [
+        const deliveryRules = config?.['delivery_rules'] || [
           { min: 0, max: 2500, fee: 4 },
           { min: 2501, max: 4500, fee: 6 },
           { min: 4501, max: 6000, fee: 8 }
