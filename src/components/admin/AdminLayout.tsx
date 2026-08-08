@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { 
   LayoutDashboard, 
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
+
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
