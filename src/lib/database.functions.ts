@@ -280,9 +280,9 @@ export const getPublicAdditions = createServerFn({ method: "GET" }).handler(asyn
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("additions")
-    .select("id, name, price, is_available")
+    .select("id, name, price, is_available, order")
     .eq("is_available", true)
-    .order("name", { ascending: true });
+    .order("order", { ascending: true });
   if (error) throw error;
   return data ?? [];
 });
