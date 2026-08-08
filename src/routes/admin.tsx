@@ -21,10 +21,16 @@ function AdminLogin() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
+        window.location.assign('/admin/dashboard');
+      }
       setSession(session);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
+        window.location.assign('/admin/dashboard');
+      }
       setSession(session);
     });
 
