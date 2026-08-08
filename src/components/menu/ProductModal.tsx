@@ -47,10 +47,12 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
 
   const handleAddToCart = () => {
     addItem(product, quantity, selectedAdditions);
-    toast.success(`${product.name} adicionado ao carrinho!`, {
+    // Redirecionamento obrigatório conforme especificado
+    // Não precisa de toast se o redirecionamento for imediato, mas manterei um discreto se o usuário preferir
+    /* toast.success(`${product.name} adicionado ao carrinho!`, {
       description: `Quantidade: ${quantity}`,
       duration: 2000,
-    });
+    }); */
     setQuantity(1);
     setSelectedAdditions([]);
     onClose();
@@ -139,7 +141,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
               className="flex-1 w-full h-14"
               onClick={handleAddToCart}
             >
-              ADICIONAR — {formatCurrency(totalPrice)}
+              COMPRAR — {formatCurrency(totalPrice)}
             </Button>
           </div>
         </div>

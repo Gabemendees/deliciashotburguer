@@ -38,15 +38,15 @@ function CartPage() {
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-black text-blue-900 flex items-center gap-3">
-              SEU CARRINHO <ShoppingCart className="text-yellow-500" />
+            <h1 className="text-3xl font-black text-blue-900 flex items-center gap-3 uppercase">
+              SEU PEDIDO 🛒
             </h1>
             <p className="text-gray-500 font-medium">Confira seus itens antes de finalizar o pedido.</p>
           </div>
           
-          <Link to="/" className="text-sm font-bold text-blue-900 hover:text-red-600 flex items-center gap-2 transition-colors">
+          <Link to="/#menu" className="text-sm font-bold text-blue-900 hover:text-red-600 flex items-center gap-2 transition-colors">
             <ArrowLeft size={16} />
-            CONTINUAR COMPRANDO
+            + COMPRAR MAIS
           </Link>
         </div>
 
@@ -63,7 +63,7 @@ function CartPage() {
               variant="burger" 
               size="xl" 
               className="px-12"
-              onClick={() => navigate({ to: '/' })}
+              onClick={() => navigate({ to: '/#menu' })}
             >
               VER CARDÁPIO
             </Button>
@@ -162,15 +162,26 @@ function CartPage() {
                   </div>
                 </div>
                 
-                <Button 
-                  variant="burger" 
-                  size="xl" 
-                  className="w-full h-16 shadow-lg shadow-yellow-200 group"
-                  onClick={() => navigate({ to: '/checkout' })}
-                >
-                  FECHAR PEDIDO
-                  <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    variant="burger" 
+                    size="xl" 
+                    className="w-full h-16 shadow-lg shadow-yellow-200 group"
+                    onClick={() => navigate({ to: '/checkout' })}
+                  >
+                    FINALIZAR PEDIDO
+                    <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="w-full h-12 border-2 border-blue-900 text-blue-900 font-black hover:bg-blue-50"
+                    onClick={() => navigate({ to: '/#menu' })}
+                  >
+                    + COMPRAR MAIS
+                  </Button>
+                </div>
                 
                 <p className="text-[10px] text-center text-gray-400 mt-6 font-bold uppercase tracking-widest leading-relaxed">
                   Ao clicar em fechar pedido, você será <br /> redirecionado para a entrega.
