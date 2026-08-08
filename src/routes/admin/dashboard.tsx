@@ -14,6 +14,7 @@ import { Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/dashboard')({
+  ssr: false,
   component: Dashboard,
 });
 
