@@ -32,7 +32,10 @@ function AdminLogin() {
   }, []);
 
   const handleLogin = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     
     if (!email) {
       toast.error('E-mail obrigatório.');
@@ -56,9 +59,7 @@ function AdminLogin() {
         password,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
       
       const { data: { session: newSession } } = await supabase.auth.getSession();
       
@@ -68,19 +69,14 @@ function AdminLogin() {
         return;
       }
 
-      toast.success('Autenticação realizada com sucesso!');
+      toast.success('Autenticação realizada com sucesso! Redirecionando...');
       
-      // Fallback: Tenta redirecionar na mesma aba se window.open falhar ou for bloqueado
-      const newWindow = window.open('/admin/dashboard', '_blank');
-      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-        navigate({ to: '/admin/dashboard' });
-      }
-      
-      setLoading(false);
+      // Force navigation in the same tab to ensure it works
+      await navigate({ to: '/admin/dashboard' });
       
     } catch (error: any) {
       console.error("AUTHENTICATION ERROR", error);
-      toast.error('E-mail ou senha incorretos.');
+      toast.error(error.message || 'E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
     }
