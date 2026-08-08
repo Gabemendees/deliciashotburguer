@@ -165,11 +165,7 @@ function AdminLogin() {
               </div>
 
               <Button 
-                type="button" 
-                onClick={(e) => {
-                  console.log('Botão clicado manualmente');
-                  handleLogin();
-                }}
+                type="submit" 
                 disabled={loading}
                 className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-16 rounded-2xl gap-3 text-lg shadow-lg shadow-[#E87524]/30 active:scale-[0.98] transition-all"
               >
