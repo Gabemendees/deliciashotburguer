@@ -43,7 +43,7 @@ function CheckoutPage() {
   const [payment, setPayment] = useState<"dinheiro" | "pix" | "credito" | "debito">("pix");
   const [needsChange, setNeedsChange] = useState(false);
   const [changeAmount, setChangeAmount] = useState("");
-  const [observation, setObservation] = useState("");
+  
 
   const subtotal = useMemo(() => getSubtotal(), [items, getSubtotal]);
 
@@ -98,9 +98,6 @@ function CheckoutPage() {
         message += `Precisa de troco para: ${formatCurrency(parseFloat(changeAmount.replace(",", ".")))}\n`;
       }
       
-      if (observation) {
-        message += `\n*OBSERVAÇÃO:* ${observation}`;
-      }
 
       const encodedMessage = encodeURIComponent(message);
       const whatsappUrl = `https://api.whatsapp.com/send?phone=55${WHATSAPP_NUMBER.replace(/\D/g, "")}&text=${encodedMessage}`;
@@ -295,16 +292,6 @@ function CheckoutPage() {
               )}
             </div>
 
-            {/* Observação */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">4. Observações</h3>
-              <Textarea 
-                placeholder="Ex: Tirar cebola, maionese à parte, caprichar no bacon..." 
-                value={observation}
-                onChange={(e) => setObservation(e.target.value)}
-                className="rounded-2xl min-h-[120px] p-6 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-              />
-            </div>
           </div>
 
           <div className="lg:col-span-1">
@@ -314,11 +301,18 @@ function CheckoutPage() {
               <ScrollArea className="max-h-[30vh] mb-6 pr-4">
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={item.cartId} className="flex justify-between text-sm gap-4">
-                      <div className="font-bold text-[#4A2618]">
-                        {item.quantity}x {item.product.name}
+                    <div key={item.cartId} className="space-y-1">
+                      <div className="flex justify-between text-sm gap-4">
+                        <div className="font-bold text-[#4A2618]">
+                          {item.quantity}x {item.product.name}
+                        </div>
+                        <div className="font-black text-[#2B1710]">{formatCurrency(item.totalPrice)}</div>
                       </div>
-                      <div className="font-black text-[#2B1710]">{formatCurrency(item.totalPrice)}</div>
+                      {item.observation && (
+                        <p className="text-[10px] text-[#4A2618]/70 italic leading-tight">
+                          Obs: {item.observation}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
