@@ -1,4 +1,4 @@
-export type Category = 'HOT DOGS' | 'HAMBÚRGUERES' | 'ACRÉSCIMOS' | 'BEBIDAS';
+export type Category = 'HOT DOGS' | 'HAMBÚRGUERES' | 'BEBIDAS';
 
 export interface Product {
   id: string;
@@ -21,6 +21,7 @@ export interface CartItem {
   quantity: number;
   additions: Addition[];
   totalPrice: number;
+  observation?: string | undefined;
 }
 
 export interface DeliveryArea {

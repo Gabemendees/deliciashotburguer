@@ -13,7 +13,6 @@ import { useNavigate } from "@tanstack/react-router";
 const CATEGORIES: { id: Category; icon: string; label: string }[] = [
   { id: 'HOT DOGS', icon: '🌭', label: 'HOT DOGS' },
   { id: 'HAMBÚRGUERES', icon: '🍔', label: 'HAMBÚRGUERES' },
-  { id: 'ACRÉSCIMOS', icon: '➕', label: 'ACRÉSCIMOS' },
   { id: 'BEBIDAS', icon: '🥤', label: 'BEBIDAS' },
 ];
 

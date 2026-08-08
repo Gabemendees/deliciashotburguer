@@ -29,17 +29,7 @@ export function Hero() {
             FAZER MEU PEDIDO
           </Button>
           
-          <div className="mt-12 space-y-2">
-            <div className="inline-flex items-center gap-2 bg-red-600/20 border border-red-500/50 p-3 rounded-lg backdrop-blur-sm">
-              <span className="text-xl">⚠️</span>
-              <p className="font-bold text-sm text-red-200 uppercase tracking-wide">
-                NÃO TROCAMOS ITENS NOS LANCHES
-              </p>
-            </div>
-            <p className="text-xs text-blue-300 ml-1">
-              Os ingredientes dos lanches seguem a descrição do cardápio.
-            </p>
-          </div>
+          {/* Aviso removido conforme pedido */}
         </motion.div>
         
         <motion.div 

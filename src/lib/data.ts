@@ -41,6 +41,8 @@ export const PRODUCTS: Product[] = [
   { id: 'b6', number: 'B6', name: '2L', description: 'Bebida 2L', price: 0, category: 'BEBIDAS' },
 ];
 
+// Adicionais removidos da categoria, mas mantidos como dados se necessário.
+// O usuário pediu para remover a categoria "ACRÉSCIMOS".
 export const ADDITIONS: Addition[] = [
   { name: 'Azeitona', price: 1.00 },
   { name: 'Ovo de codorna', price: 1.00 },
