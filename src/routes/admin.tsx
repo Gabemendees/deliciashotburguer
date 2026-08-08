@@ -1,5 +1,5 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useState } from 'react';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,7 @@ function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +49,7 @@ function AdminLogin() {
       }
 
       toast.success('Login realizado com sucesso!');
-      window.location.href = '/admin/dashboard';
+      navigate({ to: '/admin/dashboard' });
     } catch (error: any) {
       toast.error(error.message || 'Erro ao realizar login');
     } finally {
@@ -110,3 +111,4 @@ function AdminLogin() {
     </div>
   );
 }
+
