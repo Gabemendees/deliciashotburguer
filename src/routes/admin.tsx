@@ -35,6 +35,12 @@ function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("LOGIN BUTTON CLICKED");
+    
+    // Diagnostic alert for the user to confirm interaction
+    if (import.meta.env.DEV) {
+      alert("Botão de login clicado! Iniciando autenticação...");
+    }
+
 
 
 
