@@ -14,7 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Header } from "@/components/layout/Header";
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Truck, Store, ExternalLink, Navigation, ChevronRight } from "lucide-react";
+import { MapPin, Truck, Store, ExternalLink, Navigation, ChevronRight, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { calculateDeliveryDistance, getAddressFromZip } from "@/lib/checkout.functions";
 import { getStoreConfig } from "@/lib/database.functions";
