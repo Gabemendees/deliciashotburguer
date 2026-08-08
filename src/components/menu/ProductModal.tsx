@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Minus, Plus, X } from "lucide-react";
 import { useCart } from "@/lib/store";
 import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
+
 
 interface ProductModalProps {
   product: Product | null;
@@ -18,6 +20,8 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedAdditions, setSelectedAdditions] = useState<Addition[]>([]);
   const addItem = useCart((state) => state.addItem);
+  const navigate = useNavigate();
+
 
   if (!product) return null;
 
@@ -43,7 +47,9 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
     setQuantity(1);
     setSelectedAdditions([]);
     onClose();
+    navigate({ to: '/carrinho' });
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

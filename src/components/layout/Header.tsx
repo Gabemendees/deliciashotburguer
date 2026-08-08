@@ -30,6 +30,7 @@ export function Header() {
           </div>
           
           <Link to="/carrinho" className="relative flex items-center gap-2 bg-white border-2 border-yellow-400 rounded-2xl h-11 px-4 hover:bg-yellow-50 transition-all">
+
             <ShoppingCart size={20} className="text-blue-900" />
             {itemCount > 0 && (
               <>
