@@ -210,7 +210,7 @@ function Pedidos() {
 }
 
 function PedidoCard({ pedido, isActive, onClick }: any) {
-  const shortId = pedido.id.slice(0, 4);
+  const shortId = pedido.order_number || pedido.id.slice(0, 4);
   const time = new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   
   return (
@@ -268,7 +268,7 @@ function PedidoCard({ pedido, isActive, onClick }: any) {
 }
 
 function OrderDetail({ order, onUpdateStatus, onCancel }: any) {
-  const shortId = order.id.slice(0, 4);
+  const shortId = order.order_number || order.id.slice(0, 4);
   const date = new Date(order.created_at).toLocaleDateString('pt-BR');
   const time = new Date(order.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
