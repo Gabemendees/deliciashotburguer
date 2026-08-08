@@ -20,6 +20,7 @@ export type Database = {
           id: string
           is_available: boolean | null
           name: string
+          order: number | null
           price: number
           updated_at: string | null
         }
@@ -28,6 +29,7 @@ export type Database = {
           id?: string
           is_available?: boolean | null
           name: string
+          order?: number | null
           price: number
           updated_at?: string | null
         }
@@ -36,6 +38,7 @@ export type Database = {
           id?: string
           is_available?: boolean | null
           name?: string
+          order?: number | null
           price?: number
           updated_at?: string | null
         }
