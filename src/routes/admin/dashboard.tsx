@@ -3,12 +3,28 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, ShoppingCart, TrendingUp, Truck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { getAdminOrders } from '@/lib/database.functions';
+import { formatCurrency } from '@/lib/utils';
 
 export const Route = createFileRoute('/admin/dashboard')({
   component: Dashboard,
 });
 
 function Dashboard() {
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ['admin-orders'],
+    queryFn: () => getAdminOrders(),
+  });
+
+  const today = new Date().toISOString().split('T')[0];
+  const ordersToday = orders.filter((o: any) => o.created_at.startsWith(today));
+  const revenueToday = ordersToday.reduce((acc: number, o: any) => acc + Number(o.total), 0);
+  const avgTicket = ordersToday.length > 0 ? revenueToday / ordersToday.length : 0;
+  const inDelivery = orders.filter((o: any) => o.status === 'delivered').length;
+
+  return (
+
   return (
     <AdminLayout>
       <div className="space-y-8">
