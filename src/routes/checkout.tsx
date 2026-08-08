@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useCart } from "@/lib/store";
 import { formatCurrency, cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+
 import { useNavigate } from "@tanstack/react-router";
 import { WHATSAPP_NUMBER, STORE_ADDRESS } from "@/lib/data";
 import { Button } from "@/components/ui/button";
