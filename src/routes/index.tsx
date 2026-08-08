@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const isHydrated = useCart((state) => state.isHydrated);
 
-  const { mutate: syncStatus } = useServerFn(syncStoreStatus);
+  const syncStatus = useServerFn(syncStoreStatus);
 
   useEffect(() => {
     if (!isHydrated) {
