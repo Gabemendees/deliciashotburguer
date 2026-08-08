@@ -24,7 +24,9 @@ function AdminLogin() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!isMounted) return;
       if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
-        window.location.replace('/admin/dashboard');
+        if (window.location.pathname === '/admin/login') {
+          window.location.replace('/admin/dashboard');
+        }
       }
       setSession(session);
     });
