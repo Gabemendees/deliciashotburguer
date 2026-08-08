@@ -136,10 +136,8 @@ function AdminLogin() {
             </div>
           ) : (
             <form 
-              onSubmit={(e) => {
-                alert("FORM SUBMITTED");
-                handleLogin(e);
-              }}
+              onSubmit={handleLogin}
+
 
               className="space-y-6"
             >
