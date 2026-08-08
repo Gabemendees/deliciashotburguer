@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Store, Clock, Save, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Store, Clock, Save, Loader2, AlertCircle, ShieldCheck, Info } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getStoreConfig, updateStoreConfig } from '@/lib/database.functions';
 import { useState, useEffect } from 'react';
