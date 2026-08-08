@@ -39,6 +39,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     let isMounted = true;
 
     const checkAuth = async () => {
+      // Small delay to ensure browser processed localStorage
+      await new Promise(r => setTimeout(r, 200));
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!isMounted) return;
