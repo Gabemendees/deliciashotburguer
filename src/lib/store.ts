@@ -28,14 +28,17 @@ export const useCart = create<CartStore>()(
         if (existingItemIndex !== -1) {
           const updatedItems = [...get().items];
           const item = updatedItems[existingItemIndex];
-          const newQuantity = item.quantity + quantity;
-          updatedItems[existingItemIndex] = {
-            ...item,
-            quantity: newQuantity,
-            totalPrice: (item.product.price + additionsPrice) * newQuantity
-          };
-          set({ items: updatedItems });
+          if (item) {
+            const newQuantity = item.quantity + quantity;
+            updatedItems[existingItemIndex] = {
+              ...item,
+              quantity: newQuantity,
+              totalPrice: (item.product.price + additionsPrice) * newQuantity
+            };
+            set({ items: updatedItems });
+          }
         } else {
+
           const cartId = Math.random().toString(36).substring(7);
           set((state) => ({
             items: [...state.items, { cartId, product, quantity, additions, totalPrice }],
