@@ -8,7 +8,7 @@ interface CartStore {
   removeItem: (cartId: string) => void;
   updateQuantity: (cartId: string, quantity: number) => void;
   clearCart: () => void;
-  subtotal: number;
+  getSubtotal: () => number;
 }
 
 export const useCart = create<CartStore>()(
@@ -80,7 +80,7 @@ export const useCart = create<CartStore>()(
         }));
       },
       clearCart: () => set({ items: [] }),
-      get subtotal() {
+      getSubtotal: () => {
         return get().items.reduce((acc, item) => acc + item.totalPrice, 0);
       },
     }),

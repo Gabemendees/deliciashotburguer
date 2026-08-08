@@ -15,7 +15,7 @@ export const Route = createFileRoute("/carrinho")({
 });
 
 function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal } = useCart();
+  const { items, removeItem, updateQuantity, getSubtotal } = useCart();
   const navigate = useNavigate();
   const [isHydrated, setIsHydrated] = useState(false);
   
@@ -26,6 +26,7 @@ function CartPage() {
   
   if (!isHydrated) return null;
   
+  const subtotal = getSubtotal();
   const deliveryFee = 5.0; // Padrão inicial
   const total = subtotal + deliveryFee;
 

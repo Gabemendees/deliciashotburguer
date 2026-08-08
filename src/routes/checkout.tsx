@@ -21,7 +21,7 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function CheckoutPage() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, getSubtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [isHydrated, setIsHydrated] = useState(false);
@@ -45,13 +45,15 @@ function CheckoutPage() {
   const [changeAmount, setChangeAmount] = useState("");
   const [observation, setObservation] = useState("");
 
+  const subtotal = useMemo(() => getSubtotal(), [items, getSubtotal]);
+
   const deliveryFee = useMemo(() => {
     if (orderType === "pickup") return 0;
     const area = DELIVERY_AREAS.find((a) => a.neighborhood === neighborhood);
     return area ? area.fee : 0;
   }, [orderType, neighborhood]);
 
-  const total = subtotal + deliveryFee;
+  const total = useMemo(() => subtotal + deliveryFee, [subtotal, deliveryFee]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
