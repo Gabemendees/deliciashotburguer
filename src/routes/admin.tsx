@@ -1,15 +1,27 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
+import { useEffect } from 'react';
 
 export const Route = createFileRoute('/admin')({
-  beforeLoad: async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
-      throw redirect({ to: '/admin/dashboard' });
-    }
-    
-    throw redirect({ to: '/admin/login' });
-  },
-  component: () => null,
+  component: AdminGateway,
 });
+
+function AdminGateway() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
+        window.location.replace('/admin/dashboard');
+      } else {
+        window.location.replace('/admin/login');
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
+
+  return null;
+}
