@@ -38,14 +38,15 @@ export function Menu() {
 
 
   return (
-    <section id="menu" className="py-12 bg-[#fcfbf8]">
+    <section id="menu" className="py-12 bg-[#FFF4E6]">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-black text-blue-900 mb-8 text-center uppercase tracking-tighter italic">
+        <h2 className="text-3xl font-black text-[#2B1710] mb-2 text-center uppercase tracking-tighter italic">
           Nosso Cardápio
         </h2>
+        <div className="w-20 h-1 bg-[#E87524] mx-auto mb-8" />
 
         {/* Categories Bar */}
-        <div className="sticky top-16 z-40 -mx-4 px-4 py-4 bg-[#fcfbf8]/80 backdrop-blur-sm overflow-x-auto no-scrollbar flex items-center gap-3 md:justify-center">
+        <div className="sticky top-16 z-40 -mx-4 px-4 py-4 bg-[#FFF4E6]/80 backdrop-blur-sm overflow-x-auto no-scrollbar flex items-center gap-3 md:justify-center">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
@@ -53,8 +54,8 @@ export function Menu() {
               className={cn(
                 "flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-bold transition-all shadow-sm",
                 activeCategory === cat.id
-                  ? "bg-red-600 text-white scale-105 shadow-red-200"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
+                  ? "bg-[#E87524] text-white scale-105 shadow-[#E87524]/20"
+                  : "bg-[#F3E2CC] text-[#2B1710] hover:bg-[#EBD8C1] border border-[#EBD8C1]"
               )}
             >
               <span>{cat.icon}</span>

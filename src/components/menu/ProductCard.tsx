@@ -18,7 +18,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       onClick={onClick}
-      className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col hover:shadow-xl transition-all group cursor-pointer"
+      className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-[#F3E2CC] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer"
     >
       <div className="relative h-48 overflow-hidden">
         <img 
@@ -26,27 +26,27 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        <div className="absolute top-4 left-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-black">
+        <div className="absolute top-4 left-4 bg-[#E87524] text-white px-3 py-1 rounded-full text-xs font-black">
           #{product.number}
         </div>
       </div>
       
       <div className="p-6 flex flex-col flex-1">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-xl font-black text-blue-900 leading-tight group-hover:text-red-600 transition-colors">
+          <h3 className="text-xl font-black text-[#2B1710] leading-tight group-hover:text-[#E87524] transition-colors uppercase italic tracking-tighter">
             {product.name}
           </h3>
         </div>
         
-        <p className="text-gray-500 text-sm mb-6 flex-1 italic">
+        <p className="text-[#4A2618] text-sm mb-6 flex-1 italic opacity-80">
           {product.description}
         </p>
         
         <div className="flex items-center justify-between mt-auto">
-          <span className="text-2xl font-black text-blue-900">
+          <span className="text-2xl font-black text-[#E87524]">
             {product.price > 0 ? formatCurrency(product.price) : '--'}
           </span>
-          <div className="bg-yellow-400 group-hover:bg-red-600 group-hover:text-white text-blue-900 font-black px-6 py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center gap-2">
+          <div className="bg-[#2B1710] group-hover:bg-[#E87524] text-white font-black px-6 py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center gap-2">
             <span className="text-xs uppercase tracking-widest">COMPRAR</span>
             <span className="text-lg">🛒</span>
           </div>
