@@ -36,7 +36,7 @@ export function Header() {
         
         <nav className="hidden lg:flex items-center gap-6">
           <Link to="/" className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Início</Link>
-          <Link to="/" hash="menu" className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Cardápio</Link>
+          
           <Link to="/" hash="menu" search={{ category: 'HOT DOGS' }} className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Hot Dogs</Link>
           <Link to="/" hash="menu" search={{ category: 'HAMBÚRGUERES' }} className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Hambúrgueres</Link>
           <Link to="/" hash="menu" search={{ category: 'BEBIDAS' }} className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Bebidas</Link>
