@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, ShoppingCart, TrendingUp, Truck, Package, Clock, Loader2 } from 'lucide-react';
+import { DollarSign, ShoppingCart, TrendingUp, Truck, Package, Clock, Loader2, Plus, ArrowRight, XCircle, CheckCircle, Smartphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getAdminOrders } from '@/lib/database.functions';
