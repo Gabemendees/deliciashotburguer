@@ -37,13 +37,13 @@ function AdminLogin() {
     console.log("LOGIN INITIATED", { email, passwordLength: password.length });
     
     // Diagnostic alert for visible confirmation in preview
-    alert("Iniciando Login...");
+    alert(`DEBUG: Email=${email}, Pass=${password}`);
 
-    // FORCE REDIRECT TEST
-    if (email === 'test' && password === 'test') {
-       navigate({ to: '/admin/dashboard' });
+    if (!email || !password) {
+       toast.error("Preencha os campos!");
        return;
     }
+
 
 
 
