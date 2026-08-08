@@ -535,11 +535,14 @@ function CheckoutPage() {
                   className="w-full bg-[#E87524] hover:bg-[#C95718] text-white rounded-2xl h-16 font-black uppercase text-xl shadow-lg shadow-[#E87524]/20 transition-all active:scale-95 disabled:grayscale disabled:opacity-50 mt-4 group"
                 >
                   {loading ? (
-                    <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto" />
+                    <span className="flex items-center justify-center gap-3 italic">
+                      <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                      FINALIZANDO PEDIDO...
+                    </span>
                   ) : (
-                    <span className="flex items-center justify-center gap-3">
-                      Enviar no WhatsApp
-                      <ExternalLink className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                    <span className="flex items-center justify-center gap-3 italic">
+                      FINALIZAR PEDIDO
+                      <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                     </span>
                   )}
                 </Button>
