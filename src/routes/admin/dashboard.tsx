@@ -371,7 +371,7 @@ function Dashboard() {
                       >
                         <div className="flex items-center gap-4">
                            <div className="bg-[#2B1710] text-white w-12 h-12 rounded-xl flex items-center justify-center font-black text-xs italic">
-                              #{order.order_number || order.id.slice(0, 4).toUpperCase()}
+                              #{String(order.order_number).toUpperCase()}
                            </div>
                            <div>
                               <p className="font-black text-[#2B1710] uppercase text-sm">{order.customer_name}</p>
