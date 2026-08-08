@@ -35,6 +35,7 @@ function CheckoutPage() {
 
 
   // Form states
+  const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
@@ -48,10 +49,12 @@ function CheckoutPage() {
   const subtotal = useMemo(() => getSubtotal(), [items, getSubtotal]);
 
   const deliveryFee = useMemo(() => {
+    // Stage 1 always shows 0 fee as requested
+    if (step === 1) return 0;
     if (orderType === "pickup") return 0;
     const area = DELIVERY_AREAS.find((a) => a.neighborhood === neighborhood);
     return area ? area.fee : 0;
-  }, [orderType, neighborhood]);
+  }, [orderType, neighborhood, step]);
 
   const total = useMemo(() => subtotal + deliveryFee, [subtotal, deliveryFee]);
 
@@ -127,13 +130,17 @@ function CheckoutPage() {
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
-        <h1 className="text-3xl font-black text-[#2B1710] mb-8 uppercase tracking-tighter italic border-b-4 border-[#E87524] inline-block pb-2">Finalizar Pedido</h1>
+        <h1 className="text-3xl font-black text-[#2B1710] mb-8 uppercase tracking-tighter italic border-b-4 border-[#E87524] inline-block pb-2">
+          {step === 1 ? "Seu Pedido" : "Finalizar o Pedido"}
+        </h1>
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {/* Informações Básicas */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">1. Seus Dados</h3>
+            {step === 2 && (
+              <>
+                {/* Informações Básicas */}
+                <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500">
+                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">1. Seus Dados</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-[#4A2618] font-bold">Seu Nome</Label>
@@ -160,9 +167,11 @@ function CheckoutPage() {
               </div>
             </div>
 
-            {/* Entrega */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">2. Entrega ou Retirada</h3>
+            )}
+            
+            {step === 2 && (
+              <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500 delay-100">
+                <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">2. Entrega ou Retirada</h3>
               
               <RadioGroup 
                 defaultValue="delivery" 
@@ -246,9 +255,11 @@ function CheckoutPage() {
               )}
             </div>
 
-            {/* Pagamento */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">3. Pagamento</h3>
+            )}
+            
+            {step === 2 && (
+              <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500 delay-200">
+                <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">3. Pagamento</h3>
               
               <RadioGroup 
                 defaultValue="pix" 
@@ -292,11 +303,15 @@ function CheckoutPage() {
               )}
             </div>
 
+            )}
+
           </div>
 
           <div className="lg:col-span-1">
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] sticky top-24">
-              <h3 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-wider">Seu Pedido</h3>
+              <h3 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-wider">
+                {step === 1 ? "Resumo" : "Seu Pedido"}
+              </h3>
               
               <ScrollArea className="max-h-[30vh] mb-6 pr-4">
                 <div className="space-y-4">
@@ -323,27 +338,51 @@ function CheckoutPage() {
                   <span>Subtotal</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
-                {orderType === "delivery" && (
-                  <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-xs">
-                    <span>Taxa de Entrega</span>
-                    <span className="text-green-600">{formatCurrency(deliveryFee)}</span>
-                  </div>
-                )}
+                <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-xs">
+                  <span>Taxa de Entrega</span>
+                  <span className={cn(deliveryFee > 0 ? "text-[#E87524]" : "text-green-600")}>
+                    {formatCurrency(deliveryFee)}
+                  </span>
+                </div>
+
                 <div className="pt-4 flex justify-between">
                   <span className="text-xl font-black text-[#2B1710] uppercase">Total</span>
                   <span className="text-2xl font-black text-[#E87524]">{formatCurrency(total)}</span>
                 </div>
               </div>
               
-              <Button 
-                type="submit" 
-                variant="burger" 
-                size="xl" 
-                className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
-                disabled={loading}
-              >
-                {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
-              </Button>
+              {step === 1 ? (
+                <Button 
+                  type="button" 
+                  variant="burger" 
+                  size="xl" 
+                  className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
+                  onClick={() => setStep(2)}
+                >
+                  FINALIZAR PEDIDO
+                </Button>
+              ) : (
+                <div className="space-y-3 mt-8">
+                  <Button 
+                    type="submit" 
+                    variant="burger" 
+                    size="xl" 
+                    className="w-full h-16 shadow-xl shadow-[#E87524]/20"
+                    disabled={loading}
+                  >
+                    {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-[#4A2618] hover:text-[#E87524] font-bold uppercase text-[10px] tracking-widest"
+                    onClick={() => setStep(1)}
+                  >
+                    ← Voltar ao resumo
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </form>
