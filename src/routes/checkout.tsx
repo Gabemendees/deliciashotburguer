@@ -292,15 +292,16 @@ function CheckoutPage() {
                     </div>
                   </div>
                   
-                  <Button 
-                    type="button"
-                    variant="outline"
-                    className="w-full rounded-2xl h-16 border-2 border-[#E87524] text-[#E87524] font-black uppercase hover:bg-[#E87524] hover:text-white transition-all gap-3 text-lg"
-                    onClick={() => window.open(STORE_ADDRESS.mapsLink, "_blank")}
+                  <a 
+                    href={STORE_ADDRESS.mapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full rounded-2xl h-16 border-2 border-[#E87524] text-[#E87524] font-black uppercase hover:bg-[#E87524] hover:text-white transition-all gap-3 text-lg flex items-center justify-center no-underline"
                   >
                     <Navigation className="w-6 h-6" />
                     Como chegar agora
-                  </Button>
+                  </a>
+
                 </div>
               ) : (
                 <div className="space-y-6">
