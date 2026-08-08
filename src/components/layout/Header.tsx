@@ -58,7 +58,7 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="hidden md:flex items-center gap-2 bg-[#4A2618] px-3 py-1.5 rounded-full hover:bg-[#5D3222] transition-colors cursor-pointer outline-none group">
+              <button className="flex items-center gap-2 bg-[#4A2618] px-3 py-1.5 rounded-full hover:bg-[#5D3222] transition-colors cursor-pointer outline-none group">
                 <div className={cn(
                   "w-2 h-2 rounded-full transition-all group-hover:scale-110",
                   isStoreOpen ? "bg-green-500 animate-pulse" : "bg-red-500"
