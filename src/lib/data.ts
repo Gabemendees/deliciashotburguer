@@ -9,7 +9,7 @@ export const STORE_ADDRESS = {
   state: "MG",
   zip: "32183-970",
   reference: "Trailer em frente ao Correio",
-  mapsLink: "https://www.google.com/maps/place/R.+Santa+Maria,+714+-+Pedra+Azul,+Contagem+-+MG,+32183-970"
+  mapsLink: "https://maps.app.goo.gl/c9iTjBUfrkpBoN9F6"
 };
 
 export const PRODUCTS: Product[] = [
