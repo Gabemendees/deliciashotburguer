@@ -124,46 +124,46 @@ function CheckoutPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#fcfbf8] flex flex-col">
+    <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
-        <h1 className="text-3xl font-black text-blue-900 mb-8 uppercase tracking-tighter italic">Finalizar Pedido</h1>
+        <h1 className="text-3xl font-black text-[#2B1710] mb-8 uppercase tracking-tighter italic border-b-4 border-[#E87524] inline-block pb-2">Finalizar Pedido</h1>
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {/* Informações Básicas */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-gray-100 border border-gray-100">
-              <h3 className="text-sm font-black text-blue-900 uppercase tracking-widest border-b pb-4 mb-6">1. Seus Dados</h3>
+            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
+              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">1. Seus Dados</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Seu Nome</Label>
+                  <Label htmlFor="name" className="text-[#4A2618] font-bold">Seu Nome</Label>
                   <Input 
                     id="name" 
                     placeholder="Como podemos te chamar?" 
                     required 
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="rounded-xl h-12"
+                    className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Seu WhatsApp</Label>
+                  <Label htmlFor="phone" className="text-[#4A2618] font-bold">Seu WhatsApp</Label>
                   <Input 
                     id="phone" 
                     placeholder="(00) 00000-0000" 
                     required 
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="rounded-xl h-12"
+                    className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Entrega */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-gray-100 border border-gray-100">
-              <h3 className="text-sm font-black text-blue-900 uppercase tracking-widest border-b pb-4 mb-6">2. Entrega ou Retirada</h3>
+            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
+              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">2. Entrega ou Retirada</h3>
               
               <RadioGroup 
                 defaultValue="delivery" 
@@ -172,31 +172,31 @@ function CheckoutPage() {
               >
                 <div className={cn(
                   "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
-                  orderType === "delivery" ? "bg-red-50 border-red-200" : "bg-white border-gray-100"
+                  orderType === "delivery" ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
                 )}>
                   <RadioGroupItem value="delivery" id="delivery" />
-                  <Label htmlFor="delivery" className="font-bold cursor-pointer">Entrega em casa</Label>
+                  <Label htmlFor="delivery" className="font-bold cursor-pointer text-[#2B1710]">Entrega em casa</Label>
                 </div>
                 <div className={cn(
                   "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
-                  orderType === "pickup" ? "bg-red-50 border-red-200" : "bg-white border-gray-100"
+                  orderType === "pickup" ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
                 )}>
                   <RadioGroupItem value="pickup" id="pickup" />
-                  <Label htmlFor="pickup" className="font-bold cursor-pointer">Retirada no local</Label>
+                  <Label htmlFor="pickup" className="font-bold cursor-pointer text-[#2B1710]">Retirada no local</Label>
                 </div>
               </RadioGroup>
 
               {orderType === "delivery" && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-top-4">
                   <div className="space-y-2">
-                    <Label>Bairro</Label>
+                    <Label className="text-[#4A2618] font-bold">Bairro</Label>
                     <Select required onValueChange={setNeighborhood}>
-                      <SelectTrigger className="rounded-xl h-12">
+                      <SelectTrigger className="rounded-xl h-12 border-[#F3E2CC] focus:ring-[#E87524] text-[#2B1710]">
                         <SelectValue placeholder="Selecione seu bairro" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white border-[#F3E2CC]">
                         {DELIVERY_AREAS.map((area) => (
-                          <SelectItem key={area.neighborhood} value={area.neighborhood}>
+                          <SelectItem key={area.neighborhood} value={area.neighborhood} className="focus:bg-[#FFF4E6] focus:text-[#E87524]">
                             {area.neighborhood} ({formatCurrency(area.fee)})
                           </SelectItem>
                         ))}
@@ -206,40 +206,40 @@ function CheckoutPage() {
                   
                   <div className="grid grid-cols-3 gap-4">
                     <div className="col-span-2 space-y-2">
-                      <Label>Rua</Label>
+                      <Label className="text-[#4A2618] font-bold">Rua</Label>
                       <Input 
                         required 
                         value={address.street}
                         onChange={(e) => setAddress({...address, street: e.target.value})}
-                        className="rounded-xl h-12"
+                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Número</Label>
+                      <Label className="text-[#4A2618] font-bold">Número</Label>
                       <Input 
                         required 
                         value={address.number}
                         onChange={(e) => setAddress({...address, number: e.target.value})}
-                        className="rounded-xl h-12"
+                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Complemento (opcional)</Label>
+                      <Label className="text-[#4A2618] font-bold">Complemento (opcional)</Label>
                       <Input 
                         value={address.complement}
                         onChange={(e) => setAddress({...address, complement: e.target.value})}
-                        className="rounded-xl h-12"
+                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Ponto de referência</Label>
+                      <Label className="text-[#4A2618] font-bold">Ponto de referência</Label>
                       <Input 
                         value={address.reference}
                         onChange={(e) => setAddress({...address, reference: e.target.value})}
-                        className="rounded-xl h-12"
+                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                       />
                     </div>
                   </div>
@@ -248,8 +248,8 @@ function CheckoutPage() {
             </div>
 
             {/* Pagamento */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-gray-100 border border-gray-100">
-              <h3 className="text-sm font-black text-blue-900 uppercase tracking-widest border-b pb-4 mb-6">3. Pagamento</h3>
+            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
+              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">3. Pagamento</h3>
               
               <RadioGroup 
                 defaultValue="pix" 
@@ -259,10 +259,10 @@ function CheckoutPage() {
                 {['pix', 'dinheiro', 'credito', 'debito'].map((p) => (
                   <div key={p} className={cn(
                     "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
-                    payment === p ? "bg-red-50 border-red-200" : "bg-white border-gray-100"
+                    payment === p ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
                   )}>
                     <RadioGroupItem value={p} id={p} />
-                    <Label htmlFor={p} className="font-bold cursor-pointer uppercase text-xs tracking-widest">{p}</Label>
+                    <Label htmlFor={p} className="font-bold cursor-pointer uppercase text-xs tracking-widest text-[#2B1710]">{p}</Label>
                   </div>
                 ))}
               </RadioGroup>
@@ -273,18 +273,19 @@ function CheckoutPage() {
                     <Checkbox 
                       id="change" 
                       onCheckedChange={(checked) => setNeedsChange(checked as boolean)} 
+                      className="border-[#F3E2CC] data-[state=checked]:bg-[#E87524]"
                     />
-                    <Label htmlFor="change" className="font-bold">Precisa de troco?</Label>
+                    <Label htmlFor="change" className="font-bold text-[#2B1710]">Precisa de troco?</Label>
                   </div>
                   {needsChange && (
                     <div className="space-y-2 max-w-[200px]">
-                      <Label>Troco para quanto?</Label>
+                      <Label className="text-[#4A2618] font-bold">Troco para quanto?</Label>
                       <Input 
                         type="text" 
                         placeholder="R$ 0,00" 
                         value={changeAmount}
                         onChange={(e) => setChangeAmount(e.target.value)}
-                        className="rounded-xl h-12"
+                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                       />
                     </div>
                   )}
@@ -293,48 +294,48 @@ function CheckoutPage() {
             </div>
 
             {/* Observação */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-gray-100 border border-gray-100">
-              <h3 className="text-sm font-black text-blue-900 uppercase tracking-widest border-b pb-4 mb-6">4. Observações</h3>
+            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
+              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">4. Observações</h3>
               <Textarea 
                 placeholder="Ex: Tirar cebola, maionese à parte, caprichar no bacon..." 
                 value={observation}
                 onChange={(e) => setObservation(e.target.value)}
-                className="rounded-2xl min-h-[120px] p-6"
+                className="rounded-2xl min-h-[120px] p-6 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
               />
             </div>
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-gray-100 border border-gray-100 sticky top-24">
-              <h3 className="text-xl font-black text-blue-900 mb-6 uppercase tracking-wider">Seu Pedido</h3>
+            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] sticky top-24">
+              <h3 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-wider">Seu Pedido</h3>
               
               <ScrollArea className="max-h-[30vh] mb-6 pr-4">
                 <div className="space-y-4">
                   {items.map((item) => (
                     <div key={item.cartId} className="flex justify-between text-sm gap-4">
-                      <div className="font-bold text-gray-600">
+                      <div className="font-bold text-[#4A2618]">
                         {item.quantity}x {item.product.name}
                       </div>
-                      <div className="font-black text-blue-900">{formatCurrency(item.totalPrice)}</div>
+                      <div className="font-black text-[#2B1710]">{formatCurrency(item.totalPrice)}</div>
                     </div>
                   ))}
                 </div>
               </ScrollArea>
               
-              <div className="space-y-4 pt-6 border-t border-dashed border-gray-200">
-                <div className="flex justify-between text-gray-500 font-bold uppercase tracking-tighter text-xs">
+              <div className="space-y-4 pt-6 border-t border-dashed border-[#F3E2CC]">
+                <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-xs">
                   <span>Subtotal</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
                 {orderType === "delivery" && (
-                  <div className="flex justify-between text-gray-500 font-bold uppercase tracking-tighter text-xs">
+                  <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-xs">
                     <span>Taxa de Entrega</span>
                     <span className="text-green-600">{formatCurrency(deliveryFee)}</span>
                   </div>
                 )}
                 <div className="pt-4 flex justify-between">
-                  <span className="text-xl font-black text-blue-900 uppercase">Total</span>
-                  <span className="text-2xl font-black text-red-600">{formatCurrency(total)}</span>
+                  <span className="text-xl font-black text-[#2B1710] uppercase">Total</span>
+                  <span className="text-2xl font-black text-[#E87524]">{formatCurrency(total)}</span>
                 </div>
               </div>
               
@@ -342,7 +343,7 @@ function CheckoutPage() {
                 type="submit" 
                 variant="burger" 
                 size="xl" 
-                className="w-full h-16 shadow-xl shadow-yellow-200 mt-8"
+                className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
                 disabled={loading}
               >
                 {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
