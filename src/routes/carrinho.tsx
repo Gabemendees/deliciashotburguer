@@ -44,7 +44,7 @@ function CartPage() {
             <p className="text-[#4A2618] font-medium">Confira seus itens antes de finalizar o pedido.</p>
           </div>
           
-          <Link to="/#menu" className="text-sm font-bold text-[#2B1710] hover:text-[#E87524] flex items-center gap-2 transition-colors">
+          <Link to="/" hash="menu" className="text-sm font-bold text-[#2B1710] hover:text-[#E87524] flex items-center gap-2 transition-colors">
             <ArrowLeft size={16} />
             + COMPRAR MAIS
           </Link>
@@ -63,7 +63,7 @@ function CartPage() {
               variant="burger" 
               size="xl" 
               className="px-12"
-              onClick={() => navigate({ to: '/#menu' })}
+              onClick={() => navigate({ to: '/', hash: 'menu' })}
             >
               VER CARDÁPIO
             </Button>
@@ -184,7 +184,7 @@ function CartPage() {
                     variant="outline" 
                     size="lg" 
                     className="w-full h-12 border-2 border-[#2B1710] text-[#2B1710] font-black hover:bg-[#FFF4E6]"
-                    onClick={() => navigate({ to: '/#menu' })}
+                    onClick={() => navigate({ to: '/', hash: 'menu' })}
                   >
                     + COMPRAR MAIS
                   </Button>
