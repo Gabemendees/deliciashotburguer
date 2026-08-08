@@ -71,8 +71,8 @@ function AdminLogin() {
 
       toast.success('Autenticação realizada com sucesso!');
       
-      // Use navigate directly for SPA transition
-      navigate({ to: '/admin/dashboard' });
+      // Force hard redirect to ensure session is picked up by AdminLayout
+      window.location.href = '/admin/dashboard';
       
     } catch (error: any) {
       console.error("AUTHENTICATION ERROR", error);
@@ -83,7 +83,7 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    navigate({ to: '/admin/dashboard' });
+    window.location.href = '/admin/dashboard';
   };
 
   return (
