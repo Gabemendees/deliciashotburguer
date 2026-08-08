@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/layout/Hero";
 import { Menu } from "@/components/menu/Menu";
+import { Cart } from "@/components/cart/Cart";
+
 import { Toaster } from "sonner";
 import { useCart } from "@/lib/store";
 import { useEffect } from "react";
@@ -38,6 +40,9 @@ function Index() {
           <Menu />
         </div>
       </main>
+      
+      <Cart />
+
 
       
       {/* Footer minimalista como solicitado */}
