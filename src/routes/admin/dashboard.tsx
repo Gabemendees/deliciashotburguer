@@ -46,7 +46,7 @@ function Dashboard() {
     );
   }
 
-  const isStoreOpen = config.is_store_open === true || config.is_store_open === 'true';
+  const isStoreOpen = config['is_store_open'] === true || config['is_store_open'] === 'true';
 
   const today = new Date().toISOString().split('T')[0];
   const allOrders = orders as any[];
