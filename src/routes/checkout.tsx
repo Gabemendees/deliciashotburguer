@@ -33,7 +33,7 @@ function CheckoutPage() {
   }, []);
 
   // Form states
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2>(2);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
@@ -46,21 +46,17 @@ function CheckoutPage() {
   const subtotal = useMemo(() => getSubtotal(), [items, getSubtotal]);
 
   const deliveryFee = useMemo(() => {
-    // Stage 1 always shows 0 fee as requested
-    if (step === 1) return 0;
     if (orderType === "pickup") return 0;
+    // Only calculate fee if neighborhood is selected
+    if (!neighborhood) return 0;
     const area = DELIVERY_AREAS.find((a) => a.neighborhood === neighborhood);
     return area ? area.fee : 0;
-  }, [orderType, neighborhood, step]);
+  }, [orderType, neighborhood]);
 
   const total = useMemo(() => subtotal + deliveryFee, [subtotal, deliveryFee]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (step === 1) {
-      setStep(2);
-      return;
-    }
     
     setLoading(true);
 
@@ -132,23 +128,11 @@ function CheckoutPage() {
       
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
         <h1 className="text-3xl font-black text-[#2B1710] mb-8 uppercase tracking-tighter italic border-b-4 border-[#E87524] inline-block pb-2">
-          {step === 1 ? "Seu Pedido" : "Finalizar o Pedido"}
+          Finalizar o Pedido
         </h1>
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {step === 1 && (
-              <div className="bg-[#FFF4E6] border-2 border-[#E87524]/20 border-dashed rounded-[40px] p-12 flex flex-col items-center justify-center text-center space-y-4 animate-in fade-in zoom-in-95 duration-500">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg mb-4">
-                  <span className="text-4xl">🍔</span>
-                </div>
-                <h2 className="text-2xl font-black text-[#2B1710] uppercase tracking-tighter">Resumo do seu Pedido</h2>
-                <p className="text-[#4A2618] max-w-sm">Confira os itens selecionados ao lado antes de prosseguir com a finalização e entrega.</p>
-              </div>
-            )}
-
-            {step === 2 && (
-              <>
                 {/* Informações Básicas */}
                 <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500">
                   <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">1. Seus Dados</h3>
@@ -309,14 +293,12 @@ function CheckoutPage() {
                     </div>
                   )}
                 </div>
-              </>
-            )}
           </div>
 
           <div className="lg:col-span-1">
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] sticky top-24">
               <h3 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-wider">
-                {step === 1 ? "Resumo" : "Seu Pedido"}
+                Seu Pedido
               </h3>
               
               <ScrollArea className="max-h-[30vh] mb-6 pr-4">
@@ -357,37 +339,15 @@ function CheckoutPage() {
                 </div>
               </div>
               
-              {step === 1 ? (
-                <Button 
-                  type="submit" 
-                  variant="burger" 
-                  size="xl" 
-                  className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
-                >
-                  FINALIZAR PEDIDO
-                </Button>
-              ) : (
-                <div className="space-y-3 mt-8">
-                  <Button 
-                    type="submit" 
-                    variant="burger" 
-                    size="xl" 
-                    className="w-full h-16 shadow-xl shadow-[#E87524]/20"
-                    disabled={loading}
-                  >
-                    {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="w-full text-[#4A2618] hover:text-[#E87524] font-bold uppercase text-[10px] tracking-widest"
-                    onClick={() => setStep(1)}
-                  >
-                    ← Voltar ao resumo
-                  </Button>
-                </div>
-              )}
+              <Button 
+                type="submit" 
+                variant="burger" 
+                size="xl" 
+                disabled={loading}
+                className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
+              >
+                {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
+              </Button>
             </div>
           </div>
         </form>
