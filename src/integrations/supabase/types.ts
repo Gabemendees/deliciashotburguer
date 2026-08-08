@@ -327,6 +327,7 @@ export type Database = {
       delivery_type: "delivery" | "pickup"
       order_status:
         | "new"
+        | "accepted"
         | "preparing"
         | "ready"
         | "delivered"
@@ -464,6 +465,7 @@ export const Constants = {
       delivery_type: ["delivery", "pickup"],
       order_status: [
         "new",
+        "accepted",
         "preparing",
         "ready",
         "delivered",
