@@ -7,13 +7,13 @@ import { useEffect, useState } from "react";
 
 
 export function Cart() {
-  const { items, getSubtotal } = useCart();
-  const [isHydrated, setIsHydrated] = useState(false);
+  const { items, getSubtotal, isHydrated } = useCart();
 
   useEffect(() => {
-    setIsHydrated(true);
-    useCart.persist.rehydrate();
-  }, []);
+    if (!isHydrated) {
+      useCart.persist.rehydrate();
+    }
+  }, [isHydrated]);
 
   if (!isHydrated) return null;
 

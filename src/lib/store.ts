@@ -4,6 +4,8 @@ import { CartItem, Product, Addition } from '@/types/burger';
 
 interface CartStore {
   items: CartItem[];
+  isHydrated: boolean;
+  setHydrated: () => void;
   addItem: (product: Product, quantity: number, additions: Addition[], observation?: string) => void;
   removeItem: (cartId: string) => void;
   updateQuantity: (cartId: string, quantity: number) => void;
@@ -15,6 +17,8 @@ export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      isHydrated: false,
+      setHydrated: () => set({ isHydrated: true }),
       addItem: (product, quantity, additions, observation) => {
         const additionsPrice = additions.reduce((acc, curr) => acc + curr.price, 0);
         
@@ -99,6 +103,9 @@ export const useCart = create<CartStore>()(
       }),
       // Skip hydration during SSR
       skipHydration: true,
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated();
+      },
     }
   )
 );

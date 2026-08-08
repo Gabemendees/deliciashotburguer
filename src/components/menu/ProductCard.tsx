@@ -1,7 +1,7 @@
 import { Product } from "@/types/burger";
 import { formatCurrency } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
-import { motion } from "framer-motion";
+
 
 
 interface ProductCardProps {
@@ -13,10 +13,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
   const imageUrl = product.image || "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=500&auto=format&fit=crop";
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+    <div 
       onClick={onClick}
       className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-[#F3E2CC] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer"
     >
@@ -50,6 +47,6 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
 
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

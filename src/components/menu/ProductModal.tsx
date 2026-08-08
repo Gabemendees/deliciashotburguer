@@ -21,6 +21,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [selectedAdditions, setSelectedAdditions] = useState<Addition[]>([]);
   const [quantity, setQuantity] = useState(1);
   const addItem = useCart((state) => state.addItem);
+  const isHydrated = useCart((state) => state.isHydrated);
   const navigate = useNavigate();
 
   const { data: additions = [], isLoading: isLoadingAdditions } = useQuery({
@@ -37,8 +38,10 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   }, [isOpen]);
 
   useEffect(() => {
-    useCart.persist.rehydrate();
-  }, []);
+    if (!isHydrated) {
+      useCart.persist.rehydrate();
+    }
+  }, [isHydrated]);
 
   const totalPrice = useMemo(() => {
     if (!product) return 0;

@@ -32,12 +32,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydrated = useCart((state) => state.isHydrated);
 
   useEffect(() => {
-    useCart.persist.rehydrate();
-    setIsHydrated(true);
-  }, []);
+    if (!isHydrated) {
+      useCart.persist.rehydrate();
+    }
+  }, [isHydrated]);
 
   const { data: config } = useQuery({
     queryKey: ['store-config'],
