@@ -46,6 +46,8 @@ function Dashboard() {
     refetchInterval: 10000,
   });
 
+  const [period, setPeriod] = useState('Hoje');
+
   const { data: config = {}, isLoading: configLoading } = useQuery({
     queryKey: ['store-config'],
     queryFn: () => getStoreConfig(),
@@ -71,16 +73,58 @@ function Dashboard() {
 
   const isStoreOpen = config['is_store_open'] === true || config['is_store_open'] === 'true';
 
-  const today = new Date().toISOString().split('T')[0];
   const allOrders = orders as any[];
-  const completedOrders = allOrders.filter((o: any) => o.status !== 'cancelled');
-  const ordersToday = completedOrders.filter((o: any) => o.created_at?.startsWith(today));
   
-  const revenueToday = ordersToday.reduce((acc: number, o: any) => acc + Number(o.total), 0);
-  const avgTicketToday = ordersToday.length > 0 ? revenueToday / ordersToday.length : 0;
-  const inProgress = allOrders.filter((o: any) => ['new', 'preparing', 'ready', 'delivered'].includes(o.status)).length;
-  const cancelledToday = allOrders.filter((o: any) => o.status === 'cancelled' && o.created_at?.startsWith(today)).length;
+  // Filtering by period
+  const getPeriodDate = (p: string) => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    if (p === 'Hoje') return d;
+    if (p === 'Ontem') {
+      d.setDate(d.getDate() - 1);
+      return d;
+    }
+    if (p === 'Últimos 7 dias') {
+      d.setDate(d.getDate() - 7);
+      return d;
+    }
+    if (p === 'Últimos 30 dias') {
+      d.setDate(d.getDate() - 30);
+      return d;
+    }
+    if (p === 'Este mês') {
+      d.setDate(1);
+      return d;
+    }
+    return d;
+  };
 
+  const filterOrdersByPeriod = (orderList: any[]) => {
+    const startDate = getPeriodDate(period);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    
+    return orderList.filter((o: any) => {
+      const orderDate = new Date(o.created_at);
+      if (period === 'Ontem') {
+        const yesterdayEnd = new Date(startDate);
+        yesterdayEnd.setHours(23, 59, 59, 999);
+        return orderDate >= startDate && orderDate <= yesterdayEnd;
+      }
+      return orderDate >= startDate && orderDate <= today;
+    });
+  };
+
+  const periodOrders = filterOrdersByPeriod(allOrders);
+  const completedPeriodOrders = periodOrders.filter((o: any) => o.status === 'completed');
+  
+  const revenue = completedPeriodOrders.reduce((acc: number, o: any) => acc + Number(o.total), 0);
+  const totalOrdersCount = periodOrders.length;
+  const avgTicket = completedPeriodOrders.length > 0 ? revenue / completedPeriodOrders.length : 0;
+  const inProgress = allOrders.filter((o: any) => ['new', 'preparing', 'ready', 'delivered'].includes(o.status)).length;
+  const cancelledCount = periodOrders.filter((o: any) => o.status === 'cancelled').length;
+
+  // Chart data (7 days fixed for visual context, but using calculated values)
   const last7Days = [...Array(7)].map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - i);
@@ -88,19 +132,19 @@ function Dashboard() {
   }).reverse();
 
   const chartData = last7Days.map(dateStr => {
-    const dayOrders = completedOrders.filter((o: any) => o.created_at?.startsWith(dateStr));
+    const dayOrders = allOrders.filter((o: any) => o.created_at?.startsWith(dateStr) && o.status === 'completed');
     const dayRevenue = dayOrders.reduce((acc: number, o: any) => acc + Number(o.total), 0);
     const dayName = new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'short' });
     return { name: dayName, revenue: dayRevenue, date: dateStr };
   });
 
-  // Recent Orders
+  // Recent Orders (last 5 total)
   const recentOrders = allOrders.slice(0, 5);
 
-  // Top Products calculation
+  // Top Products calculation based on period
   const productSales: Record<string, { count: number, revenue: number }> = {};
-  completedOrders.forEach((order: any) => {
-    if (!order.order_items) return;
+  periodOrders.forEach((order: any) => {
+    if (!order.order_items || order.status === 'cancelled') return;
     order.order_items.forEach((item: any) => {
       if (!productSales[item.name]) {
         productSales[item.name] = { count: 0, revenue: 0 };
@@ -116,17 +160,17 @@ function Dashboard() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 3);
 
-  // Payment Methods
-  const paymentsToday = ordersToday.reduce((acc: Record<string, number>, o: any) => {
+  // Payment Methods based on period
+  const paymentsPeriod = periodOrders.filter(o => o.status !== 'cancelled').reduce((acc: Record<string, number>, o: any) => {
     const method = o.payment_method?.toUpperCase() || 'OUTRO';
     acc[method] = (acc[method] || 0) + Number(o.total);
     return acc;
   }, {});
 
-  // Delivery vs Pickup
-  const deliveryCount = ordersToday.filter(o => o.delivery_type === 'delivery').length;
-  const pickupCount = ordersToday.filter(o => o.delivery_type === 'pickup').length;
-  const deliveryFees = ordersToday.reduce((acc, o) => acc + Number(o.delivery_fee || 0), 0);
+  // Delivery vs Pickup based on period
+  const deliveryCount = periodOrders.filter(o => o.delivery_type === 'delivery' && o.status !== 'cancelled').length;
+  const pickupCount = periodOrders.filter(o => o.delivery_type === 'pickup' && o.status !== 'cancelled').length;
+  const deliveryFees = periodOrders.filter(o => o.status !== 'cancelled').reduce((acc, o) => acc + Number(o.delivery_fee || 0), 0);
 
   const toggleStore = () => {
     updateConfigMutation.mutate({ data: { key: 'is_store_open', value: !isStoreOpen } });
@@ -163,13 +207,29 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* Period Filter */}
+        <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-[#F3E2CC] self-start overflow-x-auto max-w-full no-scrollbar">
+          {['Hoje', 'Ontem', 'Últimos 7 dias', 'Últimos 30 dias', 'Este mês'].map(f => (
+            <button 
+              key={f} 
+              onClick={() => setPeriod(f)}
+              className={cn(
+                "px-4 py-2 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest whitespace-nowrap",
+                period === f ? "bg-[#2B1710] text-white" : "text-[#4A2618]/60 hover:bg-[#FFF4E6]"
+              )}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+
         {/* Quick Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <StatsCard title="FATURAMENTO HOJE" value={formatCurrency(revenueToday)} icon={DollarSign} color="bg-green-600" />
-          <StatsCard title="PEDIDOS HOJE" value={ordersToday.length.toString()} icon={ShoppingCart} color="bg-[#E87524]" />
+          <StatsCard title={`FATURAMENTO ${period.toUpperCase()}`} value={formatCurrency(revenue)} icon={DollarSign} color="bg-green-600" />
+          <StatsCard title={`PEDIDOS ${period.toUpperCase()}`} value={totalOrdersCount.toString()} icon={ShoppingCart} color="bg-[#E87524]" />
           <StatsCard title="EM ANDAMENTO" value={inProgress.toString()} icon={Clock} color="bg-blue-600" />
-          <StatsCard title="TICKET MÉDIO" value={formatCurrency(avgTicketToday || 0)} icon={TrendingUp} color="bg-purple-600" />
-          <StatsCard title="CANCELADOS HOJE" value={cancelledToday.toString()} icon={XCircle} color="bg-red-600" />
+          <StatsCard title="TICKET MÉDIO" value={formatCurrency(avgTicket || 0)} icon={TrendingUp} color="bg-purple-600" />
+          <StatsCard title={`CANCELADOS ${period.toUpperCase()}`} value={cancelledCount.toString()} icon={XCircle} color="bg-red-600" />
         </div>
 
         {/* Shortcut Buttons */}
