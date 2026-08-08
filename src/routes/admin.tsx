@@ -163,13 +163,18 @@ function AdminLogin() {
                 disabled={loading}
                 className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl gap-3 text-lg group shadow-lg shadow-[#E87524]/20"
               >
-                {loading ? <Loader2 className="animate-spin" /> : (
+                {loading ? (
                   <>
-                    {loading ? 'ENTRANDO...' : 'ENTRAR NO PAINEL'}
-                    {!loading && <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />}
-
+                    <Loader2 className="animate-spin" />
+                    ENTRANDO...
+                  </>
+                ) : (
+                  <>
+                    ENTRAR NO PAINEL
+                    <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />
                   </>
                 )}
+
               </Button>
 
               <div className="text-center pt-4">
