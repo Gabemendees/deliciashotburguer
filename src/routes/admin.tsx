@@ -87,10 +87,7 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    const newWindow = window.open('/admin/dashboard', '_blank');
-    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-      navigate({ to: '/admin/dashboard' });
-    }
+    navigate({ to: '/admin/dashboard' });
   };
 
   return (
