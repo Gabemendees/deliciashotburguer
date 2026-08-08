@@ -14,7 +14,11 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AdminAcrescimosRouteImport } from './routes/admin/acrescimos'
+import { Route as AdminCategoriasRouteImport } from './routes/admin/categorias'
+import { Route as AdminConfiguracoesRouteImport } from './routes/admin/configuracoes'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminEntregasRouteImport } from './routes/admin/entregas'
+import { Route as AdminFinanceiroRouteImport } from './routes/admin/financeiro'
 import { Route as AdminPedidosRouteImport } from './routes/admin/pedidos'
 import { Route as AdminProdutosRouteImport } from './routes/admin/produtos'
 
@@ -43,9 +47,29 @@ const AdminAcrescimosRoute = AdminAcrescimosRouteImport.update({
   path: '/acrescimos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCategoriasRoute = AdminCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEntregasRoute = AdminEntregasRouteImport.update({
+  id: '/entregas',
+  path: '/entregas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFinanceiroRoute = AdminFinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPedidosRoute = AdminPedidosRouteImport.update({
@@ -65,7 +89,11 @@ export interface FileRoutesByFullPath {
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
   '/admin/acrescimos': typeof AdminAcrescimosRoute
+  '/admin/categorias': typeof AdminCategoriasRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/entregas': typeof AdminEntregasRoute
+  '/admin/financeiro': typeof AdminFinanceiroRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
 }
@@ -75,7 +103,11 @@ export interface FileRoutesByTo {
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
   '/admin/acrescimos': typeof AdminAcrescimosRoute
+  '/admin/categorias': typeof AdminCategoriasRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/entregas': typeof AdminEntregasRoute
+  '/admin/financeiro': typeof AdminFinanceiroRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
 }
@@ -86,7 +118,11 @@ export interface FileRoutesById {
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
   '/admin/acrescimos': typeof AdminAcrescimosRoute
+  '/admin/categorias': typeof AdminCategoriasRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/entregas': typeof AdminEntregasRoute
+  '/admin/financeiro': typeof AdminFinanceiroRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
 }
@@ -98,7 +134,11 @@ export interface FileRouteTypes {
     | '/carrinho'
     | '/checkout'
     | '/admin/acrescimos'
+    | '/admin/categorias'
+    | '/admin/configuracoes'
     | '/admin/dashboard'
+    | '/admin/entregas'
+    | '/admin/financeiro'
     | '/admin/pedidos'
     | '/admin/produtos'
   fileRoutesByTo: FileRoutesByTo
@@ -108,7 +148,11 @@ export interface FileRouteTypes {
     | '/carrinho'
     | '/checkout'
     | '/admin/acrescimos'
+    | '/admin/categorias'
+    | '/admin/configuracoes'
     | '/admin/dashboard'
+    | '/admin/entregas'
+    | '/admin/financeiro'
     | '/admin/pedidos'
     | '/admin/produtos'
   id:
@@ -118,7 +162,11 @@ export interface FileRouteTypes {
     | '/carrinho'
     | '/checkout'
     | '/admin/acrescimos'
+    | '/admin/categorias'
+    | '/admin/configuracoes'
     | '/admin/dashboard'
+    | '/admin/entregas'
+    | '/admin/financeiro'
     | '/admin/pedidos'
     | '/admin/produtos'
   fileRoutesById: FileRoutesById
@@ -167,11 +215,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcrescimosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/categorias': {
+      id: '/admin/categorias'
+      path: '/categorias'
+      fullPath: '/admin/categorias'
+      preLoaderRoute: typeof AdminCategoriasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes': {
+      id: '/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AdminConfiguracoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/entregas': {
+      id: '/admin/entregas'
+      path: '/entregas'
+      fullPath: '/admin/entregas'
+      preLoaderRoute: typeof AdminEntregasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/financeiro': {
+      id: '/admin/financeiro'
+      path: '/financeiro'
+      fullPath: '/admin/financeiro'
+      preLoaderRoute: typeof AdminFinanceiroRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/pedidos': {
@@ -193,14 +269,22 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAcrescimosRoute: typeof AdminAcrescimosRoute
+  AdminCategoriasRoute: typeof AdminCategoriasRoute
+  AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminEntregasRoute: typeof AdminEntregasRoute
+  AdminFinanceiroRoute: typeof AdminFinanceiroRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
   AdminProdutosRoute: typeof AdminProdutosRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAcrescimosRoute: AdminAcrescimosRoute,
+  AdminCategoriasRoute: AdminCategoriasRoute,
+  AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminEntregasRoute: AdminEntregasRoute,
+  AdminFinanceiroRoute: AdminFinanceiroRoute,
   AdminPedidosRoute: AdminPedidosRoute,
   AdminProdutosRoute: AdminProdutosRoute,
 }
