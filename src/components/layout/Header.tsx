@@ -56,10 +56,36 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 bg-[#4A2618] px-3 py-1 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-xs font-bold text-[#F3E2CC] uppercase tracking-tighter">Aberto</span>
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="flex items-center gap-2 bg-[#4A2618] px-3 py-1.5 rounded-full hover:bg-[#5D3222] transition-colors cursor-pointer outline-none">
+                <div className={cn(
+                  "w-2 h-2 rounded-full",
+                  isStoreOpen ? "bg-green-500 animate-pulse" : "bg-red-500"
+                )} />
+                <span className="text-xs font-bold text-[#F3E2CC] uppercase tracking-tighter flex items-center gap-1">
+                  {isStoreOpen ? 'Aberto' : 'Fechado'}
+                  <ChevronDown className="w-3 h-3 text-[#E87524]" />
+                </span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="bg-[#4A2618] border-[#E87524] text-[#F3E2CC] w-48 p-3 mt-1 shadow-2xl">
+              <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[#2B1710]/50">
+                <Clock className="w-4 h-4 text-[#E87524]" />
+                <span className="text-xs font-black uppercase tracking-widest">Horário</span>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="font-bold opacity-70">Terça a Domingo</span>
+                  <span className="font-black text-[#E87524]">{storeHours.open} às {storeHours.close}</span>
+                </div>
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="font-bold opacity-70">Segunda</span>
+                  <span className="font-black text-red-400">FECHADO</span>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
 
           <Link to="/carrinho" className="relative flex items-center gap-2 bg-[#FFF4E6] border-2 border-[#E87524] rounded-2xl h-11 px-4 hover:bg-[#F3E2CC] transition-all">
             <span className="text-xl">🛒</span>
