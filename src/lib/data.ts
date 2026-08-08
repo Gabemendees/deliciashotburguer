@@ -59,10 +59,10 @@ export const ADDITIONS: Addition[] = [
   { name: 'Frango desfiado', price: 4.00 },
   { name: 'Bacon', price: 4.00 },
   { name: 'Presunto', price: 4.00 },
+  { name: 'Molho à Bolonhesa', price: 4.00 },
   { name: 'Hambúrguer de boi', price: 3.00 },
   { name: 'Hambúrguer de frango', price: 3.50 },
   { name: 'Hambúrguer de picanha', price: 4.00 },
-  { name: 'Molho à Bolonhesa', price: 4.00 },
 ];
 
 export const DELIVERY_AREAS: DeliveryArea[] = [
