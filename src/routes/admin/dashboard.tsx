@@ -266,7 +266,8 @@ function Dashboard() {
                     {recentOrders.map((order: any) => (
                       <Link 
                         key={order.id} 
-                        to="/admin/pedidos" 
+                        to="/admin/pedidos"
+                        search={() => ({ orderId: order.id })}
                         className="flex items-center justify-between p-4 px-6 hover:bg-[#FFF4E6] transition-colors"
                       >
                         <div className="flex items-center gap-4">
