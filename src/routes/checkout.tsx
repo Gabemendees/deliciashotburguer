@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useCart } from "@/lib/store";
 import { formatCurrency, cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
