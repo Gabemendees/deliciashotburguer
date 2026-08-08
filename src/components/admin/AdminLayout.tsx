@@ -107,8 +107,9 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             </div>
             <div className="overflow-hidden">
               <p className="text-sm font-bold truncate">Administrador</p>
-              <p className="text-[10px] text-[#F3E2CC]/60 truncate">adm@hamburgueria.com</p>
+              <p className="text-[10px] text-[#F3E2CC]/60 truncate">{userEmail || 'Carregando...'}</p>
             </div>
+
           </div>
           <button 
             onClick={handleLogout}
