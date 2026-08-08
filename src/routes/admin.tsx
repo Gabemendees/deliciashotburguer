@@ -33,25 +33,27 @@ function AdminLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("LOGIN BUTTON CLICKED");
 
     if (!email) {
+      console.log("VALIDATION ERROR: Email empty");
       toast.error('E-mail obrigatório.');
       return;
     }
     if (!password) {
+      console.log("VALIDATION ERROR: Password empty");
       toast.error('Senha obrigatória.');
       return;
     }
     
     if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+      console.log("AUTH ERROR: Invalid admin email", email);
       toast.error('E-mail ou senha incorretos.');
       return;
     }
 
     setLoading(true);
-    
-    // Attempt to open the window early to prevent popup blocking.
-    const dashboardWindow = window.open('about:blank', '_blank');
+    console.log("STARTING AUTHENTICATION for", email);
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -59,31 +61,30 @@ function AdminLogin() {
         password,
       });
 
+      console.log("AUTHENTICATION RESPONSE RECEIVED", { success: !error, error });
+
       if (error) {
-        dashboardWindow?.close();
         throw error;
       }
       
-      // Re-verify session
+      console.log("USER AUTHENTICATED, verifying session...");
       const { data: { session: newSession } } = await supabase.auth.getSession();
       
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-        dashboardWindow?.close();
+        console.log("SESSION VERIFICATION FAILED or unauthorized email");
         await supabase.auth.signOut();
         toast.error('Acesso negado. Apenas o administrador autorizado pode entrar.');
         return;
       }
 
+      console.log("SUCCESS: Redirecting to dashboard...");
       toast.success('Autenticação realizada com sucesso!');
       
-      if (dashboardWindow) {
-        dashboardWindow.location.href = '/admin/dashboard';
-      } else {
-        window.open('/admin/dashboard', '_blank');
-      }
+      // Redirect in the SAME tab as requested
+      navigate({ to: '/admin/dashboard' });
       
     } catch (error: any) {
-      dashboardWindow?.close();
+      console.error("AUTHENTICATION ERROR", error);
       toast.error('E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
