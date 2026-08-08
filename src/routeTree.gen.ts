@@ -13,8 +13,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as AdminAcrescimosRouteImport } from './routes/admin/acrescimos'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminPedidosRouteImport } from './routes/admin/pedidos'
+import { Route as AdminProdutosRouteImport } from './routes/admin/produtos'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,6 +38,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAcrescimosRoute = AdminAcrescimosRouteImport.update({
+  id: '/acrescimos',
+  path: '/acrescimos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -46,22 +53,31 @@ const AdminPedidosRoute = AdminPedidosRouteImport.update({
   path: '/pedidos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProdutosRoute = AdminProdutosRouteImport.update({
+  id: '/produtos',
+  path: '/produtos',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/admin/acrescimos': typeof AdminAcrescimosRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
+  '/admin/produtos': typeof AdminProdutosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/admin/acrescimos': typeof AdminAcrescimosRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
+  '/admin/produtos': typeof AdminProdutosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,8 +85,10 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/admin/acrescimos': typeof AdminAcrescimosRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
+  '/admin/produtos': typeof AdminProdutosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,24 +97,30 @@ export interface FileRouteTypes {
     | '/admin'
     | '/carrinho'
     | '/checkout'
+    | '/admin/acrescimos'
     | '/admin/dashboard'
     | '/admin/pedidos'
+    | '/admin/produtos'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
     | '/carrinho'
     | '/checkout'
+    | '/admin/acrescimos'
     | '/admin/dashboard'
     | '/admin/pedidos'
+    | '/admin/produtos'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/carrinho'
     | '/checkout'
+    | '/admin/acrescimos'
     | '/admin/dashboard'
     | '/admin/pedidos'
+    | '/admin/produtos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,6 +160,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/acrescimos': {
+      id: '/admin/acrescimos'
+      path: '/acrescimos'
+      fullPath: '/admin/acrescimos'
+      preLoaderRoute: typeof AdminAcrescimosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -150,17 +181,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPedidosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/produtos': {
+      id: '/admin/produtos'
+      path: '/produtos'
+      fullPath: '/admin/produtos'
+      preLoaderRoute: typeof AdminProdutosRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAcrescimosRoute: typeof AdminAcrescimosRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
+  AdminProdutosRoute: typeof AdminProdutosRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAcrescimosRoute: AdminAcrescimosRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminPedidosRoute: AdminPedidosRoute,
+  AdminProdutosRoute: AdminProdutosRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
