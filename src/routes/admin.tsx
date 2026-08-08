@@ -33,28 +33,58 @@ function AdminLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!email) {
+      toast.error('E-mail obrigatório.');
+      return;
+    }
+    if (!password) {
+      toast.error('Senha obrigatória.');
+      return;
+    }
     
-    if (email !== 'deliciahotburguers@gmail.com') {
-      toast.error('Acesso restrito apenas ao administrador autorizado.');
+    if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+      toast.error('E-mail ou senha incorretos.');
       return;
     }
 
     setLoading(true);
+    
+    // Attempt to open the window early to prevent popup blocking.
+    const dashboardWindow = window.open('about:blank', '_blank');
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        dashboardWindow?.close();
+        throw error;
+      }
       
+      // Re-verify session
+      const { data: { session: newSession } } = await supabase.auth.getSession();
+      
+      if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        dashboardWindow?.close();
+        await supabase.auth.signOut();
+        toast.error('Acesso negado. Apenas o administrador autorizado pode entrar.');
+        return;
+      }
+
       toast.success('Autenticação realizada com sucesso!');
       
-      // Open dashboard in new tab
-      window.open('/admin/dashboard', '_blank');
+      if (dashboardWindow) {
+        dashboardWindow.location.href = '/admin/dashboard';
+      } else {
+        window.open('/admin/dashboard', '_blank');
+      }
       
     } catch (error: any) {
-      toast.error(error.message || 'Erro ao realizar login');
+      dashboardWindow?.close();
+      toast.error('E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
     }
