@@ -33,11 +33,25 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate({ to: '/admin' });
+      } else {
+        setUserEmail(session.user.email ?? null);
+      }
+    };
+    checkAuth();
+  }, [navigate]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate({ to: '/admin' });
   };
+
 
   return (
     <div className="min-h-screen bg-[#FFF4E6] flex flex-col md:flex-row">
