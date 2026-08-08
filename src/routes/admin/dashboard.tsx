@@ -1,4 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, ShoppingCart, TrendingUp, Truck, Package, Clock, Loader2, Plus, ArrowRight, XCircle, CheckCircle, Smartphone, MapPin, CreditCard, ChevronRight } from 'lucide-react';
