@@ -14,7 +14,7 @@ function Categorias() {
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ['admin-categories'],
     queryFn: async () => {
-      const { data, error } = await (supabase as any).from('categories').select('*, products(count)').order('order');
+      const { data, error } = await supabase.from('categories').select('*, products(count)').order('order');
       if (error) throw error;
       return data;
     },
@@ -28,7 +28,9 @@ function Categorias() {
             <h1 className="text-3xl font-black text-[#2B1710]">Categorias</h1>
             <p className="text-[#4A2618]">Organização do seu cardápio</p>
           </div>
-          <Button className="bg-[#E87524] hover:bg-[#C95718] text-white font-bold gap-2">
+          <Button 
+            className="bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 px-8 rounded-2xl gap-3 shadow-lg shadow-[#E87524]/20 uppercase text-xs tracking-widest"
+          >
             <Plus size={20} />
             NOVA CATEGORIA
           </Button>
@@ -61,21 +63,21 @@ function Categorias() {
 
 function CategoryItem({ name, count }: any) {
   return (
-    <Card className="border-none shadow-sm bg-white group hover:shadow-md transition-all">
-      <CardContent className="p-4 flex items-center justify-between">
+    <Card className="border-none shadow-sm bg-white group hover:shadow-md transition-all rounded-2xl overflow-hidden">
+      <CardContent className="p-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="text-[#F3E2CC] cursor-grab active:cursor-grabbing">
+          <div className="text-[#F3E2CC] cursor-grab active:cursor-grabbing hover:text-[#E87524] transition-colors">
             <GripVertical size={20} />
           </div>
           <div>
-            <h3 className="font-black text-[#2B1710] text-lg uppercase">{name}</h3>
-            <p className="text-xs text-[#4A2618]/60 font-bold">{count} produtos vinculados</p>
+            <h3 className="font-black text-[#2B1710] text-lg uppercase tracking-tighter">{name}</h3>
+            <p className="text-[10px] text-[#4A2618]/40 font-bold uppercase tracking-widest">{count} produtos vinculados</p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
-          <button className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"><Edit2 size={18} /></button>
-          <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={18} /></button>
+          <button className="p-3 text-blue-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-110"><Edit2 size={18} /></button>
+          <button className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all hover:scale-110"><Trash2 size={18} /></button>
         </div>
       </CardContent>
     </Card>
