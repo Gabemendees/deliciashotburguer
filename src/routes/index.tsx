@@ -32,7 +32,7 @@ function Index() {
 
 
   return (
-    <div className="min-h-screen bg-[#fcfbf8] flex flex-col">
+      <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
       <Header />
       <main className="flex-1">
         <Hero />
@@ -43,16 +43,20 @@ function Index() {
       
       <Cart />
       
-      <footer className="bg-blue-950 text-blue-200 py-12 border-t border-blue-900">
+      <footer className="bg-[#2B1710] text-[#F3E2CC] py-12 border-t border-[#4A2618]">
         <div className="container mx-auto px-4 text-center">
           <div className="flex flex-col items-center mb-6">
-            <span className="text-2xl font-black text-red-500">DELÍCIA'S</span>
-            <span className="text-sm font-bold text-white tracking-widest">HOT BURGUER'S</span>
+            <span className="text-2xl font-black text-[#FFF4E6]">DELÍCIA'S</span>
+            <span className="text-sm font-bold text-[#E87524] tracking-widest">HOT BURGUER'S</span>
           </div>
-          <p className="text-sm opacity-60">
-            © 2026 Delícia's Hot Burguer's. <br />
-            Todos os direitos reservados.
-          </p>
+          <div className="space-y-2 text-sm">
+            <p>WhatsApp: 9.9701-3096</p>
+            <p>Segunda a sábado: 19:00 às 00:00</p>
+            <p className="opacity-60 mt-4">
+              © 2026 Delícia's Hot Burguer's. <br />
+              Todos os direitos reservados.
+            </p>
+          </div>
         </div>
       </footer>
       
