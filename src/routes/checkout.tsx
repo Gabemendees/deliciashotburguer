@@ -131,7 +131,7 @@ function CheckoutPage() {
 
       message += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
       if (orderType === "delivery") {
-        message += `*Entrega (${distanceInfo?.km.toFixed(1)} km):* ${formatCurrency(deliveryFee)}\n`;
+        message += `*Entrega (${distanceInfo?.km.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km):* ${formatCurrency(deliveryFee)}\n`;
       } else {
         message += `*Taxa de entrega:* R$ 0,00 (Retirada)\n`;
       }
