@@ -137,9 +137,10 @@ function AdminLogin() {
           ) : (
             <form 
               onSubmit={(e) => {
-                console.log("FORM ONSUBMIT TRIGGERED");
+                alert("FORM SUBMITTED");
                 handleLogin(e);
-              }} 
+              }}
+
               className="space-y-6"
             >
               <div className="space-y-4">
