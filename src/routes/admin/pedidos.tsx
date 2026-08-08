@@ -2,8 +2,10 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Package } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { MapPin, Package, Clock } from 'lucide-react';
+import { cn, formatCurrency } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { getAdminOrders } from '@/lib/database.functions';
 
 export const Route = createFileRoute('/admin/pedidos')({
   component: Pedidos,
@@ -28,6 +30,11 @@ const statusLabels: any = {
 };
 
 function Pedidos() {
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ['admin-orders'],
+    queryFn: () => getAdminOrders(),
+  });
+
   return (
     <AdminLayout>
       <div className="space-y-8">
@@ -49,24 +56,30 @@ function Pedidos() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          <PedidoCard 
-            id="1024" 
-            customer="João Silva" 
-            type="delivery" 
-            total={42.00} 
-            status="new" 
-            time="18:45" 
-          />
-          <PedidoCard 
-            id="1023" 
-            customer="Maria Oliveira" 
-            type="pickup" 
-            total={35.50} 
-            status="preparing" 
-            time="18:30" 
-          />
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <Clock className="animate-spin text-[#E87524]" size={32} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {orders.map((pedido: any) => (
+              <PedidoCard 
+                key={pedido.id}
+                id={pedido.id.slice(0, 4)} 
+                customer={pedido.customer_name} 
+                type={pedido.delivery_type} 
+                total={Number(pedido.total)} 
+                status={pedido.status} 
+                time={new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} 
+              />
+            ))}
+            {orders.length === 0 && (
+              <div className="text-center p-12 bg-white rounded-2xl border-2 border-dashed border-[#F3E2CC]">
+                <p className="text-[#4A2618]/60 font-bold">Nenhum pedido encontrado hoje.</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
@@ -97,7 +110,7 @@ function PedidoCard({ id, customer, type, total, status, time }: any) {
           <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-4 md:pt-0">
             <div className="text-right">
               <p className="text-xs font-bold text-[#4A2618]/60 uppercase tracking-widest">TOTAL</p>
-              <p className="text-xl font-black text-[#2B1710]">R$ {total.toFixed(2).replace('.', ',')}</p>
+              <p className="text-xl font-black text-[#2B1710]">{formatCurrency(total)}</p>
             </div>
             <Badge className={cn("px-4 py-2 text-white font-bold rounded-lg border-none", statusColors[status])}>
               {statusLabels[status]}
@@ -108,3 +121,4 @@ function PedidoCard({ id, customer, type, total, status, time }: any) {
     </Card>
   );
 }
+
