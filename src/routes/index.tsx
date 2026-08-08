@@ -65,7 +65,7 @@ function Index() {
               </div>
               <div>
                 <h2 className="text-2xl font-black text-red-700 uppercase tracking-tighter italic">Estamos fechados no momento</h2>
-                <p className="text-red-600 font-bold">Nosso horário de funcionamento é das {storeHours.open} às {storeHours.close}.</p>
+                <p className="text-red-600 font-bold">Nosso horário de funcionamento é das 19:00 às 00:00 (Segunda a Sábado).</p>
               </div>
               <div className="md:ml-auto flex items-center gap-2 px-6 py-3 bg-red-100 text-red-600 rounded-2xl font-black text-xs tracking-widest uppercase">
                 <Clock size={16} />
@@ -90,7 +90,7 @@ function Index() {
           </div>
           <div className="space-y-2 text-sm">
             <p>WhatsApp: 31 99701-3096</p>
-            <p>Horário: {storeHours.open} às {storeHours.close}</p>
+            <p>Horário: Segunda a Sábado 19:00 às 00:00</p>
             <p className="opacity-60 mt-4">
               © 2026 Delícia's Hot Burguer's. <br />
               Todos os direitos reservados.
