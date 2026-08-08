@@ -69,10 +69,10 @@ function AdminLogin() {
         return;
       }
 
-      toast.success('Autenticação realizada com sucesso! Redirecionando...');
+      toast.success('Autenticação realizada com sucesso!');
       
-      // Use window.location.href for a hard redirect if SPA navigate is failing
-      window.location.href = '/admin/dashboard';
+      // Use navigate directly for SPA transition
+      navigate({ to: '/admin/dashboard' });
       
     } catch (error: any) {
       console.error("AUTHENTICATION ERROR", error);
