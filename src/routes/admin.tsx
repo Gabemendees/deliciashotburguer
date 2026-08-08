@@ -165,8 +165,9 @@ function AdminLogin() {
               >
                 {loading ? <Loader2 className="animate-spin" /> : (
                   <>
-                    ENTRAR NO PAINEL
-                    <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />
+                    {loading ? 'ENTRANDO...' : 'ENTRAR NO PAINEL'}
+                    {!loading && <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />}
+
                   </>
                 )}
               </Button>
