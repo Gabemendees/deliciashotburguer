@@ -136,6 +136,16 @@ function CheckoutPage() {
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
+            {step === 1 && (
+              <div className="bg-[#FFF4E6] border-2 border-[#E87524]/20 border-dashed rounded-[40px] p-12 flex flex-col items-center justify-center text-center space-y-4 animate-in fade-in zoom-in-95 duration-500">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg mb-4">
+                  <span className="text-4xl">🍔</span>
+                </div>
+                <h2 className="text-2xl font-black text-[#2B1710] uppercase tracking-tighter">Resumo do seu Pedido</h2>
+                <p className="text-[#4A2618] max-w-sm">Confira os itens selecionados ao lado antes de prosseguir com a finalização e entrega.</p>
+              </div>
+            )}
+
             {step === 2 && (
               <>
                 {/* Informações Básicas */}
