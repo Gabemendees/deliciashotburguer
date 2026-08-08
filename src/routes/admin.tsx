@@ -10,6 +10,10 @@ import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin')({
   component: AdminLogin,
+  beforeLoad: async ({ context }) => {
+    // Note: We can't easily check Supabase session here synchronously for redirect
+    // but the component handle it in useEffect.
+  }
 });
 
 function AdminLogin() {
