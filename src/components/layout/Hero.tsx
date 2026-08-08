@@ -1,7 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Clock, ChevronDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getStoreConfig } from "@/lib/database.functions";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 export function Hero() {
+  const { data: config } = useQuery({
+    queryKey: ['store-config'],
+    queryFn: () => getStoreConfig(),
+  });
+
+  const isStoreOpen = config?.['is_store_open'] ?? true;
+  const storeHours = config?.['store_hours'] ?? { open: "18:00", close: "23:30" };
+
   return (
     <section className="relative overflow-hidden bg-[#2B1710] py-12 md:py-20 lg:py-28">
       <div className="container mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
@@ -29,7 +42,7 @@ export function Hero() {
             VER CARDÁPIO
           </Button>
           
-          <div className="mt-8 grid grid-cols-3 gap-4">
+          <div className="mt-8 grid grid-cols-4 gap-2 md:gap-4">
              <div className="flex flex-col items-center gap-2">
                 <span className="text-2xl">🔥</span>
                 <span className="text-[10px] font-black uppercase text-[#E87524]">Mais Pedidos</span>
@@ -41,6 +54,43 @@ export function Hero() {
              <div className="flex flex-col items-center gap-2">
                 <span className="text-2xl">🚀</span>
                 <span className="text-[10px] font-black uppercase text-[#E87524]">Pedido rápido</span>
+             </div>
+             <div className="flex flex-col items-center gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex flex-col items-center gap-2 outline-none group">
+                      <div className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center transition-all group-hover:scale-110",
+                        isStoreOpen ? "bg-green-500/20" : "bg-red-500/20"
+                      )}>
+                        <div className={cn(
+                          "w-2 h-2 rounded-full",
+                          isStoreOpen ? "bg-green-500 animate-pulse" : "bg-red-500"
+                        )} />
+                      </div>
+                      <span className="text-[10px] font-black uppercase text-[#E87524] flex items-center gap-0.5">
+                        {isStoreOpen ? 'Aberto' : 'Fechado'}
+                        <ChevronDown className="w-3 h-3" />
+                      </span>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="bg-[#4A2618] border-[#E87524] text-[#F3E2CC] w-48 p-3 shadow-2xl z-50">
+                    <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[#2B1710]/50">
+                      <Clock className="w-4 h-4 text-[#E87524]" />
+                      <span className="text-xs font-black uppercase tracking-widest">Horário</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="font-bold opacity-70">Terça a Domingo</span>
+                        <span className="font-black text-[#E87524]">{storeHours.open} às {storeHours.close}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="font-bold opacity-70">Segunda</span>
+                        <span className="font-black text-red-400">FECHADO</span>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
              </div>
           </div>
         </motion.div>
