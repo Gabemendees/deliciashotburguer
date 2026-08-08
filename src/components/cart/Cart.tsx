@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 
 export function Cart() {
-  const { items, subtotal } = useCart();
+  const { items, getSubtotal } = useCart();
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export function Cart() {
             </div>
             <span>VER CARRINHO</span>
           </div>
-          <span className="font-black">{formatCurrency(subtotal)}</span>
+          <span className="font-black">{formatCurrency(getSubtotal())}</span>
         </Button>
       </Link>
     </div>
