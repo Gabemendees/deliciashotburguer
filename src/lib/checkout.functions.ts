@@ -32,26 +32,13 @@ export const calculateDeliveryDistance = createServerFn({ method: "POST" })
     const GOOGLE_MAPS_API_KEY = process.env['GOOGLE_MAPS_API_KEY'];
     const origin = "R. Santa Maria, 714, Pedra Azul, Contagem - MG, 32183-970";
     
-    console.log("--- CÁLCULO DE DISTÂNCIA ---");
+    console.log("--- DEBUG CÁLCULO DE DISTÂNCIA ---");
     console.log("ORIGEM:", origin);
     console.log("DESTINO:", data.destination);
 
     if (!GOOGLE_MAPS_API_KEY) {
-      console.warn("GOOGLE_MAPS_API_KEY not found. Simulating distance calculation.");
-      // Simulated robust distance based on common testing addresses in the region
-      // If destination contains specific keywords, we can return deterministic values for testing
-      let simulatedDistanceInMeters = 2000; // Default 2km
-      if (data.destination.toLowerCase().includes("contagem")) {
-        simulatedDistanceInMeters = 5234; // 5.23km
-      }
-      
-      console.log("DISTÂNCIA EM METROS (SIMULADA):", simulatedDistanceInMeters);
-      return { 
-        distanceMeters: simulatedDistanceInMeters, 
-        simulated: true,
-        origin,
-        destination: data.destination
-      };
+      console.warn("GOOGLE_MAPS_API_KEY não configurada. Falhando conforme solicitado.");
+      throw new Error("Não foi possível calcular a distância real (API Key ausente).");
     }
 
     try {
@@ -59,9 +46,13 @@ export const calculateDeliveryDistance = createServerFn({ method: "POST" })
       const response = await fetch(url);
       const result = await response.json();
 
-      if (result.rows?.[0]?.elements?.[0]?.status === "OK") {
-        const distanceValue = result.rows[0].elements[0].distance.value; // distance in meters
-        console.log("DISTÂNCIA EM METROS (API):", distanceValue);
+      if (result.status === "OK" && result.rows?.[0]?.elements?.[0]?.status === "OK") {
+        const distanceValue = result.rows[0].elements[0].distance.value; // distância em metros
+        const distanceText = result.rows[0].elements[0].distance.text;
+        
+        console.log("DISTÂNCIA DA ROTA (API):", distanceValue, "metros");
+        console.log("TEXTO DA DISTÂNCIA:", distanceText);
+        
         return { 
           distanceMeters: distanceValue, 
           simulated: false,
@@ -69,9 +60,15 @@ export const calculateDeliveryDistance = createServerFn({ method: "POST" })
           destination: data.destination
         };
       } else {
-        const status = result.rows?.[0]?.elements?.[0]?.status || "UNKNOWN_ERROR";
-        console.error("API Response Status:", status);
-        throw new Error(`Não foi possível localizar o endereço com precisão (${status}). Verifique o CEP, número e endereço informado.`);
+        const elementStatus = result.rows?.[0]?.elements?.[0]?.status || "UNKNOWN_ELEMENT_STATUS";
+        const topStatus = result.status || "UNKNOWN_TOP_STATUS";
+        console.error("Erro na API Distance Matrix:", topStatus, "/", elementStatus);
+        
+        if (elementStatus === "ZERO_RESULTS" || elementStatus === "NOT_FOUND") {
+          throw new Error("Não foi possível encontrar uma rota para o endereço informado. Verifique o número e o CEP.");
+        }
+        
+        throw new Error(`Erro ao calcular distância (${elementStatus}). Tente novamente.`);
       }
     } catch (error) {
       console.error("Error calculating distance:", error);
