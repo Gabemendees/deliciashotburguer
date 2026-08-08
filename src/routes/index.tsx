@@ -6,6 +6,8 @@ import { Cart } from "@/components/cart/Cart";
 import { z } from "zod";
 import { Toaster } from "sonner";
 import { useCart } from "@/lib/store";
+import { syncStoreStatus } from "@/lib/store-sync.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getStoreConfig } from "@/lib/database.functions";
 import { useQuery } from "@tanstack/react-query";
@@ -34,11 +36,15 @@ export const Route = createFileRoute("/")({
 function Index() {
   const isHydrated = useCart((state) => state.isHydrated);
 
+  const { mutate: syncStatus } = useServerFn(syncStoreStatus);
+
   useEffect(() => {
     if (!isHydrated) {
       useCart.persist.rehydrate();
     }
-  }, [isHydrated]);
+    // Sync store status based on current time
+    syncStatus();
+  }, [isHydrated, syncStatus]);
 
   const { data: config } = useQuery({
     queryKey: ['store-config'],
