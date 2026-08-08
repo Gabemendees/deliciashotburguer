@@ -3,10 +3,22 @@ import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+
 
 export function Cart() {
   const { items, subtotal } = useCart();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+    useCart.persist.rehydrate();
+  }, []);
+
+  if (!isHydrated) return null;
+
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+
 
   if (itemCount === 0) return null;
 

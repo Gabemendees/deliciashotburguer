@@ -24,11 +24,14 @@ function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Hydrate store on mount
   useEffect(() => {
+    setIsHydrated(true);
     useCart.persist.rehydrate();
   }, []);
+
 
 
   // Form states
@@ -109,10 +112,13 @@ function CheckoutPage() {
     }
   };
 
+  if (!isHydrated) return null;
+
   if (items.length === 0) {
     navigate({ to: '/carrinho' });
     return null;
   }
+
 
   return (
     <div className="min-h-screen bg-[#fcfbf8] flex flex-col">

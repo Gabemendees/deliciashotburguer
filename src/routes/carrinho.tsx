@@ -6,7 +6,8 @@ import { Trash2, Minus, Plus, ShoppingCart, ArrowLeft, ChevronRight } from "luci
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Toaster } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
 
 
 export const Route = createFileRoute("/carrinho")({
@@ -16,14 +17,18 @@ export const Route = createFileRoute("/carrinho")({
 function CartPage() {
   const { items, removeItem, updateQuantity, subtotal } = useCart();
   const navigate = useNavigate();
+  const [isHydrated, setIsHydrated] = useState(false);
   
-  // Hydrate store on mount
   useEffect(() => {
+    setIsHydrated(true);
     useCart.persist.rehydrate();
   }, []);
   
+  if (!isHydrated) return null;
+  
   const deliveryFee = 5.0; // Padrão inicial
   const total = subtotal + deliveryFee;
+
 
 
   return (
