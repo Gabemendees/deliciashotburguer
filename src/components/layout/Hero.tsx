@@ -56,41 +56,7 @@ export function Hero() {
                 <span className="text-[10px] font-black uppercase text-[#E87524]">Pedido rápido</span>
              </div>
              <div className="flex flex-col items-center gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="flex flex-col items-center gap-2 outline-none group">
-                      <div className={cn(
-                        "w-6 h-6 rounded-full flex items-center justify-center transition-all group-hover:scale-110",
-                        isStoreOpen ? "bg-green-500/20" : "bg-red-500/20"
-                      )}>
-                        <div className={cn(
-                          "w-2 h-2 rounded-full",
-                          isStoreOpen ? "bg-green-500 animate-pulse" : "bg-red-500"
-                        )} />
-                      </div>
-                      <span className="text-[10px] font-black uppercase text-[#E87524] flex items-center gap-0.5">
-                        {isStoreOpen ? 'Aberto' : 'Fechado'}
-                        <ChevronDown className="w-3 h-3" />
-                      </span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="bg-[#4A2618] border-[#E87524] text-[#F3E2CC] w-48 p-3 shadow-2xl z-50">
-                    <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[#2B1710]/50">
-                      <Clock className="w-4 h-4 text-[#E87524]" />
-                      <span className="text-xs font-black uppercase tracking-widest">Horário</span>
-                    </div>
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="font-bold opacity-70">Segunda a Sábado</span>
-                        <span className="font-black text-[#E87524]">19:00 às 00:00</span>
-                      </div>
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="font-bold opacity-70">Domingo</span>
-                        <span className="font-black text-red-400">FECHADO</span>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                {/* Espaçador para manter o grid de 4 colunas sem o item 'aberto' */}
              </div>
           </div>
         </motion.div>
