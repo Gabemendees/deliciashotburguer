@@ -51,20 +51,22 @@ function AdminLogin() {
       e.stopPropagation();
     }
     
-    if (!email || !password) {
-      toast.error('Preencha e-mail e senha.');
-      return;
-    }
-    
-    if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-      toast.error('Acesso negado.');
-      return;
-    }
-
-    setLoading(true);
-
     try {
-      console.log('Tentando login com:', email);
+      console.log('Botão clicado, iniciando handleLogin...');
+      
+      if (!email || !password) {
+        toast.error('Preencha e-mail e senha.');
+        return;
+      }
+      
+      if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        toast.error('Acesso negado.');
+        return;
+      }
+
+      setLoading(true);
+      
+      console.log('Tentando login com Supabase:', email);
       
       // Limpar sessão antiga antes de tentar uma nova
       await supabase.auth.signOut();
@@ -82,7 +84,7 @@ function AdminLogin() {
       console.log('Login bem-sucedido, aguardando propagação da sessão...');
       
       // Pequena pausa para o localStorage propagar
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 1000));
       
       const { data: { session: newSession }, error: sessionError } = await supabase.auth.getSession();
       
