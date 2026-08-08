@@ -403,8 +403,8 @@ function CheckoutPage() {
                           </div>
                           <h4 className="text-2xl font-black text-red-900 tracking-tighter italic mb-2">😕 Poxa! Ainda não realizamos entregas nessa região.</h4>
                           <p className="text-red-700 font-bold max-w-md mx-auto mb-6 text-lg">
-                            Seu endereço está a <span className="text-red-900">{distanceInfo.km.toFixed(1)} km</span> da nossa loja.
-                            Atualmente entregamos em um raio de até <span className="text-red-900">6 km</span>.
+                            Seu endereço está a <span className="text-red-900">{distanceInfo.km.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km</span> da nossa loja.
+                            Atualmente entregamos em um raio de até <span className="text-red-900">6,00 km</span>.
                           </p>
                           <Button 
                             type="button" 
