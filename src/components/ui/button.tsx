@@ -19,8 +19,8 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         // Custom branding variants
-        burger: "bg-[#FFD700] text-black hover:bg-[#FFC000] active:scale-95 font-bold transition-all",
-        burgerSecondary: "bg-red-600 text-white hover:bg-red-700 active:scale-95 font-bold transition-all",
+        burger: "bg-primary text-primary-foreground hover:bg-[#C95718] active:scale-95 font-bold transition-all",
+        burgerSecondary: "bg-[#2B1710] text-white hover:bg-[#4A2618] active:scale-95 font-bold transition-all",
       },
       size: {
         default: "h-10 px-4 py-2",
