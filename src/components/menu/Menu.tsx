@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Category, Product } from "@/types/burger";
 import { PRODUCTS } from "@/lib/data";
 import { ProductCard } from "./ProductCard";
@@ -6,6 +6,7 @@ import { ProductModal } from "./ProductModal";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/store";
 import { useNavigate } from "@tanstack/react-router";
+
 
 
 
@@ -21,6 +22,11 @@ export function Menu() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const addItem = useCart(state => state.addItem);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    useCart.persist.rehydrate();
+  }, []);
+
 
   const handleProductClick = (product: Product) => {
     if (product.category === 'HAMBÚRGUERES' || product.category === 'HOT DOGS') {
