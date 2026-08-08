@@ -86,7 +86,7 @@ function AdminLogin() {
       toast.success('Autenticação realizada com sucesso!');
       console.log("REDIRECTING TO DASHBOARD...");
       
-      // Force hard redirect to ensure session is picked up by AdminLayout
+      // Force hard redirect to /admin/dashboard to ensure session is picked up
       window.location.assign('/admin/dashboard');
       
     } catch (error: any) {
@@ -98,7 +98,7 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    window.location.href = '/admin/dashboard';
+    window.location.assign('/admin/dashboard');
   };
 
   return (
