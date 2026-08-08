@@ -55,24 +55,39 @@ function AdminLogin() {
     setLoading(true);
 
     try {
+      console.log('Tentando login com:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro no signInWithPassword:', error);
+        throw error;
+      }
       
-      const { data: { session: newSession } } = await supabase.auth.getSession();
+      console.log('Login bem-sucedido, buscando sessão...');
+      const { data: { session: newSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Erro ao buscar sessão após login:', sessionError);
+        throw sessionError;
+      }
+
+      console.log('Sessão encontrada:', newSession?.user?.email);
       
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        console.warn('E-mail da sessão não autorizado:', newSession?.user?.email);
         await supabase.auth.signOut();
         toast.error('Acesso negado.');
         return;
       }
 
+      console.log('Redirecionando para /admin/dashboard...');
       window.location.assign('/admin/dashboard');
       
     } catch (error: any) {
+      console.error('Catch error handleLogin:', error);
       toast.error('E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
