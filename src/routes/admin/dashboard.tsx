@@ -121,7 +121,7 @@ function Dashboard() {
   const revenue = completedPeriodOrders.reduce((acc: number, o: any) => acc + Number(o.total), 0);
   const totalOrdersCount = periodOrders.length;
   const avgTicket = completedPeriodOrders.length > 0 ? revenue / completedPeriodOrders.length : 0;
-  const inProgress = allOrders.filter((o: any) => ['new', 'preparing', 'ready', 'delivered'].includes(o.status)).length;
+  const inProgress = allOrders.filter((o: any) => ['new', 'accepted', 'preparing', 'ready', 'delivered'].includes(o.status)).length;
   const cancelledCount = periodOrders.filter((o: any) => o.status === 'cancelled').length;
 
   // Chart data (7 days fixed for visual context, but using calculated values)
@@ -309,6 +309,7 @@ function Dashboard() {
              <CardContent className="space-y-3">
                 {[
                   { id: 'new', label: 'NOVOS', color: 'text-blue-600', bg: 'bg-blue-50' },
+                  { id: 'accepted', label: 'ACEITOS', color: 'text-cyan-600', bg: 'bg-cyan-50' },
                   { id: 'preparing', label: 'EM PREPARO', color: 'text-orange-600', bg: 'bg-orange-50' },
                   { id: 'ready', label: 'PRONTOS', color: 'text-yellow-600', bg: 'bg-yellow-50' },
                   { id: 'delivered', label: 'SAIU P/ ENTREGA', color: 'text-purple-600', bg: 'bg-purple-50' },

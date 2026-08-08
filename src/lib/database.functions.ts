@@ -203,7 +203,7 @@ export const updateOrderStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: any) => z.object({
     id: z.string().uuid(),
-    status: z.enum(['new', 'preparing', 'ready', 'delivered', 'completed', 'cancelled']),
+    status: z.enum(['new', 'accepted', 'preparing', 'ready', 'delivered', 'completed', 'cancelled']),
   }).parse(input))
   .handler(async ({ context, data: input }) => {
     const { data, error } = await context.supabase
