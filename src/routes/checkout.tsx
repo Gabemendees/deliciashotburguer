@@ -77,25 +77,27 @@ function CheckoutPage() {
   // Distance calculation
   useEffect(() => {
     if (orderType === "delivery" && address.street && address.number && address.neighborhood) {
-      const fullAddress = `${address.street}, ${address.number}, ${address.neighborhood}, ${address.city || 'Contagem'} - ${address.state || 'MG'}`;
+      const fullAddress = `${address.street}, ${address.number}, ${address.neighborhood}, ${address.city || 'Contagem'} - ${address.state || 'MG'}, ${address.zip}`;
       calcDistance({ data: { destination: fullAddress } }).then((res) => {
         let fee = 0;
         let valid = true;
+        const distMeters = res.distanceMeters;
         
-        if (res.distance <= 2.5) fee = 4;
-        else if (res.distance <= 4.5) fee = 6;
-        else if (res.distance <= 6.0) fee = 8;
+        if (distMeters <= 2500) fee = 4;
+        else if (distMeters <= 4500) fee = 6;
+        else if (distMeters <= 6000) fee = 8;
         else valid = false;
 
-        setDistanceInfo({ km: res.distance, fee, valid });
+        setDistanceInfo({ km: distMeters / 1000, fee, valid });
       }).catch(err => {
         console.error(err);
+        toast.error(err.message || "Não conseguimos localizar esse endereço com precisão.");
         setDistanceInfo(null);
       });
     } else {
       setDistanceInfo(null);
     }
-  }, [orderType, address.street, address.number, address.neighborhood]);
+  }, [orderType, address.street, address.number, address.neighborhood, address.zip]);
 
   const deliveryFee = orderType === "pickup" ? 0 : (distanceInfo?.fee || 0);
   const total = subtotal + deliveryFee;
@@ -129,7 +131,7 @@ function CheckoutPage() {
 
       message += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
       if (orderType === "delivery") {
-        message += `*Entrega (${distanceInfo?.km.toFixed(1)} km):* ${formatCurrency(deliveryFee)}\n`;
+        message += `*Entrega (${distanceInfo?.km.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km):* ${formatCurrency(deliveryFee)}\n`;
       } else {
         message += `*Taxa de entrega:* R$ 0,00 (Retirada)\n`;
       }
@@ -308,10 +310,20 @@ function CheckoutPage() {
                   <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-4">
                     2. Dados de Entrega
                   </h3>
+
+                  <div className="bg-[#FFF4E6] p-6 rounded-3xl border border-[#E87524]/20 mb-6">
+                    <p className="font-black text-[#2B1710] uppercase text-sm mb-2 italic flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-[#E87524]" /> 📍 Endereço de Entrega
+                    </p>
+                    <p className="text-[#4A2618] font-bold text-lg leading-tight">
+                      {address.street ? `${address.street}${address.number ? `, ${address.number}` : ''}` : '---'} <br />
+                      {address.neighborhood ? `${address.neighborhood}` : '---'} — {address.city || 'Contagem'}/{address.state || 'MG'}
+                    </p>
+                  </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-[#4A2618] font-bold">CEP (Busca Automática)</Label>
+                      <Label className="text-[#4A2618] font-bold">CEP</Label>
                       <Input 
                         placeholder="00000-000" 
                         required 
@@ -320,7 +332,7 @@ function CheckoutPage() {
                         className="rounded-xl h-14 border-2 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710] font-bold text-lg"
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 sm:col-span-2">
                       <Label className="text-[#4A2618] font-bold">Número</Label>
                       <Input 
                         placeholder="Ex: 714" 
@@ -389,7 +401,7 @@ function CheckoutPage() {
                             <p className="text-green-800 font-black uppercase text-sm mb-1 tracking-widest">Tudo Certo!</p>
                             <h4 className="text-2xl font-black text-green-900 tracking-tighter italic">Entregamos aí!</h4>
                             <p className="text-green-700 font-bold mt-1 text-lg">
-                              📍 Distância: <span className="text-green-900">{distanceInfo.km.toFixed(1)} km</span><br />
+                              📍 Distância: <span className="text-green-900">{distanceInfo.km.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km</span><br />
                               🛵 Taxa de entrega: <span className="text-green-900">{formatCurrency(distanceInfo.fee)}</span>
                             </p>
                           </div>
@@ -401,8 +413,8 @@ function CheckoutPage() {
                           </div>
                           <h4 className="text-2xl font-black text-red-900 tracking-tighter italic mb-2">😕 Poxa! Ainda não realizamos entregas nessa região.</h4>
                           <p className="text-red-700 font-bold max-w-md mx-auto mb-6 text-lg">
-                            Seu endereço está a <span className="text-red-900">{distanceInfo.km.toFixed(1)} km</span> da nossa loja.
-                            Atualmente entregamos em um raio de até <span className="text-red-900">6 km</span>.
+                            Seu endereço está a <span className="text-red-900">{distanceInfo.km.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km</span> da nossa loja.
+                            Atualmente entregamos em um raio de até <span className="text-red-900">6,00 km</span>.
                           </p>
                           <Button 
                             type="button" 

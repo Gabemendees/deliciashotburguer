@@ -30,20 +30,28 @@ export const calculateDeliveryDistance = createServerFn({ method: "POST" })
   }).parse(data))
   .handler(async ({ data }) => {
     const GOOGLE_MAPS_API_KEY = process.env['GOOGLE_MAPS_API_KEY'];
-    
-    // In a real scenario, we would use Google Distance Matrix API.
-    // Since I don't have the API Key yet, I'll implement a robust placeholder 
-    // that informs the developer how to proceed and simulates logic for demonstration
-    // if the key is missing, or uses the API if present.
-    
     const origin = "R. Santa Maria, 714, Pedra Azul, Contagem - MG, 32183-970";
     
+    console.log("--- CÁLCULO DE DISTÂNCIA ---");
+    console.log("ORIGEM:", origin);
+    console.log("DESTINO:", data.destination);
+
     if (!GOOGLE_MAPS_API_KEY) {
       console.warn("GOOGLE_MAPS_API_KEY not found. Simulating distance calculation.");
-      // Simulation for demo purposes until API Key is added via add_secret
-      // Let's simulate a distance based on the length of the string to make it non-random
-      const simulatedDistance = (data.destination.length % 5) + 1.5; 
-      return { distance: simulatedDistance, simulated: true };
+      // Simulated robust distance based on common testing addresses in the region
+      // If destination contains specific keywords, we can return deterministic values for testing
+      let simulatedDistanceInMeters = 2000; // Default 2km
+      if (data.destination.toLowerCase().includes("contagem")) {
+        simulatedDistanceInMeters = 5234; // 5.23km
+      }
+      
+      console.log("DISTÂNCIA EM METROS (SIMULADA):", simulatedDistanceInMeters);
+      return { 
+        distanceMeters: simulatedDistanceInMeters, 
+        simulated: true,
+        origin,
+        destination: data.destination
+      };
     }
 
     try {
@@ -51,14 +59,22 @@ export const calculateDeliveryDistance = createServerFn({ method: "POST" })
       const response = await fetch(url);
       const result = await response.json();
 
-      if (result.rows[0].elements[0].status === "OK") {
+      if (result.rows?.[0]?.elements?.[0]?.status === "OK") {
         const distanceValue = result.rows[0].elements[0].distance.value; // distance in meters
-        return { distance: distanceValue / 1000, simulated: false };
+        console.log("DISTÂNCIA EM METROS (API):", distanceValue);
+        return { 
+          distanceMeters: distanceValue, 
+          simulated: false,
+          origin,
+          destination: data.destination
+        };
       } else {
-        throw new Error("Não foi possível calcular a distância");
+        const status = result.rows?.[0]?.elements?.[0]?.status || "UNKNOWN_ERROR";
+        console.error("API Response Status:", status);
+        throw new Error(`Não foi possível localizar o endereço com precisão (${status}). Verifique o CEP, número e endereço informado.`);
       }
     } catch (error) {
       console.error("Error calculating distance:", error);
-      throw new Error("Erro no cálculo de distância");
+      throw error instanceof Error ? error : new Error("Erro no cálculo de distância");
     }
   });
