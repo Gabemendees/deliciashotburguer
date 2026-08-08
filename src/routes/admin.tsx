@@ -19,21 +19,30 @@ function AdminLogin() {
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!isMounted) return;
       if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
         window.location.replace('/admin/dashboard');
       }
       setSession(session);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!isMounted) return;
       if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
-        window.location.replace('/admin/dashboard');
+        if (window.location.pathname === '/admin') {
+          window.location.replace('/admin/dashboard');
+        }
       }
       setSession(session);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleLogin = async (e?: React.FormEvent) => {
@@ -56,6 +65,10 @@ function AdminLogin() {
 
     try {
       console.log('Tentando login com:', email);
+      
+      // Limpar sessão antiga antes de tentar uma nova
+      await supabase.auth.signOut();
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -66,7 +79,11 @@ function AdminLogin() {
         throw error;
       }
       
-      console.log('Login bem-sucedido, buscando sessão...');
+      console.log('Login bem-sucedido, aguardando propagação da sessão...');
+      
+      // Pequena pausa para o localStorage propagar
+      await new Promise(r => setTimeout(r, 800));
+      
       const { data: { session: newSession }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -79,12 +96,12 @@ function AdminLogin() {
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
         console.warn('E-mail da sessão não autorizado:', newSession?.user?.email);
         await supabase.auth.signOut();
-        toast.error('Acesso negado.');
+        toast.error('E-mail não autorizado para acesso administrativo.');
         return;
       }
 
-      console.log('Redirecionando para /admin/dashboard...');
-      window.location.assign('/admin/dashboard');
+      console.log('Sessão válida. Redirecionando com hard reload...');
+      window.location.href = '/admin/dashboard';
       
     } catch (error: any) {
       console.error('Catch error handleLogin:', error);
