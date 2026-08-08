@@ -6,16 +6,20 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getStoreConfig } from "@/lib/database.functions";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useServerFn } from "@tanstack/react-start";
+import { syncStoreStatus } from "@/lib/store-sync.functions";
 
 
 export function Header() {
   const { items, getSubtotal, isHydrated } = useCart();
+  const syncStatus = useServerFn(syncStoreStatus);
   
   useEffect(() => {
     if (!isHydrated) {
       useCart.persist.rehydrate();
     }
-  }, [isHydrated]);
+    syncStatus();
+  }, [isHydrated, syncStatus]);
 
   const { data: config } = useQuery({
     queryKey: ['store-config'],
