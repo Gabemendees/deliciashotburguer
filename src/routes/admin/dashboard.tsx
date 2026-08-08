@@ -25,7 +25,6 @@ function Dashboard() {
 
   return (
 
-  return (
     <AdminLayout>
       <div className="space-y-8">
         <div>
