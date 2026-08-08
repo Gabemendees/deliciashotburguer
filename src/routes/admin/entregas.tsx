@@ -2,13 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Edit2, Info, Loader2, Save, Store, Truck } from 'lucide-react';
+import { MapPin, Info, Loader2, Save, Store, Truck } from 'lucide-react';
 import { STORE_ADDRESS } from '@/lib/data';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getStoreConfig, updateStoreConfig } from '@/lib/database.functions';
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { toast } from "sonner";
 
 export const Route = createFileRoute('/admin/entregas')({
@@ -34,8 +33,8 @@ function Entregas() {
   });
 
   useEffect(() => {
-    if (config?.delivery_rules) {
-      setDeliveryRules(config.delivery_rules);
+    if (config && config['delivery_rules']) {
+      setDeliveryRules(config['delivery_rules']);
     }
   }, [config]);
 
@@ -123,7 +122,7 @@ function Entregas() {
               <div>
                 <p className="font-black text-red-700 uppercase text-xs tracking-widest mb-1">Bloqueio de Entrega</p>
                 <p className="text-sm text-red-600 font-bold leading-relaxed">
-                  Acima de {deliveryRules[deliveryRules.length - 1]?.max / 1000} km o sistema bloqueará automaticamente o pedido para entrega, permitindo apenas a opção de "Retirada no Local".
+                  Acima de {(deliveryRules[deliveryRules.length - 1]?.max || 6000) / 1000} km o sistema bloqueará automaticamente o pedido para entrega, permitindo apenas a opção de "Retirada no Local".
                 </p>
               </div>
             </div>
