@@ -133,7 +133,13 @@ function AdminLogin() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form 
+              onSubmit={(e) => {
+                console.log("FORM ONSUBMIT TRIGGERED");
+                handleLogin(e);
+              }} 
+              className="space-y-6"
+            >
               <div className="space-y-4">
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A2618]/30" size={20} />
@@ -162,6 +168,7 @@ function AdminLogin() {
               <Button 
                 type="submit" 
                 disabled={loading}
+                onClick={() => console.log("SUBMIT BUTTON ONCLICK")}
                 className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl gap-3 text-lg group shadow-lg shadow-[#E87524]/20"
               >
                 {loading ? (
@@ -175,7 +182,6 @@ function AdminLogin() {
                     <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />
                   </>
                 )}
-
               </Button>
 
               <div className="text-center pt-4">
@@ -184,6 +190,7 @@ function AdminLogin() {
                 </p>
               </div>
             </form>
+
           )}
         </CardContent>
       </Card>
