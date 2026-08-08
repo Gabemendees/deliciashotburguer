@@ -32,9 +32,8 @@ function CheckoutPage() {
     useCart.persist.rehydrate();
   }, []);
 
-
-
   // Form states
+  const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
@@ -43,20 +42,26 @@ function CheckoutPage() {
   const [payment, setPayment] = useState<"dinheiro" | "pix" | "credito" | "debito">("pix");
   const [needsChange, setNeedsChange] = useState(false);
   const [changeAmount, setChangeAmount] = useState("");
-  
 
   const subtotal = useMemo(() => getSubtotal(), [items, getSubtotal]);
 
   const deliveryFee = useMemo(() => {
+    // Stage 1 always shows 0 fee as requested
+    if (step === 1) return 0;
     if (orderType === "pickup") return 0;
     const area = DELIVERY_AREAS.find((a) => a.neighborhood === neighborhood);
     return area ? area.fee : 0;
-  }, [orderType, neighborhood]);
+  }, [orderType, neighborhood, step]);
 
   const total = useMemo(() => subtotal + deliveryFee, [subtotal, deliveryFee]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (step === 1) {
+      setStep(2);
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -121,182 +126,198 @@ function CheckoutPage() {
     return null;
   }
 
-
   return (
     <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
-        <h1 className="text-3xl font-black text-[#2B1710] mb-8 uppercase tracking-tighter italic border-b-4 border-[#E87524] inline-block pb-2">Finalizar Pedido</h1>
+        <h1 className="text-3xl font-black text-[#2B1710] mb-8 uppercase tracking-tighter italic border-b-4 border-[#E87524] inline-block pb-2">
+          {step === 1 ? "Seu Pedido" : "Finalizar o Pedido"}
+        </h1>
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {/* Informações Básicas */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">1. Seus Dados</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-[#4A2618] font-bold">Seu Nome</Label>
-                  <Input 
-                    id="name" 
-                    placeholder="Como podemos te chamar?" 
-                    required 
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-                  />
+            {step === 1 && (
+              <div className="bg-[#FFF4E6] border-2 border-[#E87524]/20 border-dashed rounded-[40px] p-12 flex flex-col items-center justify-center text-center space-y-4 animate-in fade-in zoom-in-95 duration-500">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg mb-4">
+                  <span className="text-4xl">🍔</span>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-[#4A2618] font-bold">Seu WhatsApp</Label>
-                  <Input 
-                    id="phone" 
-                    placeholder="(00) 00000-0000" 
-                    required 
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-                  />
-                </div>
+                <h2 className="text-2xl font-black text-[#2B1710] uppercase tracking-tighter">Resumo do seu Pedido</h2>
+                <p className="text-[#4A2618] max-w-sm">Confira os itens selecionados ao lado antes de prosseguir com a finalização e entrega.</p>
               </div>
-            </div>
+            )}
 
-            {/* Entrega */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">2. Entrega ou Retirada</h3>
-              
-              <RadioGroup 
-                defaultValue="delivery" 
-                onValueChange={(v) => setOrderType(v as any)}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"
-              >
-                <div className={cn(
-                  "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
-                  orderType === "delivery" ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
-                )}>
-                  <RadioGroupItem value="delivery" id="delivery" />
-                  <Label htmlFor="delivery" className="font-bold cursor-pointer text-[#2B1710]">Entrega em casa</Label>
-                </div>
-                <div className={cn(
-                  "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
-                  orderType === "pickup" ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
-                )}>
-                  <RadioGroupItem value="pickup" id="pickup" />
-                  <Label htmlFor="pickup" className="font-bold cursor-pointer text-[#2B1710]">Retirada no local</Label>
-                </div>
-              </RadioGroup>
-
-              {orderType === "delivery" && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-top-4">
-                  <div className="space-y-2">
-                    <Label className="text-[#4A2618] font-bold">Bairro</Label>
-                    <Select required onValueChange={setNeighborhood}>
-                      <SelectTrigger className="rounded-xl h-12 border-[#F3E2CC] focus:ring-[#E87524] text-[#2B1710]">
-                        <SelectValue placeholder="Selecione seu bairro" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border-[#F3E2CC]">
-                        {DELIVERY_AREAS.map((area) => (
-                          <SelectItem key={area.neighborhood} value={area.neighborhood} className="focus:bg-[#FFF4E6] focus:text-[#E87524]">
-                            {area.neighborhood} ({formatCurrency(area.fee)})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+            {step === 2 && (
+              <>
+                {/* Informações Básicas */}
+                <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500">
+                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">1. Seus Dados</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="name" className="text-[#4A2618] font-bold">Seu Nome</Label>
+                      <Input 
+                        id="name" 
+                        placeholder="Como podemos te chamar?" 
+                        required 
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-[#4A2618] font-bold">Seu WhatsApp</Label>
+                      <Input 
+                        id="phone" 
+                        placeholder="(00) 00000-0000" 
+                        required 
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                      />
+                    </div>
                   </div>
+                </div>
+
+                {/* Entrega */}
+                <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500 delay-100">
+                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">2. Entrega ou Retirada</h3>
                   
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="col-span-2 space-y-2">
-                      <Label className="text-[#4A2618] font-bold">Rua</Label>
-                      <Input 
-                        required 
-                        value={address.street}
-                        onChange={(e) => setAddress({...address, street: e.target.value})}
-                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-                      />
+                  <RadioGroup 
+                    defaultValue="delivery" 
+                    onValueChange={(v) => setOrderType(v as any)}
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"
+                  >
+                    <div className={cn(
+                      "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
+                      orderType === "delivery" ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
+                    )}>
+                      <RadioGroupItem value="delivery" id="delivery" />
+                      <Label htmlFor="delivery" className="font-bold cursor-pointer text-[#2B1710]">Entrega em casa</Label>
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[#4A2618] font-bold">Número</Label>
-                      <Input 
-                        required 
-                        value={address.number}
-                        onChange={(e) => setAddress({...address, number: e.target.value})}
-                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-                      />
+                    <div className={cn(
+                      "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
+                      orderType === "pickup" ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
+                    )}>
+                      <RadioGroupItem value="pickup" id="pickup" />
+                      <Label htmlFor="pickup" className="font-bold cursor-pointer text-[#2B1710]">Retirada no local</Label>
                     </div>
-                  </div>
+                  </RadioGroup>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-[#4A2618] font-bold">Complemento (opcional)</Label>
-                      <Input 
-                        value={address.complement}
-                        onChange={(e) => setAddress({...address, complement: e.target.value})}
-                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[#4A2618] font-bold">Ponto de referência</Label>
-                      <Input 
-                        value={address.reference}
-                        onChange={(e) => setAddress({...address, reference: e.target.value})}
-                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+                  {orderType === "delivery" && (
+                    <div className="space-y-6 animate-in fade-in slide-in-from-top-4">
+                      <div className="space-y-2">
+                        <Label className="text-[#4A2618] font-bold">Bairro</Label>
+                        <Select required onValueChange={setNeighborhood}>
+                          <SelectTrigger className="rounded-xl h-12 border-[#F3E2CC] focus:ring-[#E87524] text-[#2B1710]">
+                            <SelectValue placeholder="Selecione seu bairro" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white border-[#F3E2CC]">
+                            {DELIVERY_AREAS.map((area) => (
+                              <SelectItem key={area.neighborhood} value={area.neighborhood} className="focus:bg-[#FFF4E6] focus:text-[#E87524]">
+                                {area.neighborhood} ({formatCurrency(area.fee)})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="col-span-2 space-y-2">
+                          <Label className="text-[#4A2618] font-bold">Rua</Label>
+                          <Input 
+                            required 
+                            value={address.street}
+                            onChange={(e) => setAddress({...address, street: e.target.value})}
+                            className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-[#4A2618] font-bold">Número</Label>
+                          <Input 
+                            required 
+                            value={address.number}
+                            onChange={(e) => setAddress({...address, number: e.target.value})}
+                            className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                          />
+                        </div>
+                      </div>
 
-            {/* Pagamento */}
-            <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC]">
-              <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">3. Pagamento</h3>
-              
-              <RadioGroup 
-                defaultValue="pix" 
-                onValueChange={(v) => setPayment(v as any)}
-                className="grid grid-cols-2 gap-4 mb-6"
-              >
-                {['pix', 'dinheiro', 'credito', 'debito'].map((p) => (
-                  <div key={p} className={cn(
-                    "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
-                    payment === p ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
-                  )}>
-                    <RadioGroupItem value={p} id={p} />
-                    <Label htmlFor={p} className="font-bold cursor-pointer uppercase text-xs tracking-widest text-[#2B1710]">{p}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-
-              {payment === "dinheiro" && (
-                <div className="space-y-4 pt-2 animate-in fade-in">
-                  <div className="flex items-center space-x-3">
-                    <Checkbox 
-                      id="change" 
-                      onCheckedChange={(checked) => setNeedsChange(checked as boolean)} 
-                      className="border-[#F3E2CC] data-[state=checked]:bg-[#E87524]"
-                    />
-                    <Label htmlFor="change" className="font-bold text-[#2B1710]">Precisa de troco?</Label>
-                  </div>
-                  {needsChange && (
-                    <div className="space-y-2 max-w-[200px]">
-                      <Label className="text-[#4A2618] font-bold">Troco para quanto?</Label>
-                      <Input 
-                        type="text" 
-                        placeholder="R$ 0,00" 
-                        value={changeAmount}
-                        onChange={(e) => setChangeAmount(e.target.value)}
-                        className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
-                      />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-[#4A2618] font-bold">Complemento (opcional)</Label>
+                          <Input 
+                            value={address.complement}
+                            onChange={(e) => setAddress({...address, complement: e.target.value})}
+                            className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-[#4A2618] font-bold">Ponto de referência</Label>
+                          <Input 
+                            value={address.reference}
+                            onChange={(e) => setAddress({...address, reference: e.target.value})}
+                            className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                          />
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
-              )}
-            </div>
 
+                {/* Pagamento */}
+                <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500 delay-200">
+                  <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">3. Pagamento</h3>
+                  
+                  <RadioGroup 
+                    defaultValue="pix" 
+                    onValueChange={(v) => setPayment(v as any)}
+                    className="grid grid-cols-2 gap-4 mb-6"
+                  >
+                    {['pix', 'dinheiro', 'credito', 'debito'].map((p) => (
+                      <div key={p} className={cn(
+                        "flex items-center space-x-3 p-6 rounded-2xl border transition-all cursor-pointer",
+                        payment === p ? "bg-[#FFF4E6] border-[#E87524]" : "bg-white border-[#F3E2CC]"
+                      )}>
+                        <RadioGroupItem value={p} id={p} />
+                        <Label htmlFor={p} className="font-bold cursor-pointer uppercase text-xs tracking-widest text-[#2B1710]">{p}</Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+
+                  {payment === "dinheiro" && (
+                    <div className="space-y-4 pt-2 animate-in fade-in">
+                      <div className="flex items-center space-x-3">
+                        <Checkbox 
+                          id="change" 
+                          onCheckedChange={(checked) => setNeedsChange(checked as boolean)} 
+                          className="border-[#F3E2CC] data-[state=checked]:bg-[#E87524]"
+                        />
+                        <Label htmlFor="change" className="font-bold text-[#2B1710]">Precisa de troco?</Label>
+                      </div>
+                      {needsChange && (
+                        <div className="space-y-2 max-w-[200px]">
+                          <Label className="text-[#4A2618] font-bold">Troco para quanto?</Label>
+                          <Input 
+                            type="text" 
+                            placeholder="R$ 0,00" 
+                            value={changeAmount}
+                            onChange={(e) => setChangeAmount(e.target.value)}
+                            className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           <div className="lg:col-span-1">
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] sticky top-24">
-              <h3 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-wider">Seu Pedido</h3>
+              <h3 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-wider">
+                {step === 1 ? "Resumo" : "Seu Pedido"}
+              </h3>
               
               <ScrollArea className="max-h-[30vh] mb-6 pr-4">
                 <div className="space-y-4">
@@ -323,27 +344,50 @@ function CheckoutPage() {
                   <span>Subtotal</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
-                {orderType === "delivery" && (
-                  <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-xs">
-                    <span>Taxa de Entrega</span>
-                    <span className="text-green-600">{formatCurrency(deliveryFee)}</span>
-                  </div>
-                )}
+                <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-xs">
+                  <span>Taxa de Entrega</span>
+                  <span className={cn(deliveryFee > 0 ? "text-[#E87524]" : "text-green-600")}>
+                    {formatCurrency(deliveryFee)}
+                  </span>
+                </div>
+
                 <div className="pt-4 flex justify-between">
                   <span className="text-xl font-black text-[#2B1710] uppercase">Total</span>
                   <span className="text-2xl font-black text-[#E87524]">{formatCurrency(total)}</span>
                 </div>
               </div>
               
-              <Button 
-                type="submit" 
-                variant="burger" 
-                size="xl" 
-                className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
-                disabled={loading}
-              >
-                {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
-              </Button>
+              {step === 1 ? (
+                <Button 
+                  type="submit" 
+                  variant="burger" 
+                  size="xl" 
+                  className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
+                >
+                  FINALIZAR PEDIDO
+                </Button>
+              ) : (
+                <div className="space-y-3 mt-8">
+                  <Button 
+                    type="submit" 
+                    variant="burger" 
+                    size="xl" 
+                    className="w-full h-16 shadow-xl shadow-[#E87524]/20"
+                    disabled={loading}
+                  >
+                    {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-[#4A2618] hover:text-[#E87524] font-bold uppercase text-[10px] tracking-widest"
+                    onClick={() => setStep(1)}
+                  >
+                    ← Voltar ao resumo
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </form>
