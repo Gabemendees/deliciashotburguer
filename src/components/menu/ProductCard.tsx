@@ -1,7 +1,8 @@
 import { Product } from "@/types/burger";
 import { formatCurrency } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
+
 
 interface ProductCardProps {
   product: Product;
@@ -45,9 +46,11 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           <span className="text-2xl font-black text-blue-900">
             {product.price > 0 ? formatCurrency(product.price) : '--'}
           </span>
-          <div className="bg-yellow-400 group-hover:bg-red-600 group-hover:text-white text-black p-3 rounded-2xl transition-all shadow-lg active:scale-90">
-            <Plus size={24} />
+          <div className="bg-yellow-400 group-hover:bg-red-600 group-hover:text-white text-blue-900 font-black px-6 py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center gap-2">
+            <span className="text-xs uppercase tracking-widest">Comprar</span>
+            <ShoppingCart size={18} />
           </div>
+
         </div>
       </div>
     </motion.div>

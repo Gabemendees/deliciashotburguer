@@ -27,8 +27,11 @@ function Index() {
       <Header />
       <main className="flex-1">
         <Hero />
-        <Menu />
+        <div id="menu">
+          <Menu />
+        </div>
       </main>
+
       
       {/* Footer minimalista como solicitado */}
       <footer className="bg-blue-950 text-blue-200 py-12 border-t border-blue-900">
