@@ -23,12 +23,14 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const navigate = useNavigate();
 
 
-  if (!product) return null;
-
   const totalPrice = useMemo(() => {
+    if (!product) return 0;
     const additionsPrice = selectedAdditions.reduce((acc, curr) => acc + curr.price, 0);
     return (product.price + additionsPrice) * quantity;
   }, [product, quantity, selectedAdditions]);
+
+  if (!product) return null;
+
 
   const toggleAddition = (addition: Addition) => {
     setSelectedAdditions((prev) =>
