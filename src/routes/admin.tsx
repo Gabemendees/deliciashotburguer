@@ -1,6 +1,7 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { useState, useEffect } from 'react';
+import { createFileRoute, Outlet, redirect, useNavigate, useLocation } from '@tanstack/react-router';
+import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,12 +11,33 @@ import { toast } from 'sonner';
 export const Route = createFileRoute('/admin')({
   beforeLoad: async ({ location }) => {
     const { data: { session } } = await supabase.auth.getSession();
+    
+    // Redirect if already authenticated and trying to access /admin (login)
     if (session && location.pathname === '/admin') {
-      throw redirect({ to: '/admin/dashboard' });
+      // Basic check: if they are logged in, we let the component handle the role check 
+      // or redirect to dashboard if they have the role.
+      // But for better security, we check role here if possible.
+    }
+    
+    // If accessing sub-routes without session, redirect to /admin
+    if (!session && location.pathname !== '/admin') {
+      throw redirect({ to: '/admin' });
     }
   },
-  component: AdminLogin,
+  component: AdminRoot,
 });
+
+function AdminRoot() {
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/admin';
+
+  if (isLoginPage) {
+    return <AdminLogin />;
+  }
+
+  return <Outlet />;
+}
+
 
 function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -28,25 +50,35 @@ function AdminLogin() {
     setIsLoading(true);
 
     try {
+      // 1. Strict email check
+      if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        throw new Error('E-mail ou senha incorretos.');
+      }
+
+      // 2. Auth check
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('E-mail ou senha incorretos.');
+        }
+        throw error;
+      }
 
-      // Check if user has admin role
-      const { data: roleData, error: roleError } = await (supabase as any)
+      // 3. Role check (RBAC)
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
-
         .select('role')
         .eq('user_id', data.user.id)
         .eq('role', 'admin')
-        .single();
+        .maybeSingle();
 
       if (roleError || !roleData) {
         await supabase.auth.signOut();
-        throw new Error('Acesso negado. Apenas administradores podem entrar.');
+        throw new Error('Acesso negado. Apenas o administrador autorizado pode entrar.');
       }
 
       toast.success('Login realizado com sucesso!');
@@ -57,6 +89,7 @@ function AdminLogin() {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-[#FFF4E6] flex items-center justify-center p-4">
@@ -78,7 +111,7 @@ function AdminLogin() {
                 <Input 
                   id="email" 
                   type="email" 
-                  placeholder="admin@hamburgueria.com" 
+                  placeholder="Digite seu e-mail" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
