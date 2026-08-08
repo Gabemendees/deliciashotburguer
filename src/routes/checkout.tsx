@@ -496,29 +496,39 @@ function CheckoutPage() {
                   <span>Subtotal</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
-                
                 <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-xs">
-                  <span>{orderType === 'pickup' ? 'Retirada' : 'Entrega'}</span>
-                  <span className={cn(deliveryFee > 0 ? "text-[#E87524]" : "text-green-600")}>
-                    {formatCurrency(deliveryFee)}
+                  <span>Taxa de Entrega</span>
+                  <span className={orderType === "delivery" && distanceInfo?.valid ? "text-[#E87524]" : ""}>
+                    {orderType === "pickup" ? "Grátis" : formatCurrency(deliveryFee)}
                   </span>
                 </div>
-
-                <div className="pt-4 flex justify-between">
-                  <span className="text-xl font-black text-[#2B1710] uppercase tracking-tighter">Total</span>
-                  <span className="text-2xl font-black text-[#E87524]">{formatCurrency(total)}</span>
+                
+                <div className="flex justify-between items-end pt-4 border-t-2 border-[#2B1710]/10">
+                  <span className="font-black text-[#2B1710] uppercase text-sm italic">Total do Pedido</span>
+                  <span className="text-3xl font-black text-[#E87524] tracking-tighter leading-none">
+                    {formatCurrency(total)}
+                  </span>
                 </div>
+                
+                <Button 
+                  type="submit" 
+                  disabled={loading || (orderType === "delivery" && (!distanceInfo || !distanceInfo.valid))}
+                  className="w-full bg-[#E87524] hover:bg-[#C95718] text-white rounded-2xl h-16 font-black uppercase text-xl shadow-lg shadow-[#E87524]/20 transition-all active:scale-95 disabled:grayscale disabled:opacity-50 mt-4 group"
+                >
+                  {loading ? (
+                    <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto" />
+                  ) : (
+                    <span className="flex items-center justify-center gap-3">
+                      Enviar no WhatsApp
+                      <ExternalLink className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  )}
+                </Button>
+                
+                <p className="text-[10px] text-center text-[#4A2618]/50 uppercase font-bold tracking-widest mt-4">
+                  Pagamento realizado na entrega/retirada
+                </p>
               </div>
-              
-              <Button 
-                type="submit" 
-                variant="burger" 
-                size="xl" 
-                disabled={loading || (orderType === 'delivery' && !distanceInfo?.valid)}
-                className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8 font-black uppercase tracking-widest text-lg"
-              >
-                {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
-              </Button>
             </div>
           </div>
         </form>
