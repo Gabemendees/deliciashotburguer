@@ -16,6 +16,27 @@ export const Route = createFileRoute('/admin/dashboard')({
 });
 
 function Dashboard() {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Force poll orders count to check for new ones
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+    let lastOrderCount = -1;
+
+    const checkNewOrders = async () => {
+       const { data } = await supabase.from('orders').select('id', { count: 'exact', head: true });
+       const currentCount = data?.length || 0;
+       if (lastOrderCount !== -1 && currentCount > lastOrderCount) {
+         audio.play().catch(() => {});
+         toast.info('🔔 NOVO PEDIDO RECEBIDO!', { duration: 10000 });
+       }
+       lastOrderCount = currentCount;
+    };
+
+    const interval = setInterval(checkNewOrders, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   const queryClient = useQueryClient();
   const { data: orders = [], isLoading: ordersLoading } = useQuery({
     queryKey: ['admin-orders'],
