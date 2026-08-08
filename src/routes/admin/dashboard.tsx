@@ -106,7 +106,7 @@ function Dashboard() {
   const deliveryFees = ordersToday.reduce((acc, o) => acc + Number(o.delivery_fee || 0), 0);
 
   const toggleStore = () => {
-    updateConfigMutation.mutate({ key: 'is_store_open', value: !isStoreOpen });
+    updateConfigMutation.mutate({ data: { key: 'is_store_open', value: !isStoreOpen } });
   };
 
   return (
