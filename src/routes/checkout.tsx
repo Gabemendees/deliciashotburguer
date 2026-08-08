@@ -17,6 +17,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MapPin, Truck, Store, ExternalLink, Navigation } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { calculateDeliveryDistance, getAddressFromZip } from "@/lib/checkout.functions";
+import { getStoreConfig } from "@/lib/database.functions";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -30,6 +32,11 @@ function CheckoutPage() {
   
   const calcDistance = useServerFn(calculateDeliveryDistance);
   const getAddress = useServerFn(getAddressFromZip);
+
+  const { data: config } = useQuery({
+    queryKey: ['store-config'],
+    queryFn: () => getStoreConfig(),
+  });
 
   // Form states
   const [name, setName] = useState("");
@@ -85,10 +92,18 @@ function CheckoutPage() {
         let valid = true;
         const distMeters = res.distanceMeters;
         
-        if (distMeters <= 2500) fee = 4;
-        else if (distMeters <= 4500) fee = 6;
-        else if (distMeters <= 6000) fee = 8;
-        else valid = false;
+        const deliveryRules = config?.['delivery_rules'] || [
+          { min: 0, max: 2500, fee: 4 },
+          { min: 2501, max: 4500, fee: 6 },
+          { min: 4501, max: 6000, fee: 8 }
+        ];
+
+        const rule = deliveryRules.find((r: any) => distMeters >= r.min && distMeters <= r.max);
+        if (rule) {
+          fee = rule.fee;
+        } else {
+          valid = false;
+        }
 
         setDistanceInfo({ km: distMeters / 1000, fee, valid });
         

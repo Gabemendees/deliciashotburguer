@@ -1,155 +1,159 @@
-import { createFileRoute, Outlet, redirect, useNavigate, useLocation } from '@tanstack/react-router';
-import { useState } from 'react';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useCart } from '@/lib/store';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Lock, Mail, Loader2, LogIn, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin')({
-  beforeLoad: async ({ location }) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    // Redirect if already authenticated and trying to access /admin (login)
-    if (session && location.pathname === '/admin') {
-      // Basic check: if they are logged in, we let the component handle the role check 
-      // or redirect to dashboard if they have the role.
-      // But for better security, we check role here if possible.
-    }
-    
-    // If accessing sub-routes without session, redirect to /admin
-    if (!session && location.pathname !== '/admin') {
-      throw redirect({ to: '/admin' });
-    }
-  },
-  component: AdminRoot,
+  component: AdminLogin,
 });
-
-function AdminRoot() {
-  const location = useLocation();
-  const isLoginPage = location.pathname === '/admin';
-
-  if (isLoginPage) {
-    return <AdminLogin />;
-  }
-
-  return <Outlet />;
-}
-
 
 function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
+    if (email !== 'deliciahotburguers@gmail.com') {
+      toast.error('Acesso restrito apenas ao administrador autorizado.');
+      return;
+    }
 
+    setLoading(true);
     try {
-      // 1. Strict email check
-      if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-        throw new Error('E-mail ou senha incorretos.');
-      }
-
-      // 2. Auth check
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          throw new Error('E-mail ou senha incorretos.');
-        }
-        throw error;
-      }
-
-      // 3. Role check (RBAC)
-      const { data: roleData, error: roleError } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', data.user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      if (roleError || !roleData) {
-        await supabase.auth.signOut();
-        throw new Error('Acesso negado. Apenas o administrador autorizado pode entrar.');
-      }
-
-      toast.success('Login realizado com sucesso! Abrindo painel...');
+      if (error) throw error;
       
-      // Open in new tab
-      // To avoid pop-up blockers after an async operation, some browsers require 
-      // the window.open to be called directly in the event handler, but since 
-      // we need to wait for auth, we use this approach which works in most modern browsers
-      // if the async task is fast enough.
+      toast.success('Autenticação realizada com sucesso!');
+      
+      // Open dashboard in new tab
       window.open('/admin/dashboard', '_blank');
+      
     } catch (error: any) {
       toast.error(error.message || 'Erro ao realizar login');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-
+  const handleGoToDashboard = () => {
+    window.open('/admin/dashboard', '_blank');
+  };
 
   return (
-    <div className="min-h-screen bg-[#FFF4E6] flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-black text-[#2B1710]">DELÍCIA'S</h1>
-          <p className="text-[#E87524] font-bold tracking-[0.2em] uppercase text-sm">Painel Administrativo</p>
+    <div className="min-h-screen bg-[#FFF4E6] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#E87524]/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#2B1710]/5 rounded-full blur-3xl" />
+      
+      <Card className="w-full max-w-md border-none shadow-2xl bg-white rounded-[2.5rem] overflow-hidden relative z-10">
+        <div className="bg-[#2B1710] p-10 text-center relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#E87524] to-transparent" />
+          <div className="w-20 h-20 bg-white rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+            <Lock className="text-[#E87524]" size={40} />
+          </div>
+          <h1 className="text-3xl font-black text-white uppercase tracking-tighter italic">Painel do Dono</h1>
+          <p className="text-[#F3E2CC]/60 font-bold uppercase text-[10px] tracking-[0.2em] mt-2">Controle Total da Hamburgueria</p>
         </div>
 
-        <Card className="border-none shadow-xl bg-white">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-[#2B1710]">Login</CardTitle>
-            <CardDescription>Insira suas credenciais para acessar o painel</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleLogin}>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="Digite seu e-mail" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-[#FFF4E6]/50 border-[#F3E2CC] focus:ring-[#E87524]"
-                />
+        <CardContent className="p-10">
+          {session && session.user.email === 'deliciahotburguers@gmail.com' ? (
+            <div className="space-y-6 text-center">
+              <div className="p-6 bg-green-50 border border-green-100 rounded-3xl">
+                <p className="text-green-700 font-bold text-sm">Você já está autenticado como administrador.</p>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
-                <Input 
-                  id="password" 
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-[#FFF4E6]/50 border-[#F3E2CC] focus:ring-[#E87524]"
-                />
+              <Button 
+                onClick={handleGoToDashboard}
+                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl gap-3 text-lg group shadow-lg shadow-[#E87524]/20"
+              >
+                ENTRAR NO PAINEL
+                <ExternalLink className="group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button 
+                variant="ghost"
+                onClick={() => supabase.auth.signOut()}
+                className="text-[#4A2618]/40 font-bold uppercase text-[10px] tracking-widest hover:bg-[#FFF4E6]"
+              >
+                Sair da conta
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-4">
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A2618]/30" size={20} />
+                  <Input 
+                    type="email"
+                    placeholder="E-mail Administrativo"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="pl-12 h-14 bg-[#FFF4E6]/50 border-none rounded-2xl font-bold focus-visible:ring-[#E87524] text-[#2B1710]"
+                  />
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A2618]/30" size={20} />
+                  <Input 
+                    type="password"
+                    placeholder="Senha de Acesso"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="pl-12 h-14 bg-[#FFF4E6]/50 border-none rounded-2xl font-bold focus-visible:ring-[#E87524] text-[#2B1710]"
+                  />
+                </div>
               </div>
-            </CardContent>
-            <CardFooter>
+
               <Button 
                 type="submit" 
-                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-bold h-12"
-                disabled={isLoading}
+                disabled={loading}
+                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl gap-3 text-lg group shadow-lg shadow-[#E87524]/20"
               >
-                {isLoading ? 'ENTRANDO...' : 'ENTRAR NO PAINEL'}
+                {loading ? <Loader2 className="animate-spin" /> : (
+                  <>
+                    ENTRAR NO PAINEL
+                    <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />
+                  </>
+                )}
               </Button>
-            </CardFooter>
-          </form>
-        </Card>
-      </div>
+
+              <div className="text-center pt-4">
+                <p className="text-[#4A2618]/30 font-bold text-[10px] uppercase tracking-widest">
+                  Protegido por Criptografia de Ponta a Ponta
+                </p>
+              </div>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+      
+      <p className="absolute bottom-8 text-[#4A2618]/20 font-black uppercase text-[10px] tracking-[0.3em]">
+        Delícia's Hot Burguer's System v2.0
+      </p>
     </div>
   );
 }
-
