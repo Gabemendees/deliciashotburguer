@@ -89,7 +89,7 @@ function Index() {
             <span className="text-sm font-bold text-[#E87524] tracking-widest">HOT BURGUER'S</span>
           </div>
           <div className="space-y-2 text-sm">
-            <p>WhatsApp: 9.9701-3096</p>
+            <p>WhatsApp: 31 99701-3096</p>
             <p>Horário: {storeHours.open} às {storeHours.close}</p>
             <p className="opacity-60 mt-4">
               © 2026 Delícia's Hot Burguer's. <br />
