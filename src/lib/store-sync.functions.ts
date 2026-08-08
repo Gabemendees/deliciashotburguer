@@ -7,13 +7,17 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  */
 export const syncStoreStatus = createServerFn({ method: "POST" })
   .handler(async () => {
-    // 1. Get current time in Brasilia (UTC-3)
+    // 1. Get current time in UTC
     const now = new Date();
-    const brasiliaTime = new Date(now.getTime() - (3 * 60 * 60 * 1000));
     
-    const day = brasiliaTime.getUTCDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    const hours = brasiliaTime.getUTCHours();
-    const minutes = brasiliaTime.getUTCMinutes();
+    // 2. Adjust to Brasilia Time (UTC-3)
+    // We use Intl to get the offset correctly or just subtract 3 hours 
+    // since Brasilia does not have DST anymore.
+    const brTime = new Date(now.getTime() - (3 * 60 * 60 * 1000));
+    
+    const day = brTime.getUTCDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const hours = brTime.getUTCHours();
+    const minutes = brTime.getUTCMinutes();
     const totalMinutes = (hours * 60) + minutes;
 
     // Opening: 19:00 (19 * 60 = 1140 minutes)
@@ -22,18 +26,26 @@ export const syncStoreStatus = createServerFn({ method: "POST" })
     let shouldBeOpen = false;
 
     // Monday (1) to Saturday (6)
+    // The range 19:00 to 00:00 is within the SAME UTC day if we just look at the 19-24 range.
     if (day >= 1 && day <= 6) {
-      if (totalMinutes >= 1140 || totalMinutes < 5) { // Allowing 5 mins buffer for 00:00
+      if (totalMinutes >= 1140 && totalMinutes < 1440) {
         shouldBeOpen = true;
       }
     }
 
-    // 2. Update database
-    const { error } = await supabaseAdmin
+    // 3. Update database if the current status is different to avoid unnecessary writes
+    // First, get the current state
+    const { data: currentConfig } = await supabaseAdmin
       .from('store_config')
-      .upsert({ key: 'is_store_open', value: shouldBeOpen }, { onConflict: 'key' });
+      .select('value')
+      .eq('key', 'is_store_open')
+      .single();
 
-    if (error) throw error;
+    if (currentConfig?.value !== shouldBeOpen) {
+      await supabaseAdmin
+        .from('store_config')
+        .upsert({ key: 'is_store_open', value: shouldBeOpen }, { onConflict: 'key' });
+    }
     
-    return { isStoreOpen: shouldBeOpen, time: brasiliaTime.toISOString() };
+    return { isStoreOpen: shouldBeOpen, brTime: brTime.toISOString() };
   });
