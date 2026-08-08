@@ -3,6 +3,9 @@ import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/layout/Hero";
 import { Menu } from "@/components/menu/Menu";
 import { Toaster } from "sonner";
+import { useCart } from "@/lib/store";
+import { useEffect } from "react";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,6 +24,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  useEffect(() => {
+    useCart.persist.rehydrate();
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-[#fcfbf8] flex flex-col">

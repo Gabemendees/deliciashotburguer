@@ -17,7 +17,6 @@ export const useCart = create<CartStore>()(
       items: [],
       addItem: (product, quantity, additions) => {
         const additionsPrice = additions.reduce((acc, curr) => acc + curr.price, 0);
-        const totalPrice = (product.price + additionsPrice) * quantity;
         
         const existingItemIndex = get().items.findIndex(item => 
           item.product.id === product.id && 
@@ -38,8 +37,8 @@ export const useCart = create<CartStore>()(
             set({ items: updatedItems });
           }
         } else {
-
           const cartId = Math.random().toString(36).substring(7);
+          const totalPrice = (product.price + additionsPrice) * quantity;
           set((state) => ({
             items: [...state.items, { cartId, product, quantity, additions, totalPrice }],
           }));
@@ -76,9 +75,22 @@ export const useCart = create<CartStore>()(
     }),
     {
       name: 'burger-cart-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => {
+        // Safe check for window/localStorage during SSR
+        if (typeof window !== 'undefined') {
+          return window.localStorage;
+        }
+        return {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        };
+      }),
+      // Skip hydration during SSR
+      skipHydration: true,
     }
   )
 );
+
 
 

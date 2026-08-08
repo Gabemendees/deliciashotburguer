@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useCart } from "@/lib/store";
 import { formatCurrency, cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
@@ -24,6 +24,12 @@ function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Hydrate store on mount
+  useEffect(() => {
+    useCart.persist.rehydrate();
+  }, []);
+
 
   // Form states
   const [name, setName] = useState("");
