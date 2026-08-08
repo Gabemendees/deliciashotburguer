@@ -28,7 +28,7 @@ export function Menu() {
 
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
-  const addItem = useCart(state => state.addItem);
+  const { addItem, isHydrated } = useCart();
 
   useEffect(() => {
     if (categories.length > 0) {
@@ -46,8 +46,10 @@ export function Menu() {
   }, [categories, initialCategoryParam]);
 
   useEffect(() => {
-    useCart.persist.rehydrate();
-  }, []);
+    if (!isHydrated) {
+      useCart.persist.rehydrate();
+    }
+  }, [isHydrated]);
 
   const handleProductClick = (product: any) => {
     // We treat almost all products as customizable now except maybe drinks if they don't have additions

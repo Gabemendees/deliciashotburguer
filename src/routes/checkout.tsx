@@ -26,10 +26,9 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function CheckoutPage() {
-  const { items, getSubtotal, clearCart } = useCart();
+  const { items, getSubtotal, clearCart, isHydrated } = useCart();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [isHydrated, setIsHydrated] = useState(false);
   
   const calcDistance = useServerFn(calculateDeliveryDistance);
   const getAddress = useServerFn(getAddressFromZip);
@@ -61,9 +60,10 @@ function CheckoutPage() {
 
   // Hydrate store on mount
   useEffect(() => {
-    setIsHydrated(true);
-    useCart.persist.rehydrate();
-  }, []);
+    if (!isHydrated) {
+      useCart.persist.rehydrate();
+    }
+  }, [isHydrated]);
 
   const subtotal = useMemo(() => getSubtotal(), [items, getSubtotal]);
 
@@ -184,7 +184,13 @@ function CheckoutPage() {
 
   };
 
-  if (!isHydrated) return null;
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-[#FFF4E6] flex flex-col items-center justify-center">
+        <Loader2 className="animate-spin text-[#E87524]" size={48} />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (

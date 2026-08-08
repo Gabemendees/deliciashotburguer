@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
 import { useCart } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
-import { Trash2, Minus, Plus, ShoppingCart, ArrowLeft, ChevronRight } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingCart, ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Toaster } from "sonner";
@@ -15,16 +15,22 @@ export const Route = createFileRoute("/carrinho")({
 });
 
 function CartPage() {
-  const { items, removeItem, updateQuantity, getSubtotal } = useCart();
+  const { items, removeItem, updateQuantity, getSubtotal, isHydrated } = useCart();
   const navigate = useNavigate();
-  const [isHydrated, setIsHydrated] = useState(false);
   
   useEffect(() => {
-    setIsHydrated(true);
-    useCart.persist.rehydrate();
-  }, []);
+    if (!isHydrated) {
+      useCart.persist.rehydrate();
+    }
+  }, [isHydrated]);
   
-  if (!isHydrated) return null;
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-[#FFF4E6] flex flex-col items-center justify-center">
+        <Loader2 className="animate-spin text-[#E87524]" size={48} />
+      </div>
+    );
+  }
   
   const subtotal = getSubtotal();
   const total = subtotal;
