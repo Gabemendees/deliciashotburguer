@@ -31,9 +31,9 @@ function AdminLogin() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
     if (!email) {
       toast.error('E-mail obrigatório.');
       return;
@@ -49,9 +49,6 @@ function AdminLogin() {
     }
 
     setLoading(true);
-    
-    // Attempt to open the window early to prevent popup blocking.
-    const dashboardWindow = window.open('about:blank', '_blank');
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -60,30 +57,22 @@ function AdminLogin() {
       });
 
       if (error) {
-        dashboardWindow?.close();
         throw error;
       }
       
-      // Re-verify session
       const { data: { session: newSession } } = await supabase.auth.getSession();
       
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-        dashboardWindow?.close();
         await supabase.auth.signOut();
         toast.error('Acesso negado. Apenas o administrador autorizado pode entrar.');
         return;
       }
 
       toast.success('Autenticação realizada com sucesso!');
-      
-      if (dashboardWindow) {
-        dashboardWindow.location.href = '/admin/dashboard';
-      } else {
-        window.open('/admin/dashboard', '_blank');
-      }
+      navigate({ to: '/admin/dashboard' });
       
     } catch (error: any) {
-      dashboardWindow?.close();
+      console.error("AUTHENTICATION ERROR", error);
       toast.error('E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
@@ -91,7 +80,7 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    window.open('/admin/dashboard', '_blank');
+    navigate({ to: '/admin/dashboard' });
   };
 
   return (
@@ -132,7 +121,10 @@ function AdminLogin() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form 
+              onSubmit={handleLogin}
+              className="space-y-6"
+            >
               <div className="space-y-4">
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A2618]/30" size={20} />
@@ -174,7 +166,6 @@ function AdminLogin() {
                     <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />
                   </>
                 )}
-
               </Button>
 
               <div className="text-center pt-4">
@@ -193,3 +184,4 @@ function AdminLogin() {
     </div>
   );
 }
+
