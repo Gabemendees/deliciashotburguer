@@ -53,7 +53,7 @@ export function Menu() {
     // We treat almost all products as customizable now except maybe drinks if they don't have additions
     // but the instruction implies a full management center.
     // For drinks, we can still show the modal or add directly.
-    if (product.categories?.name === 'BEBIDAS' && !product.description?.includes('personalização')) {
+    if (product.categories?.name === 'BEBIDAS' && !(product.description?.includes('personalização'))) {
        // Direct add for simple items
        addItem({
          id: product.id,
