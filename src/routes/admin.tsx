@@ -12,7 +12,6 @@ export const Route = createFileRoute('/admin')({
   component: AdminLogin,
 });
 
-
 function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,41 +33,22 @@ function AdminLogin() {
 
   const handleLogin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    console.log("LOGIN INITIATED", { email, passwordLength: password.length });
     
-    // Diagnostic alert for visible confirmation in preview
-    alert(`DEBUG: Email=${email}, Pass=${password}`);
-
-    if (!email || !password) {
-       toast.error("Preencha os campos!");
-       return;
-    }
-
-
-
-
-
-
-
     if (!email) {
-      console.log("VALIDATION ERROR: Email empty");
       toast.error('E-mail obrigatório.');
       return;
     }
     if (!password) {
-      console.log("VALIDATION ERROR: Password empty");
       toast.error('Senha obrigatória.');
       return;
     }
     
     if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-      console.log("AUTH ERROR: Invalid admin email", email);
       toast.error('E-mail ou senha incorretos.');
       return;
     }
 
     setLoading(true);
-    console.log("STARTING AUTHENTICATION for", email);
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -76,26 +56,19 @@ function AdminLogin() {
         password,
       });
 
-      console.log("AUTHENTICATION RESPONSE RECEIVED", { success: !error, error });
-
       if (error) {
         throw error;
       }
       
-      console.log("USER AUTHENTICATED, verifying session...");
       const { data: { session: newSession } } = await supabase.auth.getSession();
       
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-        console.log("SESSION VERIFICATION FAILED or unauthorized email");
         await supabase.auth.signOut();
         toast.error('Acesso negado. Apenas o administrador autorizado pode entrar.');
         return;
       }
 
-      console.log("SUCCESS: Redirecting to dashboard...");
       toast.success('Autenticação realizada com sucesso!');
-      
-      // Redirect in the SAME tab as requested
       navigate({ to: '/admin/dashboard' });
       
     } catch (error: any) {
@@ -111,36 +84,7 @@ function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF4E6] flex flex-col items-center justify-center p-4">
-      <div className="mb-8 flex flex-col items-center">
-        <h1 className="text-4xl font-black text-[#2B1710] mb-2 uppercase italic tracking-tighter">DELÍCIA'S ADMIN</h1>
-        <div className="flex gap-4">
-          <Input 
-            type="email" 
-            placeholder="Email" 
-            value={email} 
-            onChange={e => setEmail(e.target.value)}
-            className="w-64 bg-white"
-          />
-          <Input 
-            type="password" 
-            placeholder="Senha" 
-            value={password} 
-            onChange={e => setPassword(e.target.value)}
-            className="w-64 bg-white"
-          />
-          <button 
-            onClick={() => {
-              console.log("DEBUG BUTTON CLICKED");
-              handleLogin();
-            }}
-            className="px-8 py-2 bg-[#E87524] text-white font-bold rounded-xl"
-          >
-            DEBUG LOGIN
-          </button>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-[#FFF4E6] flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#E87524]/5 rounded-full blur-3xl" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#2B1710]/5 rounded-full blur-3xl" />
@@ -179,8 +123,6 @@ function AdminLogin() {
           ) : (
             <form 
               onSubmit={handleLogin}
-
-
               className="space-y-6"
             >
               <div className="space-y-4">
@@ -208,14 +150,10 @@ function AdminLogin() {
                 </div>
               </div>
 
-              <button 
-                type="button" 
+              <Button 
+                type="submit" 
                 disabled={loading}
-                onClick={() => {
-                  console.log("NATIVE BUTTON CLICKED");
-                  handleLogin();
-                }}
-                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl flex items-center justify-center gap-3 text-lg group shadow-lg shadow-[#E87524]/20 disabled:opacity-50"
+                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-14 rounded-2xl gap-3 text-lg group shadow-lg shadow-[#E87524]/20"
               >
                 {loading ? (
                   <>
@@ -228,8 +166,7 @@ function AdminLogin() {
                     <LogIn className="group-hover:translate-x-1 transition-transform" size={20} />
                   </>
                 )}
-              </button>
-
+              </Button>
 
               <div className="text-center pt-4">
                 <p className="text-[#4A2618]/30 font-bold text-[10px] uppercase tracking-widest">
@@ -237,7 +174,6 @@ function AdminLogin() {
                 </p>
               </div>
             </form>
-
           )}
         </CardContent>
       </Card>
@@ -248,3 +184,4 @@ function AdminLogin() {
     </div>
   );
 }
+
