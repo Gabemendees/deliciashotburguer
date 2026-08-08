@@ -40,9 +40,19 @@ export const useCart = create<CartStore>()(
         } else {
           const cartId = Math.random().toString(36).substring(7);
           const totalPrice = (product.price + additionsPrice) * quantity;
-          set((state) => ({
-            items: [...state.items, { cartId, product, quantity, additions, totalPrice, observation }],
-          }));
+          set((state) => {
+            const newItem: CartItem = { 
+              cartId, 
+              product, 
+              quantity, 
+              additions, 
+              totalPrice, 
+              observation 
+            };
+            return {
+              items: [...state.items, newItem],
+            };
+          });
         }
       },
       removeItem: (cartId) => {
