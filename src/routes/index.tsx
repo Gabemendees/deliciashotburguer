@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/layout/Hero";
 import { Menu } from "@/components/menu/Menu";
@@ -95,6 +95,14 @@ function Index() {
               © 2026 Delícia's Hot Burguer's. <br />
               Todos os direitos reservados.
             </p>
+            <div className="pt-4 opacity-20 hover:opacity-100 transition-opacity">
+              <Link 
+                to="/admin" 
+                className="text-[10px] font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-2"
+              >
+                Painel Administrativo
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
