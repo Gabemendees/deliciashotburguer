@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as PedidoConcluidoRouteImport } from './routes/pedido-concluido'
 import { Route as AdminAcrescimosRouteImport } from './routes/admin/acrescimos'
 import { Route as AdminCategoriasRouteImport } from './routes/admin/categorias'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin/configuracoes'
@@ -41,6 +42,11 @@ const CarrinhoRoute = CarrinhoRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PedidoConcluidoRoute = PedidoConcluidoRouteImport.update({
+  id: '/pedido-concluido',
+  path: '/pedido-concluido',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAcrescimosRoute = AdminAcrescimosRouteImport.update({
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/pedido-concluido': typeof PedidoConcluidoRoute
   '/admin/acrescimos': typeof AdminAcrescimosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/pedido-concluido': typeof PedidoConcluidoRoute
   '/admin/acrescimos': typeof AdminAcrescimosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/pedido-concluido': typeof PedidoConcluidoRoute
   '/admin/acrescimos': typeof AdminAcrescimosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/carrinho'
     | '/checkout'
+    | '/pedido-concluido'
     | '/admin/acrescimos'
     | '/admin/categorias'
     | '/admin/configuracoes'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/carrinho'
     | '/checkout'
+    | '/pedido-concluido'
     | '/admin/acrescimos'
     | '/admin/categorias'
     | '/admin/configuracoes'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/carrinho'
     | '/checkout'
+    | '/pedido-concluido'
     | '/admin/acrescimos'
     | '/admin/categorias'
     | '/admin/configuracoes'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   CarrinhoRoute: typeof CarrinhoRoute
   CheckoutRoute: typeof CheckoutRoute
+  PedidoConcluidoRoute: typeof PedidoConcluidoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pedido-concluido': {
+      id: '/pedido-concluido'
+      path: '/pedido-concluido'
+      fullPath: '/pedido-concluido'
+      preLoaderRoute: typeof PedidoConcluidoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/acrescimos': {
@@ -317,6 +337,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   CarrinhoRoute: CarrinhoRoute,
   CheckoutRoute: CheckoutRoute,
+  PedidoConcluidoRoute: PedidoConcluidoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

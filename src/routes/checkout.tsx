@@ -14,10 +14,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Header } from "@/components/layout/Header";
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Truck, Store, ExternalLink, Navigation } from "lucide-react";
+import { MapPin, Truck, Store, ExternalLink, Navigation, ChevronRight } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { calculateDeliveryDistance, getAddressFromZip } from "@/lib/checkout.functions";
 import { getStoreConfig } from "@/lib/database.functions";
+import { createOrder } from "@/lib/order.functions";
 import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/checkout")({
@@ -32,6 +33,7 @@ function CheckoutPage() {
   
   const calcDistance = useServerFn(calculateDeliveryDistance);
   const getAddress = useServerFn(getAddressFromZip);
+  const saveOrder = useServerFn(createOrder);
 
   const { data: config } = useQuery({
     queryKey: ['store-config'],
@@ -134,104 +136,48 @@ function CheckoutPage() {
     setLoading(true);
 
     try {
-      // Save order to Supabase
-      const { data: order, error: orderError } = await (supabase as any).from('orders').insert({
-        customer_name: name,
-        customer_phone: phone,
-        status: 'new',
-        delivery_type: orderType,
-        address_zip: address.zip,
-        address_street: address.street,
-        address_number: address.number,
-        address_neighborhood: address.neighborhood,
-        address_city: address.city,
-        address_state: address.state,
-        address_reference: reference,
-        subtotal: subtotal,
-        delivery_fee: deliveryFee,
-        total: total,
-        payment_method: payment === 'dinheiro' ? 'cash' : (payment === 'pix' ? 'pix' : 'card')
-      }).select().single();
-
-      if (orderError) throw orderError;
-
-      // Save order items
-      for (const item of items) {
-        const { data: orderItem, error: itemError } = await (supabase as any).from('order_items').insert({
-          order_id: order.id,
-          product_id: (item.product as any).id, // assuming it will have an ID when we sync
-          name: item.product.name,
-          price: item.product.price,
-          quantity: item.quantity,
-          observation: item.observation,
-          total_price: item.totalPrice
-        }).select().single();
-
-        if (itemError) throw itemError;
-
-        // Save item additions
-        if (item.additions.length > 0) {
-          const additionsToInsert = item.additions.map(add => ({
-            order_item_id: orderItem.id,
-            name: add.name,
-            price: add.price
-          }));
-          const { error: addsError } = await (supabase as any).from('order_item_additions').insert(additionsToInsert);
-          if (addsError) throw addsError;
+      // Processar pedido usando a Server Function
+      const order = await saveOrder({
+        data: {
+          customer_name: name,
+          customer_phone: phone,
+          delivery_type: orderType,
+          address_zip: orderType === 'delivery' ? address.zip : undefined,
+          address_street: orderType === 'delivery' ? address.street : undefined,
+          address_number: orderType === 'delivery' ? address.number : undefined,
+          address_neighborhood: orderType === 'delivery' ? address.neighborhood : undefined,
+          address_city: orderType === 'delivery' ? address.city : undefined,
+          address_state: orderType === 'delivery' ? address.state : undefined,
+          address_reference: orderType === 'delivery' ? reference : undefined,
+          payment_method: payment === 'dinheiro' ? 'cash' : (payment === 'pix' ? 'pix' : 'card'),
+          payment_change: payment === 'dinheiro' && needsChange ? changeAmount : undefined,
+          subtotal,
+          delivery_fee: deliveryFee,
+          total,
+          items: items.map(item => ({
+            product_id: (item.product as any).id,
+            name: item.product.name,
+            price: item.product.price,
+            quantity: item.quantity,
+            observation: item.observation,
+            total_price: item.totalPrice,
+            additions: item.additions.map(add => ({
+              name: add.name,
+              price: add.price
+            }))
+          }))
         }
-      }
-
-      let message = `*NOVO PEDIDO — DELÍCIA'S HOT BURGUER'S*\n\n`;
-      message += `*Pedido:* #${order.id.slice(0, 4)}\n`;
-      message += `*Nome:* ${name}\n`;
-      message += `*WhatsApp:* ${phone}\n\n`;
-      
-      message += `*ITENS:*\n`;
-      items.forEach((item) => {
-        message += `• ${item.quantity}x ${item.product.name}\n`;
-        if (item.additions.length > 0) {
-          message += `   _Adicionais: ${item.additions.map((a) => a.name).join(", ")}_\n`;
-        }
-        if (item.observation) {
-          message += `   _Remover/Obs: ${item.observation}_\n`;
-        }
-        message += `   Preço: ${formatCurrency(item.totalPrice)}\n\n`;
       });
 
-      message += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
-      if (orderType === "delivery") {
-        message += `*Entrega (${distanceInfo?.km.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km):* ${formatCurrency(deliveryFee)}\n`;
-      } else {
-        message += `*Taxa de entrega:* R$ 0,00 (Retirada)\n`;
-      }
-      message += `*TOTAL: ${formatCurrency(total)}*\n\n`;
-
-      if (orderType === "delivery") {
-        message += `*ENDEREÇO DE ENTREGA:*\n`;
-        message += `Rua: ${address.street}, ${address.number}\n`;
-        message += `Bairro: ${address.neighborhood}\n`;
-        if (address.complement) message += `Comp: ${address.complement}\n`;
-        if (reference) message += `Ref: ${reference}\n\n`;
-      } else {
-        message += `*MODALIDADE: Retirada no local*\n\n`;
-      }
-
-      message += `*FORMA DE PAGAMENTO:* ${payment.toUpperCase()}\n`;
-      if (payment === "dinheiro" && needsChange) {
-        message += `Precisa de troco para: ${formatCurrency(parseFloat(changeAmount.replace(",", ".")))}\n`;
-      }
-
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=55${WHATSAPP_NUMBER.replace(/\D/g, "")}&text=${encodedMessage}`;
-      
-      window.open(whatsappUrl, "_blank");
-      
-      toast.success("Pedido enviado com sucesso!");
+      toast.success("Pedido concluído com sucesso!");
       clearCart();
-      navigate({ to: '/' });
+      navigate({ 
+        to: '/pedido-concluido',
+        search: { id: order.id }
+      });
     } catch (error: any) {
       console.error("ERRO AO SALVAR PEDIDO:", error);
-      toast.error("Erro ao processar pedido no banco de dados.");
+      toast.error(error.message || "Não foi possível finalizar seu pedido. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -589,11 +535,14 @@ function CheckoutPage() {
                   className="w-full bg-[#E87524] hover:bg-[#C95718] text-white rounded-2xl h-16 font-black uppercase text-xl shadow-lg shadow-[#E87524]/20 transition-all active:scale-95 disabled:grayscale disabled:opacity-50 mt-4 group"
                 >
                   {loading ? (
-                    <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto" />
+                    <span className="flex items-center justify-center gap-3 italic">
+                      <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                      FINALIZANDO PEDIDO...
+                    </span>
                   ) : (
-                    <span className="flex items-center justify-center gap-3">
-                      Enviar no WhatsApp
-                      <ExternalLink className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                    <span className="flex items-center justify-center gap-3 italic">
+                      FINALIZAR PEDIDO
+                      <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                     </span>
                   )}
                 </Button>
