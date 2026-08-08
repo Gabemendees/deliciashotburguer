@@ -1,6 +1,16 @@
 import { Product, Addition, DeliveryArea } from '../types/burger';
 
 export const WHATSAPP_NUMBER = "99701-3096";
+export const STORE_ADDRESS = {
+  street: "R. Santa Maria",
+  number: "714",
+  neighborhood: "Pedra Azul",
+  city: "Contagem",
+  state: "MG",
+  zip: "32183-970",
+  reference: "Trailer em frente ao Correio",
+  mapsLink: "https://www.google.com/maps/place/R.+Santa+Maria,+714+-+Pedra+Azul,+Contagem+-+MG,+32183-970"
+};
 
 export const PRODUCTS: Product[] = [
   // HOT DOGS
