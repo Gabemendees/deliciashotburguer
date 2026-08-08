@@ -89,15 +89,19 @@ function CheckoutPage() {
         else valid = false;
 
         setDistanceInfo({ km: distMeters / 1000, fee, valid });
+        
+        console.log("--- DEBUG FRONTEND ---");
+        console.log("DISTÂNCIA RECEBIDA:", distMeters, "metros");
+        console.log("TAXA CALCULADA:", fee);
       }).catch(err => {
-        console.error(err);
+        console.error("ERRO NO CÁLCULO:", err);
         toast.error(err.message || "Não conseguimos localizar esse endereço com precisão.");
         setDistanceInfo(null);
       });
     } else {
       setDistanceInfo(null);
     }
-  }, [orderType, address.street, address.number, address.neighborhood, address.zip]);
+  }, [orderType, address.street, address.number, address.neighborhood, address.zip, address.city, address.state]);
 
   const deliveryFee = orderType === "pickup" ? 0 : (distanceInfo?.fee || 0);
   const total = subtotal + deliveryFee;
