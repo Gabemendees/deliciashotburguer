@@ -151,6 +151,7 @@ function CheckoutPage() {
                 {/* Informações Básicas */}
                 <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500">
                   <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">1. Seus Dados</h3>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-[#4A2618] font-bold">Seu Nome</Label>
@@ -174,14 +175,13 @@ function CheckoutPage() {
                     className="rounded-xl h-12 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710]"
                   />
                 </div>
-              </div>
-            </div>
-
+              </>
             )}
             
             {step === 2 && (
               <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500 delay-100">
                 <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">2. Entrega ou Retirada</h3>
+
               
               <RadioGroup 
                 defaultValue="delivery" 
@@ -264,12 +264,12 @@ function CheckoutPage() {
                 </div>
               )}
             </div>
-
             )}
             
             {step === 2 && (
               <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] animate-in fade-in slide-in-from-top-4 duration-500 delay-200">
                 <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-6">3. Pagamento</h3>
+
               
               <RadioGroup 
                 defaultValue="pix" 
@@ -312,10 +312,10 @@ function CheckoutPage() {
                 </div>
               )}
             </div>
-
             )}
 
           </div>
+
 
           <div className="lg:col-span-1">
             <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] sticky top-24">
