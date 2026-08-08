@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Product, Addition } from "@/types/burger";
 import { ADDITIONS } from "@/lib/data";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -21,6 +21,11 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [selectedAdditions, setSelectedAdditions] = useState<Addition[]>([]);
   const addItem = useCart((state) => state.addItem);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    useCart.persist.rehydrate();
+  }, []);
+
 
 
   const totalPrice = useMemo(() => {

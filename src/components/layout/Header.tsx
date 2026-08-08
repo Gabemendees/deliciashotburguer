@@ -2,10 +2,21 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+
 
 export function Header() {
   const { items, subtotal } = useCart();
-  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  useEffect(() => {
+    setIsHydrated(true);
+    useCart.persist.rehydrate();
+  }, []);
+
+  const itemCount = isHydrated ? items.reduce((acc, item) => acc + item.quantity, 0) : 0;
+  const currentSubtotal = isHydrated ? subtotal : 0;
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
@@ -37,8 +48,9 @@ export function Header() {
             {itemCount > 0 && (
               <>
                 <span className="hidden lg:inline text-xs font-black text-blue-900">
-                  {itemCount} {itemCount === 1 ? 'item' : 'itens'} — {formatCurrency(subtotal)}
+                  {itemCount} {itemCount === 1 ? 'item' : 'itens'} — {formatCurrency(currentSubtotal)}
                 </span>
+
                 <span className="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white">
                   {itemCount}
                 </span>
