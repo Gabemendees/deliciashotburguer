@@ -82,8 +82,9 @@ function Dashboard() {
       if (!productSales[item.name]) {
         productSales[item.name] = { count: 0, revenue: 0 };
       }
-      productSales[item.name].count += item.quantity;
-      productSales[item.name].revenue += Number(item.total_price);
+      const salesData = productSales[item.name]!;
+      salesData.count += item.quantity;
+      salesData.revenue += Number(item.total_price);
     });
   });
 
