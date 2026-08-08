@@ -6,22 +6,27 @@ export const Route = createFileRoute('/admin')({
   component: AdminGateway,
 });
 
+import { Outlet } from '@tanstack/react-router';
+
 function AdminGateway() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    // Only redirect if exactly at /admin
+    if (window.location.pathname === '/admin' || window.location.pathname === '/admin/') {
+      const checkAuth = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
+          window.location.replace('/admin/dashboard');
+        } else {
+          window.location.replace('/admin/login');
+        }
+      };
       
-      if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
-        window.location.replace('/admin/dashboard');
-      } else {
-        window.location.replace('/admin/login');
-      }
-    };
-    
-    checkAuth();
+      checkAuth();
+    }
   }, [navigate]);
 
-  return null;
+  return <Outlet />;
 }
