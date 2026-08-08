@@ -17,6 +17,14 @@ export function Header() {
     }
   }, [isHydrated]);
 
+  const { data: config } = useQuery({
+    queryKey: ['store-config'],
+    queryFn: () => getStoreConfig(),
+  });
+
+  const isStoreOpen = config?.['is_store_open'] ?? true;
+  const storeHours = config?.['store_hours'] ?? { open: "18:00", close: "23:30" };
+
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
   const currentSubtotal = getSubtotal();
 
