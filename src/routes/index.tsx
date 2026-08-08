@@ -43,8 +43,8 @@ function Index() {
     queryFn: () => getStoreConfig(),
   });
 
-  const isStoreOpen = config ? config['is_store_open'] : true;
-  const storeHours = config ? config['store_hours'] : { open: "18:00", close: "23:30" };
+  const isStoreOpen = config?.['is_store_open'] ?? true;
+  const storeHours = config?.['store_hours'] ?? { open: "18:00", close: "23:30" };
 
   if (!isHydrated) return null;
 
