@@ -104,7 +104,36 @@ function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF4E6] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FFF4E6] flex flex-col items-center justify-center p-4">
+      <div className="mb-8 flex flex-col items-center">
+        <h1 className="text-4xl font-black text-[#2B1710] mb-2 uppercase italic tracking-tighter">DELÍCIA'S ADMIN</h1>
+        <div className="flex gap-4">
+          <Input 
+            type="email" 
+            placeholder="Email" 
+            value={email} 
+            onChange={e => setEmail(e.target.value)}
+            className="w-64 bg-white"
+          />
+          <Input 
+            type="password" 
+            placeholder="Senha" 
+            value={password} 
+            onChange={e => setPassword(e.target.value)}
+            className="w-64 bg-white"
+          />
+          <button 
+            onClick={() => {
+              console.log("DEBUG BUTTON CLICKED");
+              handleLogin();
+            }}
+            className="px-8 py-2 bg-[#E87524] text-white font-bold rounded-xl"
+          >
+            DEBUG LOGIN
+          </button>
+        </div>
+      </div>
+
       {/* Background Elements */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#E87524]/5 rounded-full blur-3xl" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#2B1710]/5 rounded-full blur-3xl" />
