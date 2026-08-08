@@ -3,11 +3,12 @@ import { Product, Addition } from "@/types/burger";
 import { formatCurrency, cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, ShoppingCart, CheckCircle2, Minus, Plus } from "lucide-react";
+import { X, ShoppingCart, CheckCircle2, Minus, Plus, Loader2 } from "lucide-react";
 import { useCart } from "@/lib/store";
 import { useNavigate } from "@tanstack/react-router";
 import { Textarea } from "@/components/ui/textarea";
-import { ADDITIONS } from "@/lib/data";
+import { useQuery } from "@tanstack/react-query";
+import { getAdminAdditions } from "@/lib/database.functions";
 
 interface ProductModalProps {
   product: Product | null;
@@ -21,6 +22,11 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [quantity, setQuantity] = useState(1);
   const addItem = useCart((state) => state.addItem);
   const navigate = useNavigate();
+
+  const { data: additions = [], isLoading: isLoadingAdditions } = useQuery({
+    queryKey: ['admin-additions'],
+    queryFn: () => getAdminAdditions(),
+  });
 
   useEffect(() => {
     if (isOpen) {
@@ -58,6 +64,8 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
     onClose();
     navigate({ to: '/carrinho' });
   };
+
+  const activeAdditions = additions.filter((a: any) => a.is_available);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -147,44 +155,55 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
                 </h3>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {ADDITIONS.map((addition) => {
-                  const isSelected = selectedAdditions.some(a => a.name === addition.name);
-                  return (
-                    <div 
-                      key={addition.name}
-                      onClick={() => handleToggleAddition(addition)}
-                      className={cn(
-                        "flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 group",
-                        isSelected 
-                          ? "border-[#E87524] bg-[#FFF4E6] shadow-md shadow-[#E87524]/10" 
-                          : "border-[#F3E2CC] bg-white hover:border-[#EBD8C1] hover:shadow-sm"
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={cn(
-                          "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors",
-                          isSelected ? "bg-[#E87524] border-[#E87524] text-white" : "border-[#F3E2CC] bg-white"
-                        )}>
-                          {isSelected && <CheckCircle2 size={14} className="fill-current" />}
+              {isLoadingAdditions ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="animate-spin text-[#E87524]" />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {activeAdditions.map((addition: any) => {
+                    const isSelected = selectedAdditions.some(a => a.name === addition.name);
+                    return (
+                      <div 
+                        key={addition.id}
+                        onClick={() => handleToggleAddition(addition)}
+                        className={cn(
+                          "flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 group",
+                          isSelected 
+                            ? "border-[#E87524] bg-[#FFF4E6] shadow-md shadow-[#E87524]/10" 
+                            : "border-[#F3E2CC] bg-white hover:border-[#EBD8C1] hover:shadow-sm"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors",
+                            isSelected ? "bg-[#E87524] border-[#E87524] text-white" : "border-[#F3E2CC] bg-white"
+                          )}>
+                            {isSelected && <CheckCircle2 size={14} className="fill-current" />}
+                          </div>
+                          <span className={cn(
+                            "text-sm font-black transition-colors",
+                            isSelected ? "text-[#E87524]" : "text-[#4A2618] group-hover:text-[#2B1710]"
+                          )}>
+                            {addition.name}
+                          </span>
                         </div>
                         <span className={cn(
-                          "text-sm font-black transition-colors",
-                          isSelected ? "text-[#E87524]" : "text-[#4A2618] group-hover:text-[#2B1710]"
+                          "text-xs font-black px-2 py-1 rounded-lg",
+                          isSelected ? "bg-[#E87524] text-white" : "bg-[#F3E2CC] text-[#4A2618]"
                         )}>
-                          {addition.name}
+                          + {formatCurrency(Number(addition.price))}
                         </span>
                       </div>
-                      <span className={cn(
-                        "text-xs font-black px-2 py-1 rounded-lg",
-                        isSelected ? "bg-[#E87524] text-white" : "bg-[#F3E2CC] text-[#4A2618]"
-                      )}>
-                        + {formatCurrency(addition.price)}
-                      </span>
+                    );
+                  })}
+                  {activeAdditions.length === 0 && (
+                    <div className="col-span-full text-center py-4 text-[#4A2618]/40 font-bold uppercase text-[10px] tracking-widest">
+                      Nenhum acréscimo disponível.
                     </div>
-                  );
-                })}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
