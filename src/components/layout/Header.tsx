@@ -6,16 +6,16 @@ import { useEffect, useState } from "react";
 
 
 export function Header() {
-  const { items, getSubtotal } = useCart();
-  const [isHydrated, setIsHydrated] = useState(false);
+  const { items, getSubtotal, isHydrated } = useCart();
   
   useEffect(() => {
-    setIsHydrated(true);
-    useCart.persist.rehydrate();
-  }, []);
+    if (!isHydrated) {
+      useCart.persist.rehydrate();
+    }
+  }, [isHydrated]);
 
-  const itemCount = isHydrated ? items.reduce((acc, item) => acc + item.quantity, 0) : 0;
-  const currentSubtotal = isHydrated ? getSubtotal() : 0;
+  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const currentSubtotal = getSubtotal();
 
 
   return (
