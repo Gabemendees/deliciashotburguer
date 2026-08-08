@@ -12,8 +12,8 @@ export function Hero() {
           className="text-[#FFF4E6] z-10"
         >
           <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
-            SEU LANCHE FAVORITO <br />
-            <span className="text-[#E87524]">ESTÁ AQUI 🍔</span>
+            DELÍCIA'S <br />
+            <span className="text-[#E87524]">HOT BURGUER'S 🍔</span>
           </h1>
           <p className="text-lg md:text-xl mb-8 text-[#F3E2CC]">
             Escolha seu favorito, personalize do seu jeito e peça agora.
