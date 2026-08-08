@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/store";
 import { useNavigate, getRouteApi } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getAdminProducts, getAdminCategories } from "@/lib/database.functions";
+import { getPublicProducts, getPublicCategories } from "@/lib/database.functions";
 import { Loader2 } from "lucide-react";
 
 const routeApi = getRouteApi('/');
@@ -17,13 +17,13 @@ export function Menu() {
   const initialCategoryParam = search.category as string | undefined;
   
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
-    queryKey: ['admin-products'],
-    queryFn: () => getAdminProducts(),
+    queryKey: ["public-products"],
+    queryFn: () => getPublicProducts(),
   });
 
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
-    queryKey: ['admin-categories'],
-    queryFn: () => getAdminCategories(),
+    queryKey: ["public-categories"],
+    queryFn: () => getPublicCategories(),
   });
 
   const [activeCategory, setActiveCategory] = useState<string>("");

@@ -252,3 +252,37 @@ export const updateStoreConfig = createServerFn({ method: "POST" })
     if (error) throw error;
     return data;
   });
+
+// --- PUBLIC (no auth) READS FOR THE STOREFRONT ---
+
+export const getPublicCategories = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("categories")
+    .select("id, name, slug, order, is_active")
+    .eq("is_active", true)
+    .order("order", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+});
+
+export const getPublicProducts = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("products")
+    .select("id, category_id, name, description, price, image_url, is_available, categories(id, name, slug)")
+    .eq("is_available", true);
+  if (error) throw error;
+  return data ?? [];
+});
+
+export const getPublicAdditions = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("additions")
+    .select("id, name, price, is_available")
+    .eq("is_available", true)
+    .order("name", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+});
