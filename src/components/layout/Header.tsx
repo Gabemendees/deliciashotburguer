@@ -1,8 +1,11 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ChevronDown, Clock } from "lucide-react";
 import { useCart } from "@/lib/store";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getStoreConfig } from "@/lib/database.functions";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 
 export function Header() {
