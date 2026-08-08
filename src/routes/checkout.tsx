@@ -310,6 +310,16 @@ function CheckoutPage() {
                   <h3 className="text-sm font-black text-[#2B1710] uppercase tracking-widest border-b border-[#F3E2CC] pb-4 mb-4">
                     2. Dados de Entrega
                   </h3>
+
+                  <div className="bg-[#FFF4E6] p-6 rounded-3xl border border-[#E87524]/20 mb-6">
+                    <p className="font-black text-[#2B1710] uppercase text-sm mb-2 italic flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-[#E87524]" /> 📍 Endereço de Entrega
+                    </p>
+                    <p className="text-[#4A2618] font-bold text-lg leading-tight">
+                      {address.street ? `${address.street}${address.number ? `, ${address.number}` : ''}` : '---'} <br />
+                      {address.neighborhood ? `${address.neighborhood}` : '---'} — {address.city || 'Contagem'}/{address.state || 'MG'}
+                    </p>
+                  </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
