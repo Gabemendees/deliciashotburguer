@@ -102,9 +102,19 @@ function CartPage() {
                               {item.product.description}
                             </p>
                             
+                            {item.additions.length > 0 && (
+                              <div className="mb-2 flex flex-wrap gap-1">
+                                {item.additions.map((add, idx) => (
+                                  <span key={idx} className="text-[10px] font-black bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full uppercase">
+                                    + {add.name}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
                             {item.observation && (
                               <div className="mb-4 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
-                                <p className="text-[10px] font-black text-yellow-800 uppercase tracking-tighter mb-1">Observação:</p>
+                                <p className="text-[10px] font-black text-yellow-800 uppercase tracking-tighter mb-1">Deseja remover algo?</p>
                                 <p className="text-xs text-blue-900 font-medium italic">"{item.observation}"</p>
                               </div>
                             )}

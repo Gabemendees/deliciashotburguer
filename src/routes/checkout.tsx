@@ -69,6 +69,9 @@ function CheckoutPage() {
         if (item.additions.length > 0) {
           message += `   _Adicionais: ${item.additions.map((a) => a.name).join(", ")}_\n`;
         }
+        if (item.observation) {
+          message += `   _Remover/Obs: ${item.observation}_\n`;
+        }
         message += `   Preço: ${formatCurrency(item.totalPrice)}\n\n`;
       });
 
