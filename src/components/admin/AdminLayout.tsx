@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from '@tanstack/react-router';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -28,7 +28,7 @@ const sidebarItems = [
   { icon: Settings, label: 'Configurações', href: '/admin/configuracoes' },
 ];
 
-export function AdminLayout() {
+export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ export function AdminLayout() {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-[#2B1710] text-white transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 shadow-2xl",
+        "fixed inset-y-0 left-0 z-50 w-64 bg-[#2B1710] text-white transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 shadow-2xl shrink-0",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="p-6">
@@ -108,7 +108,7 @@ export function AdminLayout() {
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-8 overflow-y-auto max-h-screen">
         <div className="max-w-7xl mx-auto">
-          <Outlet />
+          {children}
         </div>
       </main>
 
