@@ -37,6 +37,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
+    console.log("AdminLayout Mounted, location:", location.pathname);
 
     const checkAuth = async () => {
       // Small delay to ensure browser processed localStorage
