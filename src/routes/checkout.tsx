@@ -77,25 +77,27 @@ function CheckoutPage() {
   // Distance calculation
   useEffect(() => {
     if (orderType === "delivery" && address.street && address.number && address.neighborhood) {
-      const fullAddress = `${address.street}, ${address.number}, ${address.neighborhood}, ${address.city || 'Contagem'} - ${address.state || 'MG'}`;
+      const fullAddress = `${address.street}, ${address.number}, ${address.neighborhood}, ${address.city || 'Contagem'} - ${address.state || 'MG'}, ${address.zip}`;
       calcDistance({ data: { destination: fullAddress } }).then((res) => {
         let fee = 0;
         let valid = true;
+        const distMeters = res.distanceMeters;
         
-        if (res.distance <= 2.5) fee = 4;
-        else if (res.distance <= 4.5) fee = 6;
-        else if (res.distance <= 6.0) fee = 8;
+        if (distMeters <= 2500) fee = 4;
+        else if (distMeters <= 4500) fee = 6;
+        else if (distMeters <= 6000) fee = 8;
         else valid = false;
 
-        setDistanceInfo({ km: res.distance, fee, valid });
+        setDistanceInfo({ km: distMeters / 1000, fee, valid });
       }).catch(err => {
         console.error(err);
+        toast.error(err.message || "Não conseguimos localizar esse endereço com precisão.");
         setDistanceInfo(null);
       });
     } else {
       setDistanceInfo(null);
     }
-  }, [orderType, address.street, address.number, address.neighborhood]);
+  }, [orderType, address.street, address.number, address.neighborhood, address.zip]);
 
   const deliveryFee = orderType === "pickup" ? 0 : (distanceInfo?.fee || 0);
   const total = subtotal + deliveryFee;
