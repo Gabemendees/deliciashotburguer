@@ -4,7 +4,7 @@ import { CartItem, Product, Addition } from '../types/burger';
 
 interface CartStore {
   items: CartItem[];
-  addItem: (product: Product, quantity: number, additions: Addition[]) => void;
+  addItem: (product: Product, quantity: number, additions: Addition[], observation?: string) => void;
   removeItem: (cartId: string) => void;
   updateQuantity: (cartId: string, quantity: number) => void;
   clearCart: () => void;
@@ -15,11 +15,12 @@ export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      addItem: (product, quantity, additions) => {
+      addItem: (product, quantity, additions, observation) => {
         const additionsPrice = additions.reduce((acc, curr) => acc + curr.price, 0);
         
         const existingItemIndex = get().items.findIndex(item => 
           item.product.id === product.id && 
+          item.observation === observation &&
           JSON.stringify(item.additions.sort((a, b) => a.name.localeCompare(b.name))) === 
           JSON.stringify(additions.sort((a, b) => a.name.localeCompare(b.name)))
         );
@@ -40,7 +41,7 @@ export const useCart = create<CartStore>()(
           const cartId = Math.random().toString(36).substring(7);
           const totalPrice = (product.price + additionsPrice) * quantity;
           set((state) => ({
-            items: [...state.items, { cartId, product, quantity, additions, totalPrice }],
+            items: [...state.items, { cartId, product, quantity, additions, totalPrice, observation }],
           }));
         }
       },

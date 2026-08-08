@@ -102,13 +102,10 @@ function CartPage() {
                               {item.product.description}
                             </p>
                             
-                            {item.additions.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mb-4">
-                                {item.additions.map((a, i) => (
-                                  <span key={i} className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold uppercase">
-                                    + {a.name}
-                                  </span>
-                                ))}
+                            {item.observation && (
+                              <div className="mb-4 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
+                                <p className="text-[10px] font-black text-yellow-800 uppercase tracking-tighter mb-1">Observação:</p>
+                                <p className="text-xs text-blue-900 font-medium italic">"{item.observation}"</p>
                               </div>
                             )}
                             

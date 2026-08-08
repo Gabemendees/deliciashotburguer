@@ -1,14 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
 import { Product, Addition } from "@/types/burger";
-import { ADDITIONS } from "@/lib/data";
 import { formatCurrency, cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, X } from "lucide-react";
+import { X, ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/store";
-import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
-
+import { Textarea } from "@/components/ui/textarea";
 
 interface ProductModalProps {
   product: Product | null;
@@ -17,52 +15,37 @@ interface ProductModalProps {
 }
 
 export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
-  const [quantity, setQuantity] = useState(1);
-  const [selectedAdditions, setSelectedAdditions] = useState<Addition[]>([]);
+  const [observation, setObservation] = useState("");
   const addItem = useCart((state) => state.addItem);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isOpen) {
+      setObservation("");
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     useCart.persist.rehydrate();
   }, []);
 
-
-
   const totalPrice = useMemo(() => {
     if (!product) return 0;
-    const additionsPrice = selectedAdditions.reduce((acc, curr) => acc + curr.price, 0);
-    return (product.price + additionsPrice) * quantity;
-  }, [product, quantity, selectedAdditions]);
+    return product.price;
+  }, [product]);
 
   if (!product) return null;
 
-
-  const toggleAddition = (addition: Addition) => {
-    setSelectedAdditions((prev) =>
-      prev.some((a) => a.name === addition.name)
-        ? prev.filter((a) => a.name !== addition.name)
-        : [...prev, addition]
-    );
-  };
-
   const handleAddToCart = () => {
-    addItem(product, quantity, selectedAdditions);
-    // Redirecionamento obrigatório conforme especificado
-    // Não precisa de toast se o redirecionamento for imediato, mas manterei um discreto se o usuário preferir
-    /* toast.success(`${product.name} adicionado ao carrinho!`, {
-      description: `Quantidade: ${quantity}`,
-      duration: 2000,
-    }); */
-    setQuantity(1);
-    setSelectedAdditions([]);
+    addItem(product, 1, [], observation);
+    setObservation("");
     onClose();
     navigate({ to: '/carrinho' });
   };
 
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-[32px] border-none shadow-2xl">
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-[32px] border-none shadow-2xl bg-white">
         <div className="relative h-64">
           <img
             src={product.image || "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1000&auto=format&fit=crop"}
@@ -92,58 +75,28 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
             </div>
           </DialogHeader>
 
-          {/* Adicionais */}
+          {/* Observação */}
           <div className="mb-8">
-            <h4 className="text-sm font-black text-blue-900 uppercase tracking-widest mb-4 flex items-center gap-2">
-              <Plus size={16} className="text-red-600" />
-              Adicionais
-            </h4>
-            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-2 no-scrollbar">
-              {ADDITIONS.map((addition) => (
-                <button
-                  key={addition.name}
-                  onClick={() => toggleAddition(addition)}
-                  className={cn(
-                    "flex items-center justify-between p-3 rounded-2xl border transition-all text-xs font-bold",
-                    selectedAdditions.some((a) => a.name === addition.name)
-                      ? "bg-red-50 border-red-200 text-red-700 shadow-sm shadow-red-100"
-                      : "bg-white border-gray-100 text-gray-600 hover:border-gray-200"
-                  )}
-                >
-                  <span className="truncate">{addition.name}</span>
-                  <span className="ml-1 opacity-60">+{formatCurrency(addition.price)}</span>
-                </button>
-              ))}
-            </div>
+            <label className="text-sm font-black text-blue-900 uppercase tracking-widest mb-4 block">
+              OBSERVAÇÃO DO PEDIDO
+            </label>
+            <Textarea 
+              value={observation}
+              onChange={(e) => setObservation(e.target.value)}
+              placeholder="Deseja remover algo ou fazer alguma observação? Ex: Sem cebola, sem tomate..."
+              className="rounded-2xl border-gray-100 min-h-[100px] focus-visible:ring-yellow-400 bg-gray-50/50"
+            />
           </div>
 
-          {/* Quantidade e Botão */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t">
-            <div className="flex items-center bg-gray-100 p-1 rounded-2xl">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-3 text-gray-500 hover:text-blue-900 hover:bg-white rounded-xl transition-all"
-              >
-                <Minus size={20} />
-              </button>
-              <span className="w-12 text-center font-black text-xl text-blue-900">{quantity}</span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="p-3 text-gray-500 hover:text-blue-900 hover:bg-white rounded-xl transition-all"
-              >
-                <Plus size={20} />
-              </button>
-            </div>
-            
-            <Button
-              variant="burger"
-              size="lg"
-              className="flex-1 w-full h-14"
-              onClick={handleAddToCart}
-            >
-              COMPRAR — {formatCurrency(totalPrice)}
-            </Button>
-          </div>
+          <Button
+            variant="burger"
+            size="lg"
+            className="w-full h-16 rounded-2xl shadow-xl shadow-yellow-100 group"
+            onClick={handleAddToCart}
+          >
+            ADICIONAR AO CARRINHO — {formatCurrency(totalPrice)}
+            <ShoppingCart className="ml-2 w-5 h-5 group-hover:scale-110 transition-transform" />
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
