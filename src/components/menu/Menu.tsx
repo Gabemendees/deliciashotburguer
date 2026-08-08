@@ -7,47 +7,77 @@ import { useCart } from "@/lib/store";
 import { useNavigate, getRouteApi } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAdminProducts, getAdminCategories } from "@/lib/database.functions";
+import { Loader2 } from "lucide-react";
 
 const routeApi = getRouteApi('/');
-
-
-
-
-const CATEGORIES: { id: Category; icon: string; label: string }[] = [
-  { id: 'HOT DOGS', icon: '🌭', label: 'HOT DOGS' },
-  { id: 'HAMBÚRGUERES', icon: '🍔', label: 'HAMBÚRGUERES' },
-  { id: 'BEBIDAS', icon: '🥤', label: 'BEBIDAS' },
-];
 
 export function Menu() {
   const navigate = useNavigate();
   const search = routeApi.useSearch();
-  const initialCategory = search.category as Category | undefined;
+  const initialCategoryParam = search.category as string | undefined;
   
-  const [activeCategory, setActiveCategory] = useState<Category>(initialCategory || 'HOT DOGS');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const { data: products = [], isLoading: isLoadingProducts } = useQuery({
+    queryKey: ['admin-products'],
+    queryFn: () => getAdminProducts(),
+  });
+
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
+    queryKey: ['admin-categories'],
+    queryFn: () => getAdminCategories(),
+  });
+
+  const [activeCategory, setActiveCategory] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const addItem = useCart(state => state.addItem);
 
   useEffect(() => {
-    if (initialCategory && initialCategory !== activeCategory) {
-      setActiveCategory(initialCategory);
+    if (categories.length > 0) {
+      if (initialCategoryParam) {
+        const found = categories.find(c => c.name === initialCategoryParam);
+        if (found) {
+          setActiveCategory(found.name);
+          return;
+        }
+      }
+      if (!activeCategory) {
+        setActiveCategory(categories[0].name);
+      }
     }
-  }, [initialCategory]);
+  }, [categories, initialCategoryParam]);
 
   useEffect(() => {
     useCart.persist.rehydrate();
   }, []);
 
-
-  const handleProductClick = (product: Product) => {
-    if (product.category === 'HAMBÚRGUERES' || product.category === 'HOT DOGS') {
-      setSelectedProduct(product);
+  const handleProductClick = (product: any) => {
+    // We treat almost all products as customizable now except maybe drinks if they don't have additions
+    // but the instruction implies a full management center.
+    // For drinks, we can still show the modal or add directly.
+    if (product.categories?.name === 'BEBIDAS' && !product.description?.includes('personalização')) {
+       // Direct add for simple items
+       addItem({
+         id: product.id,
+         name: product.name,
+         description: product.description,
+         price: product.price,
+         image: product.image_url,
+         category: product.categories?.name
+       } as any, 1, []);
+       navigate({ to: '/carrinho' });
     } else {
-      addItem(product, 1, []);
-      navigate({ to: '/carrinho' });
+      setSelectedProduct(product);
     }
   };
 
+  if (isLoadingProducts || isLoadingCategories) {
+    return (
+      <div className="flex justify-center p-24">
+        <Loader2 className="animate-spin text-[#E87524]" size={48} />
+      </div>
+    );
+  }
+
+  const filteredProducts = products.filter(p => p.categories?.name === activeCategory && p.is_available);
 
   return (
     <section id="menu" className="py-12 bg-[#FFF4E6]">
@@ -59,36 +89,54 @@ export function Menu() {
 
         {/* Categories Bar */}
         <div className="sticky top-16 z-40 -mx-4 px-4 py-4 bg-[#FFF4E6]/80 backdrop-blur-sm overflow-x-auto no-scrollbar flex items-center gap-3 md:justify-center">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
+              onClick={() => setActiveCategory(cat.name)}
               className={cn(
-                "flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-bold transition-all shadow-sm",
-                activeCategory === cat.id
+                "flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-bold transition-all shadow-sm uppercase text-xs tracking-widest",
+                activeCategory === cat.name
                   ? "bg-[#E87524] text-white scale-105 shadow-[#E87524]/20"
                   : "bg-[#F3E2CC] text-[#2B1710] hover:bg-[#EBD8C1] border border-[#EBD8C1]"
               )}
             >
-              <span>{cat.icon}</span>
-              <span>{cat.label}</span>
+              <span>{cat.name}</span>
             </button>
           ))}
         </div>
 
         {/* Products Grid */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PRODUCTS.filter(p => p.category === activeCategory).map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard 
               key={product.id} 
-              product={product} 
+              product={{
+                id: product.id,
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                image: product.image_url,
+                category: product.categories?.name
+              } as any} 
               onClick={() => handleProductClick(product)}
             />
           ))}
+          {filteredProducts.length === 0 && (
+            <div className="col-span-full text-center py-12 text-[#4A2618]/40 font-bold uppercase tracking-widest">
+              Nenhum produto disponível nesta categoria no momento.
+            </div>
+          )}
         </div>
 
         <ProductModal 
-          product={selectedProduct}
+          product={selectedProduct ? {
+            id: selectedProduct.id,
+            name: selectedProduct.name,
+            description: selectedProduct.description,
+            price: selectedProduct.price,
+            image: selectedProduct.image_url,
+            category: selectedProduct.categories?.name
+          } as any : null}
           isOpen={!!selectedProduct}
           onClose={() => setSelectedProduct(null)}
         />
@@ -96,4 +144,3 @@ export function Menu() {
     </section>
   );
 }
-
