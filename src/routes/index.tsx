@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { getStoreConfig } from "@/lib/database.functions";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => z.object({
@@ -100,6 +101,3 @@ function Index() {
     </div>
   );
 }
-
-// Add missing helper for cn if not available in current scope (though it should be via lib/utils)
-import { cn } from "@/lib/utils";

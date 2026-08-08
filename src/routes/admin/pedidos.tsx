@@ -30,6 +30,7 @@ export const Route = createFileRoute('/admin/pedidos')({
 
 const statusColors: any = {
   new: "bg-blue-500",
+  accepted: "bg-cyan-500",
   preparing: "bg-yellow-500",
   ready: "bg-orange-500",
   delivered: "bg-purple-500",
@@ -39,6 +40,7 @@ const statusColors: any = {
 
 const statusLabels: any = {
   new: "NOVO",
+  accepted: "ACEITO",
   preparing: "EM PREPARO",
   ready: "PRONTO",
   delivered: "SAIU PARA ENTREGA",
@@ -99,7 +101,7 @@ function Pedidos() {
           </div>
           
           <div className="flex gap-2 bg-white p-1 rounded-2xl shadow-sm overflow-x-auto max-w-full no-scrollbar border border-[#F3E2CC]">
-            {['TODOS', 'NOVO', 'EM PREPARO', 'PRONTO', 'SAIU PARA ENTREGA', 'CONCLUÍDO', 'CANCELADO'].map((f) => (
+            {['TODOS', 'NOVO', 'ACEITO', 'EM PREPARO', 'PRONTO', 'SAIU PARA ENTREGA', 'CONCLUÍDO', 'CANCELADO'].map((f) => (
               <button 
                 key={f} 
                 onClick={() => setActiveFilter(f)}
@@ -408,10 +410,19 @@ function OrderDetail({ order, onUpdateStatus, onCancel }: any) {
           <div className="grid grid-cols-1 gap-2">
             {order.status === 'new' && (
               <Button 
+                onClick={() => onUpdateStatus(order.id, 'accepted')}
+                className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-black h-14 rounded-2xl gap-3 shadow-lg shadow-cyan-600/20"
+              >
+                <CheckCircle2 size={20} /> ACEITAR PEDIDO
+              </Button>
+            )}
+
+            {order.status === 'accepted' && (
+              <Button 
                 onClick={() => onUpdateStatus(order.id, 'preparing')}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black h-14 rounded-2xl gap-3 shadow-lg shadow-blue-600/20"
               >
-                <Play size={20} /> ACEITAR PEDIDO
+                <Play size={20} /> INICIAR PREPARO
               </Button>
             )}
             
