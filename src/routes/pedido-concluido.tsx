@@ -120,7 +120,7 @@ function OrderCompletedPage() {
               </div>
               <div className="flex justify-between text-sm font-bold text-[#4A2618] uppercase tracking-tighter">
                 <span>Taxa de Entrega</span>
-                <span>{order.delivery_type === 'pickup' ? 'R$ 0,00' : formatCurrency(order.delivery_fee)}</span>
+                <span>{order.delivery_type === 'pickup' ? 'R$ 0,00' : formatCurrency(order.delivery_fee || 0)}</span>
               </div>
               <div className="flex justify-between items-end pt-4 border-t border-[#F3E2CC]">
                 <span className="font-black text-[#2B1710] uppercase italic">Valor Total</span>
