@@ -287,7 +287,6 @@ function CheckoutPage() {
                   </div>
                   <div className="text-center">
                     <span className="block font-black text-xl text-[#2B1710] uppercase tracking-tighter">Retirar no local</span>
-                    <span className="text-sm text-[#4A2618]/70 font-bold uppercase tracking-widest mt-1 block">R$ 0,00 de taxa</span>
                   </div>
                   <RadioGroupItem value="pickup" className="sr-only" />
                 </div>
@@ -304,7 +303,6 @@ function CheckoutPage() {
                   </div>
                   <div className="text-center">
                     <span className="block font-black text-xl text-[#2B1710] uppercase tracking-tighter">Receber em casa</span>
-                    <span className="text-sm text-[#4A2618]/70 font-bold uppercase tracking-widest mt-1 block">Cálculo por distância</span>
                   </div>
                   <RadioGroupItem value="delivery" className="sr-only" />
                 </div>
