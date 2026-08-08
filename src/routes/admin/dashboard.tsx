@@ -14,13 +14,26 @@ import { Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/dashboard')({
+  ssr: false,
   component: Dashboard,
 });
 
 function Dashboard() {
   const navigate = useNavigate();
-  
+  const [authReady, setAuthReady] = useState(false);
+
+  // Só habilita as chamadas ao servidor depois que a sessão existir,
+  // caso contrário o middleware rejeita com "No authorization header".
   useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (mounted && session) setAuthReady(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!authReady) return;
     // Force poll orders count to check for new ones
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
     let lastOrderCount = -1;
@@ -37,13 +50,14 @@ function Dashboard() {
 
     const interval = setInterval(checkNewOrders, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [authReady]);
 
   const queryClient = useQueryClient();
   const { data: orders = [], isLoading: ordersLoading } = useQuery({
     queryKey: ['admin-orders'],
     queryFn: () => getAdminOrders(),
     refetchInterval: 10000,
+    enabled: authReady,
   });
 
   const [period, setPeriod] = useState('Hoje');
@@ -51,6 +65,7 @@ function Dashboard() {
   const { data: config = {}, isLoading: configLoading } = useQuery({
     queryKey: ['store-config'],
     queryFn: () => getStoreConfig(),
+    enabled: authReady,
   });
 
   const updateConfigMutation = useMutation({
@@ -61,7 +76,7 @@ function Dashboard() {
     }
   });
 
-  if (ordersLoading || configLoading) {
+  if (!authReady || ordersLoading || configLoading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center h-[60vh]">
