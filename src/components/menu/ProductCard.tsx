@@ -47,8 +47,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             {product.price > 0 ? formatCurrency(product.price) : '--'}
           </span>
           <div className="bg-yellow-400 group-hover:bg-red-600 group-hover:text-white text-blue-900 font-black px-6 py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center gap-2">
-            <span className="text-xs uppercase tracking-widest">Comprar</span>
-            <ShoppingCart size={18} />
+            <span className="text-xs uppercase tracking-widest">COMPRAR</span>
+            <span className="text-lg">🛒</span>
           </div>
 
         </div>

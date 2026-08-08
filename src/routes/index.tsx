@@ -42,10 +42,7 @@ function Index() {
       </main>
       
       <Cart />
-
-
       
-      {/* Footer minimalista como solicitado */}
       <footer className="bg-blue-950 text-blue-200 py-12 border-t border-blue-900">
         <div className="container mx-auto px-4 text-center">
           <div className="flex flex-col items-center mb-6">

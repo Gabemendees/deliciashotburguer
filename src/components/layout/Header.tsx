@@ -56,7 +56,7 @@ export function Header() {
                 </span>
               </>
             )}
-            {itemCount === 0 && <span className="hidden lg:inline text-xs font-black text-blue-900">CARRINHO</span>}
+            {itemCount === 0 && <span className="hidden lg:inline text-xs font-black text-blue-900">🛒 CARRINHO</span>}
           </Link>
         </div>
       </div>
