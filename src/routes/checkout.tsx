@@ -321,9 +321,9 @@ function CheckoutPage() {
                     </p>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-[#4A2618] font-bold">CEP (Busca Automática)</Label>
+                      <Label className="text-[#4A2618] font-bold">CEP</Label>
                       <Input 
                         placeholder="00000-000" 
                         required 
@@ -332,7 +332,7 @@ function CheckoutPage() {
                         className="rounded-xl h-14 border-2 border-[#F3E2CC] focus-visible:ring-[#E87524] text-[#2B1710] font-bold text-lg"
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 sm:col-span-2">
                       <Label className="text-[#4A2618] font-bold">Número</Label>
                       <Input 
                         placeholder="Ex: 714" 
