@@ -10,6 +10,10 @@ import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin')({
   component: AdminLogin,
+  beforeLoad: async ({ context }) => {
+    // Note: We can't easily check Supabase session here synchronously for redirect
+    // but the component handle it in useEffect.
+  }
 });
 
 function AdminLogin() {
@@ -21,10 +25,16 @@ function AdminLogin() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
+        window.location.replace('/admin/dashboard');
+      }
       setSession(session);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
+        window.location.replace('/admin/dashboard');
+      }
       setSession(session);
     });
 
@@ -80,7 +90,7 @@ function AdminLogin() {
       toast.success('Autenticação realizada com sucesso!');
       console.log("REDIRECTING TO DASHBOARD...");
       
-      // Force hard redirect to ensure session is picked up by AdminLayout
+      // Force hard redirect to /admin/dashboard to ensure session is picked up
       window.location.assign('/admin/dashboard');
       
     } catch (error: any) {
@@ -92,7 +102,7 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    window.location.href = '/admin/dashboard';
+    window.location.assign('/admin/dashboard');
   };
 
   return (
