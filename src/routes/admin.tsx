@@ -37,6 +37,8 @@ function AdminLogin() {
       e.stopPropagation();
     }
     
+    console.log("LOGIN ATTEMPT STARTED", { email });
+    
     if (!email) {
       toast.error('E-mail obrigatório.');
       return;
@@ -54,28 +56,35 @@ function AdminLogin() {
     setLoading(true);
 
     try {
+      console.log("CALLING SUPABASE AUTH...");
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("SUPABASE ERROR", error);
+        throw error;
+      }
       
+      console.log("AUTH SUCCESSFUL, VERIFYING SESSION...");
       const { data: { session: newSession } } = await supabase.auth.getSession();
       
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        console.warn("UNAUTHORIZED EMAIL", newSession?.user.email);
         await supabase.auth.signOut();
         toast.error('Acesso negado. Apenas o administrador autorizado pode entrar.');
         return;
       }
 
       toast.success('Autenticação realizada com sucesso!');
+      console.log("REDIRECTING TO DASHBOARD...");
       
       // Force hard redirect to ensure session is picked up by AdminLayout
-      window.location.href = '/admin/dashboard';
+      window.location.assign('/admin/dashboard');
       
     } catch (error: any) {
-      console.error("AUTHENTICATION ERROR", error);
+      console.error("AUTHENTICATION FATAL ERROR", error);
       toast.error(error.message || 'E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
