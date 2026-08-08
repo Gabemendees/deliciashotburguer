@@ -40,7 +40,7 @@ export function Menu() {
         }
       }
       if (!activeCategory) {
-        setActiveCategory(categories[0].name);
+        setActiveCategory(categories[0]?.name || "");
       }
     }
   }, [categories, initialCategoryParam]);
