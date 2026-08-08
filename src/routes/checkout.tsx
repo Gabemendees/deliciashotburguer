@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useCart } from "@/lib/store";
 import { formatCurrency, cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+
 import { useNavigate } from "@tanstack/react-router";
 import { WHATSAPP_NUMBER, STORE_ADDRESS } from "@/lib/data";
 import { Button } from "@/components/ui/button";
@@ -117,7 +119,55 @@ function CheckoutPage() {
     setLoading(true);
 
     try {
+      // Save order to Supabase
+      const { data: order, error: orderError } = await (supabase as any).from('orders').insert({
+        customer_name: name,
+        customer_phone: phone,
+        status: 'new',
+        delivery_type: orderType,
+        address_zip: address.zip,
+        address_street: address.street,
+        address_number: address.number,
+        address_neighborhood: address.neighborhood,
+        address_city: address.city,
+        address_state: address.state,
+        address_reference: reference,
+        subtotal: subtotal,
+        delivery_fee: deliveryFee,
+        total: total,
+        payment_method: payment === 'dinheiro' ? 'cash' : (payment === 'pix' ? 'pix' : 'card')
+      }).select().single();
+
+      if (orderError) throw orderError;
+
+      // Save order items
+      for (const item of items) {
+        const { data: orderItem, error: itemError } = await (supabase as any).from('order_items').insert({
+          order_id: order.id,
+          product_id: (item.product as any).id, // assuming it will have an ID when we sync
+          name: item.product.name,
+          price: item.product.price,
+          quantity: item.quantity,
+          observation: item.observation,
+          total_price: item.totalPrice
+        }).select().single();
+
+        if (itemError) throw itemError;
+
+        // Save item additions
+        if (item.additions.length > 0) {
+          const additionsToInsert = item.additions.map(add => ({
+            order_item_id: orderItem.id,
+            name: add.name,
+            price: add.price
+          }));
+          const { error: addsError } = await (supabase as any).from('order_item_additions').insert(additionsToInsert);
+          if (addsError) throw addsError;
+        }
+      }
+
       let message = `*NOVO PEDIDO — DELÍCIA'S HOT BURGUER'S*\n\n`;
+      message += `*Pedido:* #${order.id.slice(0, 4)}\n`;
       message += `*Nome:* ${name}\n`;
       message += `*WhatsApp:* ${phone}\n\n`;
       
@@ -164,11 +214,13 @@ function CheckoutPage() {
       toast.success("Pedido enviado com sucesso!");
       clearCart();
       navigate({ to: '/' });
-    } catch (error) {
-      toast.error("Erro ao enviar pedido.");
+    } catch (error: any) {
+      console.error("ERRO AO SALVAR PEDIDO:", error);
+      toast.error("Erro ao processar pedido no banco de dados.");
     } finally {
       setLoading(false);
     }
+
   };
 
   if (!isHydrated) return null;
