@@ -58,9 +58,9 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center gap-2 bg-[#4A2618] px-3 py-1.5 rounded-full hover:bg-[#5D3222] transition-colors cursor-pointer outline-none">
+              <button className="hidden md:flex items-center gap-2 bg-[#4A2618] px-3 py-1.5 rounded-full hover:bg-[#5D3222] transition-colors cursor-pointer outline-none group">
                 <div className={cn(
-                  "w-2 h-2 rounded-full",
+                  "w-2 h-2 rounded-full transition-all group-hover:scale-110",
                   isStoreOpen ? "bg-green-500 animate-pulse" : "bg-red-500"
                 )} />
                 <span className="text-xs font-bold text-[#F3E2CC] uppercase tracking-tighter flex items-center gap-1">
@@ -69,7 +69,7 @@ export function Header() {
                 </span>
               </button>
             </PopoverTrigger>
-            <PopoverContent className="bg-[#4A2618] border-[#E87524] text-[#F3E2CC] w-48 p-3 mt-1 shadow-2xl">
+            <PopoverContent className="bg-[#4A2618] border-[#E87524] text-[#F3E2CC] w-48 p-3 mt-1 shadow-2xl z-[60]">
               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[#2B1710]/50">
                 <Clock className="w-4 h-4 text-[#E87524]" />
                 <span className="text-xs font-black uppercase tracking-widest">Horário</span>
