@@ -1,10 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { getAdminProducts } from '@/lib/database.functions';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Search, Edit2, Trash2, Copy, ToggleLeft as Toggle } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Copy, ToggleLeft as Toggle, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
@@ -13,6 +15,11 @@ export const Route = createFileRoute('/admin/produtos')({
 });
 
 function Produtos() {
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ['admin-products'],
+    queryFn: () => getAdminProducts(),
+  });
+
   return (
     <AdminLayout>
       <div className="space-y-8">
@@ -46,22 +53,30 @@ function Produtos() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          <ProductRow 
-            name="X-BACON" 
-            category="Hambúrgueres" 
-            price={15.00} 
-            available={true}
-            image="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200&auto=format&fit=crop"
-          />
-          <ProductRow 
-            name="HOT DOG ORIGINAL" 
-            category="Hot Dogs" 
-            price={6.00} 
-            available={true}
-            image="https://images.unsplash.com/photo-1612392062631-94dd858cba88?q=80&w=200&auto=format&fit=crop"
-          />
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <Loader2 className="animate-spin text-[#E87524]" size={32} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {products.map((product: any) => (
+              <ProductRow 
+                key={product.id}
+                name={product.name} 
+                category={product.categories?.name || 'Sem Categoria'} 
+                price={Number(product.price)} 
+                available={product.is_available}
+                image={product.image_url || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200&auto=format&fit=crop'}
+              />
+            ))}
+            {products.length === 0 && (
+              <div className="text-center p-12 bg-white rounded-2xl border-2 border-dashed border-[#F3E2CC]">
+                <p className="text-[#4A2618]/60 font-bold">Nenhum produto cadastrado ainda.</p>
+                <Button variant="link" className="text-[#E87524] mt-2">Clique aqui para adicionar o primeiro</Button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
@@ -82,7 +97,7 @@ function ProductRow({ name, category, price, available, image }: any) {
                 <Badge variant="outline" className="text-[10px] font-bold border-[#F3E2CC] text-[#4A2618]/60 uppercase tracking-wider">
                   {category}
                 </Badge>
-                <span className="text-[#E87524] font-black">R$ {price.toFixed(2).replace('.', ',')}</span>
+                <span className="text-[#E87524] font-black">{formatCurrency(price)}</span>
               </div>
             </div>
           </div>
@@ -111,3 +126,4 @@ function ActionButton({ icon: Icon, color }: any) {
     </button>
   );
 }
+
