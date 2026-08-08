@@ -21,7 +21,7 @@ export interface CartItem {
   quantity: number;
   additions: Addition[];
   totalPrice: number;
-  observation?: string;
+  observation?: string | undefined;
 }
 
 export interface DeliveryArea {
