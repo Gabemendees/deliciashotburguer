@@ -8,7 +8,7 @@ import { useCart } from "@/lib/store";
 import { useNavigate } from "@tanstack/react-router";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
-import { getAdminAdditions } from "@/lib/database.functions";
+import { getPublicAdditions } from "@/lib/database.functions";
 
 interface ProductModalProps {
   product: Product | null;
@@ -24,8 +24,8 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const navigate = useNavigate();
 
   const { data: additions = [], isLoading: isLoadingAdditions } = useQuery({
-    queryKey: ['admin-additions'],
-    queryFn: () => getAdminAdditions(),
+    queryKey: ['public-additions'],
+    queryFn: () => getPublicAdditions(),
   });
 
   useEffect(() => {
