@@ -98,6 +98,11 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       throw new Error('Unauthorized: No user ID found in token');
     }
 
+    // Strict Admin check for /admin/ functions
+    if (data.claims.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+      throw new Error('Unauthorized: Admin access required');
+    }
+
     return next({
       context: {
         supabase,
@@ -105,5 +110,6 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
         claims: data.claims,
       },
     });
+
   },
 );

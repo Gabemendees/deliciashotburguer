@@ -40,10 +40,25 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate({ to: '/admin' });
+        return;
+      }
+
+      // Strict role check
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (!roleData || session.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        await supabase.auth.signOut();
+        navigate({ to: '/admin' });
       } else {
         setUserEmail(session.user.email ?? null);
       }
     };
+
     checkAuth();
   }, [navigate]);
 

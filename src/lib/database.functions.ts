@@ -1,5 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { z } from "zod";
+
 
 export const syncDataWithDatabase = createServerFn({ method: "GET" })
   .handler(async () => {
@@ -7,8 +10,10 @@ export const syncDataWithDatabase = createServerFn({ method: "GET" })
   });
 
 export const getAdminProducts = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const { data, error } = await (supabase as any)
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+
       .from('products')
       .select('*, categories(*)');
     if (error) throw error;
@@ -16,8 +21,10 @@ export const getAdminProducts = createServerFn({ method: "GET" })
   });
 
 export const getAdminOrders = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const { data, error } = await (supabase as any)
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+
       .from('orders')
       .select('*, order_items(*, order_item_additions(*))')
       .order('created_at', { ascending: false });
