@@ -39,9 +39,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     let isMounted = true;
 
     const checkAuth = async () => {
-      // Small delay to ensure session persistence is processed by the browser
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!isMounted) return;
@@ -51,7 +48,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Check if the user is the specific admin email
       if (session.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
         await supabase.auth.signOut();
         navigate({ to: '/admin' });
@@ -64,8 +60,18 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     checkAuth();
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' && isMounted) {
+      if (!isMounted) return;
+      
+      if (event === 'SIGNED_OUT') {
         navigate({ to: '/admin' });
+      } else if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+        if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
+          setUserEmail(session.user.email ?? null);
+        } else if (session) {
+          supabase.auth.signOut().then(() => {
+            navigate({ to: '/admin' });
+          });
+        }
       }
     });
 
