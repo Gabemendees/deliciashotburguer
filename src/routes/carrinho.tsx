@@ -102,15 +102,19 @@ function CartPage() {
                               {item.product.description}
                             </p>
                             
-                            {item.additions.length > 0 && (
-                              <div className="mb-2 flex flex-wrap gap-1">
+                            <div className="mb-2">
+                              <p className="text-[10px] font-black text-[#4A2618]/60 uppercase tracking-widest mb-1">Preço unitário + Acréscimos</p>
+                              <div className="flex flex-wrap gap-1">
+                                <span className="text-[10px] font-black bg-[#F3E2CC] text-[#2B1710] px-2 py-0.5 rounded-full uppercase">
+                                  Base: {formatCurrency(item.product.price)}
+                                </span>
                                 {item.additions.map((add, idx) => (
                                   <span key={idx} className="text-[10px] font-black bg-[#FFF4E6] text-[#E87524] px-2 py-0.5 rounded-full uppercase">
-                                    + {add.name}
+                                    + {add.name}: {formatCurrency(add.price)}
                                   </span>
                                 ))}
                               </div>
-                            )}
+                            </div>
 
                             {item.observation && (
                               <div className="mb-4 p-3 bg-[#FFF4E6] rounded-xl border border-[#F3E2CC]">
