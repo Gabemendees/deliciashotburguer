@@ -35,7 +35,12 @@ function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("LOGIN BUTTON CLICKED");
-    window.dispatchEvent(new CustomEvent('lovable-debug', { detail: "LOGIN BUTTON CLICKED" }));
+    
+    // Test if the environment is actually working
+    if (typeof window !== 'undefined') {
+        window.lovableAuthTest = "Triggered";
+    }
+
 
     if (!email) {
       console.log("VALIDATION ERROR: Email empty");
