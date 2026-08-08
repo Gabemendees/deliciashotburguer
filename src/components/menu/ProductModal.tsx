@@ -3,7 +3,7 @@ import { Product, Addition } from "@/types/burger";
 import { formatCurrency, cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, ShoppingCart, CheckCircle2 } from "lucide-react";
+import { X, ShoppingCart, CheckCircle2, Minus, Plus } from "lucide-react";
 import { useCart } from "@/lib/store";
 import { useNavigate } from "@tanstack/react-router";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +18,7 @@ interface ProductModalProps {
 export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [observation, setObservation] = useState("");
   const [selectedAdditions, setSelectedAdditions] = useState<Addition[]>([]);
+  const [quantity, setQuantity] = useState(1);
   const addItem = useCart((state) => state.addItem);
   const navigate = useNavigate();
 
@@ -25,6 +26,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
     if (isOpen) {
       setObservation("");
       setSelectedAdditions([]);
+      setQuantity(1);
     }
   }, [isOpen]);
 
@@ -35,8 +37,8 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const totalPrice = useMemo(() => {
     if (!product) return 0;
     const additionsTotal = selectedAdditions.reduce((acc, curr) => acc + curr.price, 0);
-    return product.price + additionsTotal;
-  }, [product, selectedAdditions]);
+    return (product.price + additionsTotal) * quantity;
+  }, [product, selectedAdditions, quantity]);
 
   if (!product) return null;
 
@@ -49,9 +51,10 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   };
 
   const handleAddToCart = () => {
-    addItem(product, 1, selectedAdditions, observation);
+    addItem(product, quantity, selectedAdditions, observation);
     setObservation("");
     setSelectedAdditions([]);
+    setQuantity(1);
     onClose();
     navigate({ to: '/carrinho' });
   };
@@ -82,7 +85,27 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar p-8 pt-6">
-          <h1 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-widest border-b border-[#F3E2CC] pb-4">MONTE SEU LANCHE</h1>
+          <div className="flex items-center justify-between mb-6 border-b border-[#F3E2CC] pb-4">
+            <h1 className="text-xl font-black text-[#2B1710] uppercase tracking-widest">MONTE SEU LANCHE</h1>
+            
+            <div className="flex items-center bg-[#FFF4E6] rounded-xl p-1 border border-[#F3E2CC]">
+              <button 
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="p-1.5 hover:bg-white rounded-lg transition-all text-[#4A2618] hover:text-[#2B1710]"
+              >
+                <Minus size={16} />
+              </button>
+              <span className="w-10 text-center font-black text-[#2B1710]">
+                {quantity}
+              </span>
+              <button 
+                onClick={() => setQuantity(quantity + 1)}
+                className="p-1.5 hover:bg-white rounded-lg transition-all text-[#4A2618] hover:text-[#2B1710]"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
           
           {/* Informações do Produto */}
           <div className="mb-8">
