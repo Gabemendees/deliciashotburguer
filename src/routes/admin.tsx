@@ -10,17 +10,12 @@ import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin')({
   component: AdminLogin,
-  beforeLoad: async ({ context }) => {
-    // Note: We can't easily check Supabase session here synchronously for redirect
-    // but the component handle it in useEffect.
-  }
 });
 
 function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
@@ -47,67 +42,45 @@ function AdminLogin() {
       e.stopPropagation();
     }
     
-    console.log("LOGIN ATTEMPT STARTED", { email });
-    
-    if (!email) {
-      toast.error('E-mail obrigatório.');
-      return;
-    }
-    if (!password) {
-      toast.error('Senha obrigatória.');
+    if (!email || !password) {
+      toast.error('Preencha e-mail e senha.');
       return;
     }
     
     if (email.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-      toast.error('E-mail ou senha incorretos.');
+      toast.error('Acesso negado.');
       return;
     }
 
     setLoading(true);
 
     try {
-      console.log("CALLING SUPABASE AUTH...");
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        console.error("SUPABASE ERROR", error);
-        throw error;
-      }
+      if (error) throw error;
       
-      console.log("AUTH SUCCESSFUL, VERIFYING SESSION...");
       const { data: { session: newSession } } = await supabase.auth.getSession();
       
       if (!newSession || newSession.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
-        console.warn("UNAUTHORIZED EMAIL", newSession?.user.email);
         await supabase.auth.signOut();
-        toast.error('Acesso negado. Apenas o administrador autorizado pode entrar.');
+        toast.error('Acesso negado.');
         return;
       }
 
-      toast.success('Autenticação realizada com sucesso!');
-      console.log("REDIRECTING TO DASHBOARD...");
-      
-      // Force hard redirect to /admin/dashboard to ensure session is picked up
       window.location.assign('/admin/dashboard');
       
     } catch (error: any) {
-      console.error("AUTHENTICATION FATAL ERROR", error);
-      toast.error(error.message || 'E-mail ou senha incorretos.');
+      toast.error('E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoToDashboard = () => {
-    window.location.assign('/admin/dashboard');
-  };
-
   return (
     <div className="min-h-screen bg-[#FFF4E6] flex items-center justify-center p-4 relative overflow-hidden font-sans">
-      {/* Background Elements */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#E87524]/5 rounded-full blur-3xl" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#2B1710]/5 rounded-full blur-3xl" />
       
@@ -121,30 +94,6 @@ function AdminLogin() {
         </div>
 
         <div className="bg-white p-8 px-10 pb-12 rounded-t-[2.5rem]">
-          {session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com' ? (
-            <div className="space-y-6 text-center pt-4">
-              <div className="p-5 bg-green-50 border border-green-100 rounded-3xl">
-                <p className="text-green-700 font-bold text-sm">Administrador autenticado.</p>
-                <p className="text-green-600 text-[10px] mt-1 uppercase font-bold tracking-wider">{session.user.email}</p>
-              </div>
-              <Button 
-                onClick={handleGoToDashboard}
-                className="w-full bg-[#E87524] hover:bg-[#C95718] text-white font-black h-16 rounded-2xl gap-3 text-lg shadow-lg shadow-[#E87524]/30 active:scale-[0.98] transition-all"
-              >
-                IR PARA O DASHBOARD
-                <ExternalLink size={20} />
-              </Button>
-              <button 
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  window.location.reload();
-                }}
-                className="text-[#4A2618]/30 font-bold uppercase text-[10px] tracking-widest hover:text-red-500 transition-colors"
-              >
-                Sair da conta
-              </button>
-            </div>
-          ) : (
             <form 
               onSubmit={handleLogin}
               className="space-y-6 pt-4"
@@ -197,14 +146,7 @@ function AdminLogin() {
                   </>
                 )}
               </Button>
-
-              <div className="text-center pt-2">
-                <p className="text-[#4A2618]/20 font-bold text-[9px] uppercase tracking-[0.2em]">
-                  SISTEMA DE ACESSO RESTRITO
-                </p>
-              </div>
             </form>
-          )}
         </div>
       </div>
       
@@ -214,4 +156,3 @@ function AdminLogin() {
     </div>
   );
 }
-

@@ -37,10 +37,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
-    console.log("AdminLayout Mounted, location:", location.pathname);
 
     const checkAuth = async () => {
-      // Small delay to ensure browser processed localStorage
       await new Promise(r => setTimeout(r, 200));
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -67,14 +65,12 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       
       if (event === 'SIGNED_OUT') {
         window.location.replace('/admin');
-      } else if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-        if (session && session.user.email?.toLowerCase() === 'deliciahotburguers@gmail.com') {
-          setUserEmail(session.user.email ?? null);
-        } else if (session) {
-          supabase.auth.signOut().then(() => {
-            window.location.replace('/admin');
-          });
-        }
+      } else if (session && session.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+        supabase.auth.signOut().then(() => {
+          window.location.replace('/admin');
+        });
+      } else if (session) {
+        setUserEmail(session.user.email ?? null);
       }
     });
 
@@ -82,7 +78,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
