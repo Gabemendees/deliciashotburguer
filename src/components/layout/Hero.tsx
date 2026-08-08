@@ -81,11 +81,11 @@ export function Hero() {
                     </div>
                     <div className="space-y-1.5">
                       <div className="flex justify-between items-center text-[11px]">
-                        <span className="font-bold opacity-70">Terça a Domingo</span>
-                        <span className="font-black text-[#E87524]">{storeHours.open} às {storeHours.close}</span>
+                        <span className="font-bold opacity-70">Segunda a Sábado</span>
+                        <span className="font-black text-[#E87524]">19:00 às 00:00</span>
                       </div>
                       <div className="flex justify-between items-center text-[11px]">
-                        <span className="font-bold opacity-70">Segunda</span>
+                        <span className="font-bold opacity-70">Domingo</span>
                         <span className="font-black text-red-400">FECHADO</span>
                       </div>
                     </div>
