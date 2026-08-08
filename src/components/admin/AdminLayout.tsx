@@ -36,30 +36,43 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkAuth = async () => {
+      // Small delay to ensure session persistence is processed by the browser
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!isMounted) return;
+
       if (!session) {
         navigate({ to: '/admin' });
         return;
       }
 
-      // Strict role check
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      if (!roleData || session.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
+      // Check if the user is the specific admin email
+      if (session.user.email?.toLowerCase() !== 'deliciahotburguers@gmail.com') {
         await supabase.auth.signOut();
         navigate({ to: '/admin' });
-      } else {
-        setUserEmail(session.user.email ?? null);
+        return;
       }
+
+      setUserEmail(session.user.email ?? null);
     };
 
     checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' && isMounted) {
+        navigate({ to: '/admin' });
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleLogout = async () => {
