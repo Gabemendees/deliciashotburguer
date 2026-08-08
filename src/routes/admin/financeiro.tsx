@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { cn } from '@/lib/utils';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard, Banknote, QrCode, TrendingUp, TrendingDown } from 'lucide-react';
