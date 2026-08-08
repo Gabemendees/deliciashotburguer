@@ -4,11 +4,12 @@ import { Hero } from "@/components/layout/Hero";
 import { Menu } from "@/components/menu/Menu";
 import { Cart } from "@/components/cart/Cart";
 import { z } from "zod";
-
 import { Toaster } from "sonner";
 import { useCart } from "@/lib/store";
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
+import { getStoreConfig } from "@/lib/database.functions";
+import { useQuery } from "@tanstack/react-query";
+import { AlertCircle, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => z.object({
@@ -30,22 +31,53 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [isHydrated, setIsHydrated] = useState(false);
+
   useEffect(() => {
     useCart.persist.rehydrate();
+    setIsHydrated(true);
   }, []);
 
+  const { data: config } = useQuery({
+    queryKey: ['store-config'],
+    queryFn: () => getStoreConfig(),
+  });
+
+  const isStoreOpen = config ? config['is_store_open'] : true;
+  const storeHours = config ? config['store_hours'] : { open: "18:00", close: "23:30" };
+
+  if (!isHydrated) return null;
 
   return (
-      <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
+    <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
       <Header />
       <main className="flex-1">
         <Hero />
-        <div id="menu">
+        
+        {!isStoreOpen && (
+          <div className="container mx-auto px-4 mt-8">
+            <div className="bg-red-50 border-2 border-red-100 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+              <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center shrink-0">
+                <AlertCircle size={32} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black text-red-700 uppercase tracking-tighter italic">Estamos fechados no momento</h2>
+                <p className="text-red-600 font-bold">Nosso horário de funcionamento é das {storeHours.open} às {storeHours.close}.</p>
+              </div>
+              <div className="md:ml-auto flex items-center gap-2 px-6 py-3 bg-red-100 text-red-600 rounded-2xl font-black text-xs tracking-widest uppercase">
+                <Clock size={16} />
+                ABRIREMOS ÀS {storeHours.open}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div id="menu" className={cn(!isStoreOpen && "opacity-60 pointer-events-none grayscale-[0.5]")}>
           <Menu />
         </div>
       </main>
       
-      <Cart />
+      {isStoreOpen && <Cart />}
       
       <footer className="bg-[#2B1710] text-[#F3E2CC] py-12 border-t border-[#4A2618]">
         <div className="container mx-auto px-4 text-center">
@@ -55,7 +87,7 @@ function Index() {
           </div>
           <div className="space-y-2 text-sm">
             <p>WhatsApp: 9.9701-3096</p>
-            <p>Segunda a sábado: 19:00 às 00:00</p>
+            <p>Horário: {storeHours.open} às {storeHours.close}</p>
             <p className="opacity-60 mt-4">
               © 2026 Delícia's Hot Burguer's. <br />
               Todos os direitos reservados.
@@ -68,3 +100,6 @@ function Index() {
     </div>
   );
 }
+
+// Add missing helper for cn if not available in current scope (though it should be via lib/utils)
+import { cn } from "@/lib/utils";

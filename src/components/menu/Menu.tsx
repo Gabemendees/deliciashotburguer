@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Category, Product } from "@/types/burger";
-import { PRODUCTS } from "@/lib/data";
 import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/store";
 import { useNavigate, getRouteApi } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { getAdminProducts, getAdminCategories } from "@/lib/database.functions";
 
 const routeApi = getRouteApi('/');
 
