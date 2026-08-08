@@ -234,7 +234,7 @@ function Dashboard() {
                   <Link 
                     key={status.id} 
                     to="/admin/pedidos" 
-                    search={{ status: status.id as any }}
+                    search={() => ({ status: status.id as any })}
                     className={cn("flex justify-between items-center p-4 rounded-2xl transition-all hover:scale-[1.02] border border-transparent hover:border-[#F3E2CC]", status.bg)}
                   >
                     <span className={cn("font-black text-xs tracking-widest", status.color)}>{status.label}</span>
