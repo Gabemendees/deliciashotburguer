@@ -20,7 +20,7 @@ interface CheckoutModalProps {
 }
 
 export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, getSubtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
 
   // Form states
@@ -40,7 +40,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     return area ? area.fee : 0;
   }, [orderType, neighborhood]);
 
-  const total = subtotal + deliveryFee;
+  const total = getSubtotal() + deliveryFee;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +61,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         message += `   Preço: ${formatCurrency(item.totalPrice)}\n\n`;
       });
 
-      message += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
+      message += `*Subtotal:* ${formatCurrency(getSubtotal())}\n`;
       if (orderType === "delivery") {
         message += `*Taxa de entrega:* ${formatCurrency(deliveryFee)}\n`;
       }

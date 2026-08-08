@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 
 export function Header() {
-  const { items, subtotal } = useCart();
+  const { items, getSubtotal } = useCart();
   const [isHydrated, setIsHydrated] = useState(false);
   
   useEffect(() => {
@@ -15,7 +15,7 @@ export function Header() {
   }, []);
 
   const itemCount = isHydrated ? items.reduce((acc, item) => acc + item.quantity, 0) : 0;
-  const currentSubtotal = isHydrated ? subtotal : 0;
+  const currentSubtotal = isHydrated ? getSubtotal() : 0;
 
 
   return (
