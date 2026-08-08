@@ -69,8 +69,13 @@ function AdminLogin() {
       }
 
       toast.success('Autenticação realizada com sucesso!');
-      window.open('/admin/dashboard', '_blank');
-      // No navigate here, stay on login page so user can see they are logged in or just leave the tab open
+      
+      // Fallback: Tenta redirecionar na mesma aba se window.open falhar ou for bloqueado
+      const newWindow = window.open('/admin/dashboard', '_blank');
+      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        navigate({ to: '/admin/dashboard' });
+      }
+      
       setLoading(false);
       
     } catch (error: any) {
@@ -82,7 +87,10 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    window.open('/admin/dashboard', '_blank');
+    const newWindow = window.open('/admin/dashboard', '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      navigate({ to: '/admin/dashboard' });
+    }
   };
 
   return (
