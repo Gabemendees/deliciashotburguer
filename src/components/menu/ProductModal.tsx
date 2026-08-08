@@ -46,6 +46,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   };
 
   const handleAddToCart = () => {
+    addItem(product, quantity, selectedAdditions);
     // Redirecionamento obrigatório conforme especificado
     // Não precisa de toast se o redirecionamento for imediato, mas manterei um discreto se o usuário preferir
     /* toast.success(`${product.name} adicionado ao carrinho!`, {
