@@ -27,8 +27,7 @@ function CartPage() {
   if (!isHydrated) return null;
   
   const subtotal = getSubtotal();
-  const deliveryFee = 5.0; // Padrão inicial
-  const total = subtotal + deliveryFee;
+  const total = subtotal;
 
 
 
@@ -163,10 +162,6 @@ function CartPage() {
                   <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-sm">
                     <span>Subtotal</span>
                     <span>{formatCurrency(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-sm">
-                    <span>Taxa de Entrega</span>
-                    <span className="text-[#E87524]">{formatCurrency(deliveryFee)}</span>
                   </div>
                   <div className="pt-4 border-t border-dashed border-[#F3E2CC] flex justify-between">
                     <span className="text-xl font-black text-[#2B1710] uppercase">Total</span>
