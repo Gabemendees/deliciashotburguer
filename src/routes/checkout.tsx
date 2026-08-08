@@ -339,37 +339,15 @@ function CheckoutPage() {
                 </div>
               </div>
               
-              {step === 1 ? (
-                <Button 
-                  type="submit" 
-                  variant="burger" 
-                  size="xl" 
-                  className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
-                >
-                  FINALIZAR PEDIDO
-                </Button>
-              ) : (
-                <div className="space-y-3 mt-8">
-                  <Button 
-                    type="submit" 
-                    variant="burger" 
-                    size="xl" 
-                    className="w-full h-16 shadow-xl shadow-[#E87524]/20"
-                    disabled={loading}
-                  >
-                    {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="w-full text-[#4A2618] hover:text-[#E87524] font-bold uppercase text-[10px] tracking-widest"
-                    onClick={() => setStep(1)}
-                  >
-                    ← Voltar ao resumo
-                  </Button>
-                </div>
-              )}
+              <Button 
+                type="submit" 
+                variant="burger" 
+                size="xl" 
+                disabled={loading}
+                className="w-full h-16 shadow-xl shadow-[#E87524]/20 mt-8"
+              >
+                {loading ? "ENVIANDO..." : "CONFIRMAR PEDIDO"}
+              </Button>
             </div>
           </div>
         </form>
