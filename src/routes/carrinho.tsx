@@ -27,8 +27,7 @@ function CartPage() {
   if (!isHydrated) return null;
   
   const subtotal = getSubtotal();
-  const deliveryFee = 5.0; // Padrão inicial
-  const total = subtotal + deliveryFee;
+  const total = subtotal;
 
 
 
