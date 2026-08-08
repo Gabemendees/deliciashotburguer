@@ -72,7 +72,7 @@ function OrderCompletedPage() {
         <div className="bg-white rounded-[40px] shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] overflow-hidden mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
           <div className="bg-[#2B1710] p-6 text-white flex justify-between items-center">
             <span className="font-black uppercase tracking-widest text-sm">Resumo do Pedido</span>
-            <span className="font-black text-xl italic tracking-tighter">PEDIDO #{(order as any).order_number || order.id.slice(0, 4).toUpperCase()}</span>
+            <span className="font-black text-xl italic tracking-tighter">PEDIDO #{String((order as any).order_number || order.id.slice(0, 4)).toUpperCase()}</span>
           </div>
           
           <div className="p-8">
