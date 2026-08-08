@@ -55,18 +55,6 @@ function Index() {
       <main className="flex-1">
         <Hero />
         
-        <div className="bg-[#FFF4E6] border-b border-[#F3E2CC] py-4">
-          <div className="container mx-auto px-4">
-            <div className="bg-[#2B1710] text-[#FFF4E6] p-4 rounded-2xl flex flex-col items-center gap-2 text-center shadow-lg border-4 border-[#E87524]">
-              <h3 className="text-lg font-black italic uppercase tracking-tighter">
-                Faça o seu pedido pelo número
-              </h3>
-              <p className="text-sm font-bold text-[#E87524]">
-                ESCOLHA O ITEM E ADICIONE AO CARRINHO
-              </p>
-            </div>
-          </div>
-        </div>
         
         {!isStoreOpen && (
           <div className="container mx-auto px-4 mt-8">
