@@ -17,10 +17,19 @@ const CATEGORIES: { id: Category; icon: string; label: string }[] = [
 ];
 
 export function Menu() {
-  const [activeCategory, setActiveCategory] = useState<Category>('HOT DOGS');
+  const navigate = useNavigate();
+  const search = (Route.useSearch() as any);
+  const initialCategory = search.category as Category | undefined;
+  
+  const [activeCategory, setActiveCategory] = useState<Category>(initialCategory || 'HOT DOGS');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const addItem = useCart(state => state.addItem);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (initialCategory && initialCategory !== activeCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }, [initialCategory]);
 
   useEffect(() => {
     useCart.persist.rehydrate();
