@@ -77,7 +77,8 @@ function Dashboard() {
   // Top Products calculation
   const productSales: Record<string, { count: number, revenue: number }> = {};
   completedOrders.forEach((order: any) => {
-    order.order_items?.forEach((item: any) => {
+    if (!order.order_items) return;
+    order.order_items.forEach((item: any) => {
       if (!productSales[item.name]) {
         productSales[item.name] = { count: 0, revenue: 0 };
       }
