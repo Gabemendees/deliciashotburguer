@@ -391,7 +391,7 @@ function CheckoutPage() {
                             <p className="text-green-800 font-black uppercase text-sm mb-1 tracking-widest">Tudo Certo!</p>
                             <h4 className="text-2xl font-black text-green-900 tracking-tighter italic">Entregamos aí!</h4>
                             <p className="text-green-700 font-bold mt-1 text-lg">
-                              📍 Distância: <span className="text-green-900">{distanceInfo.km.toFixed(1)} km</span><br />
+                              📍 Distância: <span className="text-green-900">{distanceInfo.km.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km</span><br />
                               🛵 Taxa de entrega: <span className="text-green-900">{formatCurrency(distanceInfo.fee)}</span>
                             </p>
                           </div>
