@@ -69,7 +69,9 @@ function AdminLogin() {
       }
 
       toast.success('Autenticação realizada com sucesso!');
-      navigate({ to: '/admin/dashboard' });
+      window.open('/admin/dashboard', '_blank');
+      // No navigate here, stay on login page so user can see they are logged in or just leave the tab open
+      setLoading(false);
       
     } catch (error: any) {
       console.error("AUTHENTICATION ERROR", error);
@@ -80,7 +82,7 @@ function AdminLogin() {
   };
 
   const handleGoToDashboard = () => {
-    navigate({ to: '/admin/dashboard' });
+    window.open('/admin/dashboard', '_blank');
   };
 
   return (
