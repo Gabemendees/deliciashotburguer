@@ -26,9 +26,6 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        <div className="absolute top-4 left-4 bg-[#E87524] text-white px-3 py-1 rounded-full text-xs font-black">
-          #{product.number}
-        </div>
       </div>
       
       <div className="p-6 flex flex-col flex-1">
