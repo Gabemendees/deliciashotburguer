@@ -81,14 +81,21 @@ function AdminLogin() {
         throw new Error('Acesso negado. Apenas o administrador autorizado pode entrar.');
       }
 
-      toast.success('Login realizado com sucesso!');
-      navigate({ to: '/admin/dashboard' });
+      toast.success('Login realizado com sucesso! Abrindo painel...');
+      
+      // Open in new tab
+      // To avoid pop-up blockers after an async operation, some browsers require 
+      // the window.open to be called directly in the event handler, but since 
+      // we need to wait for auth, we use this approach which works in most modern browsers
+      // if the async task is fast enough.
+      window.open('/admin/dashboard', '_blank');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao realizar login');
     } finally {
       setIsLoading(false);
     }
   };
+
 
 
   return (
