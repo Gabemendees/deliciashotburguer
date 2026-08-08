@@ -412,14 +412,14 @@ function Dashboard() {
             {/* Financial Breakdown */}
             <Card className="border-none shadow-sm bg-[#2B1710] text-white overflow-hidden rounded-3xl">
                <CardHeader>
-                  <CardTitle className="text-lg font-black uppercase tracking-tight text-[#E87524]">Financeiro Hoje</CardTitle>
+                  <CardTitle className="text-lg font-black uppercase tracking-tight text-[#E87524]">Financeiro {period.toUpperCase()}</CardTitle>
                </CardHeader>
                <CardContent className="space-y-4">
                   <div className="grid grid-cols-3 gap-2">
-                     {Object.entries(paymentsToday).map(([method, val]: any) => (
+                     {['PIX', 'CARD', 'CASH'].map((method) => (
                        <div key={method} className="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
-                          <p className="text-[9px] font-bold text-[#F3E2CC]/40 uppercase tracking-widest mb-1">{method}</p>
-                          <p className="font-black text-sm">{formatCurrency(val)}</p>
+                          <p className="text-[9px] font-bold text-[#F3E2CC]/40 uppercase tracking-widest mb-1">{method === 'CASH' ? 'Dinheiro' : method === 'CARD' ? 'Cartão' : 'PIX'}</p>
+                          <p className="font-black text-sm">{formatCurrency(paymentsPeriod[method] || 0)}</p>
                        </div>
                      ))}
                   </div>
