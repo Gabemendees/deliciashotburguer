@@ -36,29 +36,30 @@ function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatsCard 
             title="FATURAMENTO HOJE" 
-            value="R$ 1.250,00" 
+            value={formatCurrency(revenueToday)} 
             icon={DollarSign} 
             color="bg-green-500" 
           />
           <StatsCard 
             title="PEDIDOS HOJE" 
-            value="32" 
+            value={ordersToday.length.toString()} 
             icon={ShoppingCart} 
             color="bg-[#E87524]" 
           />
           <StatsCard 
             title="TICKET MÉDIO" 
-            value="R$ 39,06" 
+            value={formatCurrency(avgTicket)} 
             icon={TrendingUp} 
             color="bg-blue-500" 
           />
           <StatsCard 
             title="EM ENTREGA" 
-            value="4" 
+            value={inDelivery.toString()} 
             icon={Truck} 
             color="bg-purple-500" 
           />
         </div>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="border-none shadow-sm bg-white">
