@@ -28,10 +28,10 @@ export function Header() {
         
         <nav className="hidden lg:flex items-center gap-6">
           <Link to="/" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Início</Link>
-          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Cardápio</Link>
-          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hot Dogs</Link>
-          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hambúrgueres</Link>
-          <Link to="/" hash="menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Bebidas</Link>
+          <Link to="/#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Cardápio</Link>
+          <Link to="/#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hot Dogs</Link>
+          <Link to="/#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Hambúrgueres</Link>
+          <Link to="/#menu" className="text-xs font-bold text-blue-900 uppercase tracking-widest hover:text-red-600 transition-colors">Bebidas</Link>
         </nav>
 
         <div className="flex items-center gap-4">
@@ -44,7 +44,7 @@ export function Header() {
           <Link to="/carrinho" className="relative flex items-center gap-2 bg-white border-2 border-yellow-400 rounded-2xl h-11 px-4 hover:bg-yellow-50 transition-all">
 
 
-            <ShoppingCart size={20} className="text-blue-900" />
+            <span className="text-xl">🛒</span>
             {itemCount > 0 && (
               <>
                 <span className="hidden lg:inline text-xs font-black text-blue-900">
