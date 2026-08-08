@@ -32,6 +32,7 @@ export function Header() {
           <Link to="/" hash="menu" search={{ category: 'HOT DOGS' }} className="text-[10px] font-bold text-[#F3E2CC] uppercase whitespace-nowrap px-2 py-1 bg-[#4A2618] rounded">Hot Dogs</Link>
           <Link to="/" hash="menu" search={{ category: 'HAMBÚRGUERES' }} className="text-[10px] font-bold text-[#F3E2CC] uppercase whitespace-nowrap px-2 py-1 bg-[#4A2618] rounded">Burgers</Link>
           <Link to="/" hash="menu" search={{ category: 'BEBIDAS' }} className="text-[10px] font-bold text-[#F3E2CC] uppercase whitespace-nowrap px-2 py-1 bg-[#4A2618] rounded">Bebidas</Link>
+          <Link to="/" hash="menu" search={{ category: 'SOBREMESAS' }} className="text-[10px] font-bold text-[#F3E2CC] uppercase whitespace-nowrap px-2 py-1 bg-[#4A2618] rounded">Sobremesas</Link>
         </div>
         
         <nav className="hidden lg:flex items-center gap-6">
@@ -40,6 +41,7 @@ export function Header() {
           <Link to="/" hash="menu" search={{ category: 'HOT DOGS' }} className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Hot Dogs</Link>
           <Link to="/" hash="menu" search={{ category: 'HAMBÚRGUERES' }} className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Hambúrgueres</Link>
           <Link to="/" hash="menu" search={{ category: 'BEBIDAS' }} className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Bebidas</Link>
+          <Link to="/" hash="menu" search={{ category: 'SOBREMESAS' }} className="text-xs font-bold text-[#F3E2CC] uppercase tracking-widest hover:text-[#E87524] transition-colors">Sobremesas</Link>
         </nav>
 
         <div className="flex items-center gap-4">
