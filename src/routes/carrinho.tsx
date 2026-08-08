@@ -32,31 +32,31 @@ function CartPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#fcfbf8] flex flex-col">
+    <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-black text-blue-900 flex items-center gap-3 uppercase">
+            <h1 className="text-3xl font-black text-[#2B1710] flex items-center gap-3 uppercase italic tracking-tighter">
               SEU PEDIDO 🛒
             </h1>
-            <p className="text-gray-500 font-medium">Confira seus itens antes de finalizar o pedido.</p>
+            <p className="text-[#4A2618] font-medium">Confira seus itens antes de finalizar o pedido.</p>
           </div>
           
-          <Link to="/#menu" className="text-sm font-bold text-blue-900 hover:text-red-600 flex items-center gap-2 transition-colors">
+          <Link to="/#menu" className="text-sm font-bold text-[#2B1710] hover:text-[#E87524] flex items-center gap-2 transition-colors">
             <ArrowLeft size={16} />
             + COMPRAR MAIS
           </Link>
         </div>
 
         {items.length === 0 ? (
-          <div className="bg-white rounded-[40px] p-12 text-center shadow-xl shadow-gray-100 flex flex-col items-center border border-gray-100">
-            <div className="w-24 h-24 bg-yellow-50 rounded-full flex items-center justify-center mb-6">
-              <ShoppingCart size={48} className="text-yellow-500" />
+          <div className="bg-white rounded-[40px] p-12 text-center shadow-xl shadow-[#2B1710]/5 flex flex-col items-center border border-[#F3E2CC]">
+            <div className="w-24 h-24 bg-[#FFF4E6] rounded-full flex items-center justify-center mb-6">
+              <ShoppingCart size={48} className="text-[#E87524]" />
             </div>
-            <h2 className="text-2xl font-black text-blue-900 mb-2">SEU CARRINHO ESTÁ VAZIO</h2>
-            <p className="text-gray-500 mb-8 max-w-xs mx-auto">
+            <h2 className="text-2xl font-black text-[#2B1710] mb-2 uppercase italic tracking-tighter">SEU CARRINHO ESTÁ VAZIO</h2>
+            <p className="text-[#4A2618] mb-8 max-w-xs mx-auto">
               Escolha seus lanches favoritos e monte seu pedido.
             </p>
             <Button 
@@ -71,13 +71,13 @@ function CartPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
-              <div className="bg-white rounded-[40px] shadow-xl shadow-gray-100 border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-[40px] shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] overflow-hidden">
                 <ScrollArea className="h-full max-h-[60vh]">
-                  <div className="p-6 md:p-8 divide-y divide-gray-100">
+                  <div className="p-6 md:p-8 divide-y divide-[#F3E2CC]">
                     {items.map((item) => (
                       <div key={item.cartId} className="py-6 first:pt-0 last:pb-0">
                         <div className="flex gap-4 md:gap-6">
-                          <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-50 rounded-2xl overflow-hidden shrink-0">
+                          <div className="w-20 h-20 md:w-24 md:h-24 bg-[#FFF4E6] rounded-2xl overflow-hidden shrink-0">
                             <img 
                               src={item.product.image || "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=200&auto=format&fit=crop"} 
                               alt={item.product.name}
@@ -87,25 +87,25 @@ function CartPage() {
                           
                           <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-start gap-2 mb-1">
-                              <h3 className="font-black text-lg text-blue-900 truncate">
+                              <h3 className="font-black text-lg text-[#2B1710] truncate uppercase italic tracking-tighter">
                                 {item.product.name}
                               </h3>
                               <button 
                                 onClick={() => removeItem(item.cartId)}
-                                className="text-gray-300 hover:text-red-600 transition-colors p-1"
+                                className="text-[#F3E2CC] hover:text-[#C95718] transition-colors p-1"
                               >
                                 <Trash2 size={20} />
                               </button>
                             </div>
                             
-                            <p className="text-xs text-gray-400 line-clamp-2 mb-2 italic">
+                            <p className="text-xs text-[#4A2618]/70 line-clamp-2 mb-2 italic">
                               {item.product.description}
                             </p>
                             
                             {item.additions.length > 0 && (
                               <div className="mb-2 flex flex-wrap gap-1">
                                 {item.additions.map((add, idx) => (
-                                  <span key={idx} className="text-[10px] font-black bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full uppercase">
+                                  <span key={idx} className="text-[10px] font-black bg-[#FFF4E6] text-[#E87524] px-2 py-0.5 rounded-full uppercase">
                                     + {add.name}
                                   </span>
                                 ))}
@@ -113,31 +113,31 @@ function CartPage() {
                             )}
 
                             {item.observation && (
-                              <div className="mb-4 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
-                                <p className="text-[10px] font-black text-yellow-800 uppercase tracking-tighter mb-1">Deseja remover algo?</p>
-                                <p className="text-xs text-blue-900 font-medium italic">"{item.observation}"</p>
+                              <div className="mb-4 p-3 bg-[#FFF4E6] rounded-xl border border-[#F3E2CC]">
+                                <p className="text-[10px] font-black text-[#E87524] uppercase tracking-tighter mb-1">Deseja remover algo?</p>
+                                <p className="text-xs text-[#2B1710] font-medium italic">"{item.observation}"</p>
                               </div>
                             )}
                             
                             <div className="flex items-center justify-between">
-                              <div className="flex items-center bg-gray-50 rounded-xl p-1 border border-gray-100">
+                              <div className="flex items-center bg-[#FFF4E6] rounded-xl p-1 border border-[#F3E2CC]">
                                 <button 
                                   onClick={() => updateQuantity(item.cartId, item.quantity - 1)}
-                                  className="p-1.5 hover:bg-white rounded-lg transition-all text-gray-500 hover:text-blue-900"
+                                  className="p-1.5 hover:bg-white rounded-lg transition-all text-[#4A2618] hover:text-[#2B1710]"
                                 >
                                   <Minus size={16} />
                                 </button>
-                                <span className="w-10 text-center font-black text-blue-900">
+                                <span className="w-10 text-center font-black text-[#2B1710]">
                                   {item.quantity}
                                 </span>
                                 <button 
                                   onClick={() => updateQuantity(item.cartId, item.quantity + 1)}
-                                  className="p-1.5 hover:bg-white rounded-lg transition-all text-gray-500 hover:text-blue-900"
+                                  className="p-1.5 hover:bg-white rounded-lg transition-all text-[#4A2618] hover:text-[#2B1710]"
                                 >
                                   <Plus size={16} />
                                 </button>
                               </div>
-                              <span className="font-black text-blue-900 text-lg">
+                              <span className="font-black text-[#2B1710] text-lg">
                                 {formatCurrency(item.totalPrice)}
                               </span>
                             </div>
@@ -151,21 +151,21 @@ function CartPage() {
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-gray-100 border border-gray-100 sticky top-24">
-                <h3 className="text-xl font-black text-blue-900 mb-6 uppercase tracking-wider">Resumo</h3>
+              <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-[#2B1710]/5 border border-[#F3E2CC] sticky top-24">
+                <h3 className="text-xl font-black text-[#2B1710] mb-6 uppercase tracking-wider">Resumo</h3>
                 
                 <div className="space-y-4 mb-8">
-                  <div className="flex justify-between text-gray-500 font-bold uppercase tracking-tighter text-sm">
+                  <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-sm">
                     <span>Subtotal</span>
                     <span>{formatCurrency(subtotal)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-500 font-bold uppercase tracking-tighter text-sm">
+                  <div className="flex justify-between text-[#4A2618] font-bold uppercase tracking-tighter text-sm">
                     <span>Taxa de Entrega</span>
-                    <span className="text-green-600">{formatCurrency(deliveryFee)}</span>
+                    <span className="text-[#E87524]">{formatCurrency(deliveryFee)}</span>
                   </div>
-                  <div className="pt-4 border-t border-dashed border-gray-200 flex justify-between">
-                    <span className="text-xl font-black text-blue-900 uppercase">Total</span>
-                    <span className="text-2xl font-black text-red-600">{formatCurrency(total)}</span>
+                  <div className="pt-4 border-t border-dashed border-[#F3E2CC] flex justify-between">
+                    <span className="text-xl font-black text-[#2B1710] uppercase">Total</span>
+                    <span className="text-2xl font-black text-[#E87524]">{formatCurrency(total)}</span>
                   </div>
                 </div>
                 
@@ -173,7 +173,7 @@ function CartPage() {
                   <Button 
                     variant="burger" 
                     size="xl" 
-                    className="w-full h-16 shadow-lg shadow-yellow-200 group"
+                    className="w-full h-16 shadow-lg shadow-[#E87524]/20 group"
                     onClick={() => navigate({ to: '/checkout' })}
                   >
                     FINALIZAR PEDIDO
@@ -183,14 +183,14 @@ function CartPage() {
                   <Button 
                     variant="outline" 
                     size="lg" 
-                    className="w-full h-12 border-2 border-blue-900 text-blue-900 font-black hover:bg-blue-50"
+                    className="w-full h-12 border-2 border-[#2B1710] text-[#2B1710] font-black hover:bg-[#FFF4E6]"
                     onClick={() => navigate({ to: '/#menu' })}
                   >
                     + COMPRAR MAIS
                   </Button>
                 </div>
                 
-                <p className="text-[10px] text-center text-gray-400 mt-6 font-bold uppercase tracking-widest leading-relaxed">
+                <p className="text-[10px] text-center text-[#4A2618] mt-6 font-bold uppercase tracking-widest leading-relaxed">
                   Ao clicar em fechar pedido, você será <br /> redirecionado para a entrega.
                 </p>
               </div>
